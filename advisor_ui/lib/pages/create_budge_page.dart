@@ -17,8 +17,8 @@ class CreatBudgetPage extends StatefulWidget {
 
 class _BudgetAddPageState extends State<CreatBudgetPage> {
   int activeCategory = 0;
-  TextEditingController _budgetName = TextEditingController(text: "Grocery Budget");
-  TextEditingController _budgetPrice = TextEditingController(text: "\$1500.00");
+  TextEditingController _budgetName = TextEditingController();
+  TextEditingController _budgetPrice = TextEditingController();
   List<CameraDescription>? cameras; // list out the cameras available
   CameraController? controller; // controller for camera
   XFile? image; // for captured image
@@ -101,10 +101,20 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     }
   });
 }
+
+bool showwidget1=false;
+bool showwidget2=false;
+void toggleWidgets() {
+    setState(() {
+      showwidget1 = !showwidget1;
+      showwidget2 = !showwidget2;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: grey.withOpacity(0.05),
+      
       body: getBody(context),
     );
   }
@@ -116,6 +126,48 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 40, right: 20, left: 20, bottom: 25),
+              child: Column(
+                children: [
+            Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      showwidget1 = true;
+                      showwidget2=false;
+                      _budgetName.clear();
+                      _budgetPrice.clear(); 
+
+                    });
+                  },
+                  style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 21, 126, 191)),
+                      ),
+                  child: Text('Income'),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      showwidget1 = false;
+                      showwidget2=true;
+                      _budgetName.clear();
+                      _budgetPrice.clear(); 
+                    });
+                  },
+                  style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 21, 126, 191)),
+                      ),
+                  child: Text('Budget'),
+                ),
+            ],
+            ),],),)
+          ),
+          if(showwidget1)...[
+          Container(
             decoration: BoxDecoration(color: white, boxShadow: [
               BoxShadow(
                 color: grey.withOpacity(0.01),
@@ -124,34 +176,21 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
               ),
             ]),
             child: Padding(
-              padding: const EdgeInsets.only(top: 60, right: 20, left: 20, bottom: 25),
+              padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 25),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Create budget",
+                        "Create Income",
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: black),
                       ),
-                      IconButton(
-                        icon: const Icon(AntDesign.scan1),
-                        onPressed: _startScan,
-                    //     ()  async{
-                    //     try {
-                    //       if(controller != null){ //check if contrller is not null
-                    //           if(controller!.value.isInitialized){ //check if controller is initialized
-                    //               image = await controller!.takePicture(); //capture image
-                    //               setState(() {
-                    //                 //update UI
-                    //               });
-                    //           }
-                    //       }
-                    //     } catch (e) {
-                    //         print(e); //show error
-                    //     }
-                    // },
-                      ),
+                      // IconButton(
+                      //   icon: const Icon(AntDesign.scan1),
+                      //   onPressed: _startScan,
+                    
+                      // ),
                     ],
                   ),
                 ],
@@ -172,7 +211,11 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                       fontWeight: FontWeight.bold,
                       color: black.withOpacity(0.5)),
                     ),
-                    ElevatedButton(onPressed: _addCategory, child: Text('Add Category'))
+                    ElevatedButton(onPressed: _addCategory,
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 21, 126, 191)),
+                      ),
+                       child: Text('Add Category'))
                     // IconButton(
                     //   icon: Icon(Icons.add),
                     //   onPressed: _addCategory,
@@ -204,7 +247,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                       color: white,
                       border: Border.all(
                         width: 2,
-                        color: activeCategory == index ? primary : Colors.transparent,
+                         color: activeCategory == index ? Color.fromARGB(255, 12, 198, 227) : Colors.transparent,
                       ),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
@@ -254,112 +297,6 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
              
           ),
         ),
-  
-        
-        // Static button container
-        // Container(
-        //   margin: EdgeInsets.only(top: 20),
-        //   width: size.width,
-        //   height: 60,
-        //   decoration: BoxDecoration(
-        //     color: primary,
-        //     borderRadius: BorderRadius.circular(15),
-        //   ),
-        //   child: TextButton(
-        //     onPressed: () {
-        //       // Navigate to another page
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => AddCategoryPage()),
-        //       );
-        //     },
-        //     child: Text(
-        //       'Go to Another Page',
-        //       style: TextStyle(
-        //         color: white,
-        //         fontSize: 16,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ),),
-        //   SingleChildScrollView(
-        //     scrollDirection: Axis.horizontal,
-        //     child: Row(
-        //         children: List.generate(categories.length, (index) {
-        //       return GestureDetector(
-        //         onTap: () {
-        //           setState(() {
-        //             activeCategory = index;
-        //           });
-        //         },
-        //         child: Padding(
-        //           padding: const EdgeInsets.only(
-        //             left: 10,
-        //           ),
-        //           child: Container(
-        //             margin: EdgeInsets.only(
-        //               left: 10,
-        //             ),
-        //             width: 150,
-        //             height: 170,
-        //             decoration: BoxDecoration(
-        //                 color: white,
-        //                 border: Border.all(
-        //                     width: 2,
-        //                     color: activeCategory == index
-        //                         ? primary
-        //                         : Colors.transparent),
-        //                 borderRadius: BorderRadius.circular(12),
-        //                 boxShadow: [
-        //                   BoxShadow(
-        //                     color: grey.withOpacity(0.01),
-        //                     spreadRadius: 10,
-        //                     blurRadius: 3,
-        //                     // changes position of shadow
-        //                   ),
-        //                 ]),
-        //             child: Padding(
-        //               padding: const EdgeInsets.only(
-        //                   left: 25, right: 25, top: 20, bottom: 20),
-        //               child: Column(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //                 children: [
-        //                   Container(
-        //                       width: 40,
-        //                       height: 40,
-        //                       decoration: BoxDecoration(
-        //                           shape: BoxShape.circle,
-        //                           color: grey.withOpacity(0.15)),
-        //                       child: Center(
-        //                         child: Image.asset(
-        //                           categories[index]['icon'],
-        //                           width: 30,
-        //                           height: 30,
-        //                           fit: BoxFit.contain,
-        //                         ),
-        //                       )
-        //                     ),
-        //                   Text(
-        //                     categories[index]['name'],
-        //                     style: TextStyle(
-        //                       fontWeight: FontWeight.bold,
-        //                       fontSize: 20,
-        //                     ),
-        //                   ),
-        //                 ],
-                       
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       );
-              
-        //     }
-        //   )
-        // ),
-        // ),
-          
           SizedBox(
             height: 50,
           ),
@@ -422,18 +359,227 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                          color: primary,
+                          color: Color.fromARGB(255, 21, 126, 191),
                           borderRadius: BorderRadius.circular(15)),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: white,
+                      child:IconButton(
+                        icon: const Icon(AntDesign.arrowright),
+                        onPressed: (){},
+                        color:white,
                       ),
                     ),
                   ],
                 )
               ],
             ),
-          )
+          ),],
+          if(showwidget2)...[
+          Container(
+            decoration: BoxDecoration(color: white, boxShadow: [
+              BoxShadow(
+                color: grey.withOpacity(0.01),
+                spreadRadius: 10,
+                blurRadius: 3,
+              ),
+            ]),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, right: 20, left: 20, bottom: 25),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Create budget",
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: black),
+                      ),
+                      IconButton(
+                        icon: const Icon(AntDesign.scan1),
+                        onPressed: _startScan,
+                    
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
+            child: Column(
+              children:[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children:[
+                    Text(
+                      "Choose category",
+                      style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: black.withOpacity(0.5)),
+                    ),
+                    ElevatedButton(
+                      onPressed: _addCategory,
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 21, 126, 191)),
+                      ),
+                     child: Text('Add Category'))
+                    // IconButton(
+                    //   icon: Icon(Icons.add),
+                    //   onPressed: _addCategory,
+                    // ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(categories.length, (index) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    activeCategory = index;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Container(
+                    margin: EdgeInsets.only(left: 10),
+                    width: 150,
+                    height: 170,
+                    decoration: BoxDecoration(
+                      color: white,
+                      border: Border.all(
+                        width: 2,
+                        color: activeCategory == index ? Color.fromARGB(255, 12, 198, 227) : Colors.transparent,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: grey.withOpacity(0.01),
+                          spreadRadius: 10,
+                          blurRadius: 3,
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 25, right: 25, top: 20, bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: grey.withOpacity(0.15),
+                            ),
+                            child: Center(
+                              child: Image.asset(
+                                categories[index]['icon'],
+                                width: 30,
+                                height: 30,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            categories[index]['name'],
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+             
+          ),
+        ),
+          SizedBox(
+            height: 50,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "budget name",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                      color: Color(0xff67727d)),
+                ),
+                TextField(
+                  controller: _budgetName,
+                  cursorColor: black,
+                  style: TextStyle(
+                      fontSize: 17, fontWeight: FontWeight.bold, color: black),
+                  decoration: InputDecoration(
+                      hintText: "Enter Budget Name", border: InputBorder.none),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: (size.width - 140),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Enter budget",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
+                                color: Color(0xff67727d)),
+                          ),
+                          TextField(
+                            controller: _budgetPrice,
+                            cursorColor: black,
+                            style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: black),
+                            decoration: InputDecoration(
+                                hintText: "Enter Budget",
+                                border: InputBorder.none),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Color.fromARGB(255, 21, 126, 191),
+                          borderRadius: BorderRadius.circular(15)),
+                      child:IconButton(
+                        icon: const Icon(AntDesign.arrowright),
+                        onPressed: (){},
+                        color:white,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),]
+          
         ],
       ),
     );
