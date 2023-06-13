@@ -1,3 +1,5 @@
+import 'package:advisor_ui/pages/root_app.dart';
+import 'package:advisor_ui/pages/setting_page.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -24,7 +26,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
+    return Scaffold( 
+    body:SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -63,14 +66,14 @@ class _ProfilePageState extends State<ProfilePage> {
                             color: black),
                       ),
                       IconButton(
-                          icon: const Icon(AntDesign.setting),
-                          onPressed: (){},
-                          // onPressed: (){
-                          //   Navigator.push(context,
-                          //    MaterialPageRoute(
-                          //     builder: (context) => SettingsPage(themeManager: widget.themeManager),
-                          //     ),);
-                          // },
+                          icon: const Icon(AntDesign.arrowleft),
+                          // onPressed: (){},
+                          onPressed: (){
+                            Navigator.push(context,
+                             MaterialPageRoute(
+                              builder: (context) => RootApp(),
+                              ),);
+                          },
                       )
                       
                     ],
@@ -90,21 +93,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: CircularPercentIndicator(
                                     circularStrokeCap: CircularStrokeCap.round,
                                     backgroundColor: grey.withOpacity(0.3),
-                                    radius: 110.0,
+                                    radius: 85.0,
                                     lineWidth: 6.0,
                                     percent: 0.53,
                                     progressColor: primary),
                               ),
                               Positioned(
-                                top: 30,
-                                left: 30,
+                                top: 45,
+                                left:-5,
                                 child: Container(
-                                  width: 160,
-                                  height: 160,
-                                  decoration: BoxDecoration(
+                                  width: 130,
+                                  height: 130,
+                                  decoration:const BoxDecoration(
                                       shape: BoxShape.circle,
                                       image: DecorationImage(
-                                          image: NetworkImage(
+                                           image:NetworkImage(
                                               "https://images.unsplash.com/photo-1531256456869-ce942a665e80?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTI4fHxwcm9maWxlfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"),
                                           fit: BoxFit.cover)),
                                 ),
@@ -133,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
-                                  color: black.withOpacity(0.4)),
+                                  color: black.withOpacity(0.7)),
                             ),
                           ],
                         ),
@@ -146,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        color: primary,
+                        color: black,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
@@ -269,6 +272,6 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       ),
-    );
+    ));
   }
 }

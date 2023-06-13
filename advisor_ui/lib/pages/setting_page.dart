@@ -1,13 +1,10 @@
-import 'package:advisor_ui/pages/profile_page.dart';
+import 'package:advisor_ui/pages/root_app.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:advisor_ui/theme/theme_manager.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 class SettingsPage extends StatefulWidget{
-  final ThemeManager themeManager;
-
-  SettingsPage({required this.themeManager});
+  
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -20,7 +17,7 @@ class _SettingsPageState extends State<SettingsPage> {
 onChangeFunction1(bool newValue1) {
   setState(() {
     valueNotifyl = newValue1;
-    widget.themeManager.setThemeMode(newValue1 ? ThemeMode.dark : ThemeMode.light);
+    
   });
 }
 
@@ -82,7 +79,7 @@ onChangeFunction1(bool newValue1) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => ProfilePage(),
+                                builder: (context) => RootApp(),
                               ),
                             );
                           },

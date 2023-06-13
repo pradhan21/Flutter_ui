@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobile_vision_2/flutter_mobile_vision_2.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'addCategory.dart';
@@ -22,13 +21,23 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
   List<CameraDescription>? cameras; // list out the cameras available
   CameraController? controller; // controller for camera
   XFile? image; // for captured image
+  FocusNode nameFocusNode = FocusNode();
+  TextEditingController _nameController = TextEditingController();
+  String? selectedIcon;
 
   @override
   void initState() {
     super.initState();
     loadCamera();
   }
-
+   final List<String> iconOptions = [
+    "assets/images/auto.png",
+    "assets/images/bank.png",
+    "assets/images/cash.png",
+    "assets/images/charity.png",
+    "assets/images/eating.png",
+    "assets/images/gift.png",
+  ];
   loadCamera() async {
   PermissionStatus cameraStatus = await Permission.camera.request();
   PermissionStatus storageStatus = await Permission.storage.request();
@@ -102,8 +111,10 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
   });
 }
 
-bool showwidget1=false;
+bool showwidget1=true;
 bool showwidget2=false;
+bool showaddcategory=false;
+bool showaddcategory1=false;
 void toggleWidgets() {
     setState(() {
       showwidget1 = !showwidget1;
@@ -211,25 +222,36 @@ void toggleWidgets() {
                       fontWeight: FontWeight.bold,
                       color: black.withOpacity(0.5)),
                     ),
-                    ElevatedButton(onPressed: _addCategory,
-                    style: ButtonStyle(
+                    ElevatedButton(onPressed: (){
+                    setState(() {
+                      showaddcategory = true;
+                    });
+                    // _showPopup(context);
+                    }
+                    ,style: ButtonStyle(
+                     
                         backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 21, 126, 191)),
                       ),
                        child: Text('Add Category'))
-                    // IconButton(
-                    //   icon: Icon(Icons.add),
-                    //   onPressed: _addCategory,
-                    // ),
                   ],
                 ),
               ],
             ),
           ),
+           Container(
+            child: Visibility(
+              visible: showaddcategory,
+              child: SizedBox(
+                child:addcategory(context)
+            ),
+           ),),
           SizedBox(
             height: 20,
+           
           ),SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            
             children: List.generate(categories.length, (index) {
               return GestureDetector(
                 onTap: () {
@@ -418,7 +440,11 @@ void toggleWidgets() {
                       color: black.withOpacity(0.5)),
                     ),
                     ElevatedButton(
-                      onPressed: _addCategory,
+                      onPressed:() {
+                      setState(() {
+                        showaddcategory1 = true;
+                      });
+                    },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(Color.fromARGB(255, 21, 126, 191)),
                       ),
@@ -432,6 +458,13 @@ void toggleWidgets() {
               ],
             ),
           ),
+          Container(
+            child: Visibility(
+              visible: showaddcategory1,
+              child: SizedBox(
+                child:addcategory1(context)
+            ),
+           ),),
           SizedBox(
             height: 20,
           ),SingleChildScrollView(
@@ -584,15 +617,186 @@ void toggleWidgets() {
       ),
     );
   }
+  Widget addcategory(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+     child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(
+              focusNode: nameFocusNode,
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Category Name'),
+            ),
+            SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: selectedIcon,
+              items: iconOptions.map((icon) {
+                return DropdownMenuItem<String>(
+                  value: icon,
+                  child: ImageIcon(AssetImage(icon)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedIcon = value;
+                });
+              },
+              decoration: InputDecoration(labelText: 'Select Icon'),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+            ElevatedButton(
+              onPressed: () {
+                // Retrieve the category name and selected icon
+                String categoryName = _nameController.text;
 
+                // Create a new Category object
+                BudgetCategory newCategory = BudgetCategory(
+                  name: categoryName,
+                  icon: selectedIcon!,
+                );
+
+                // Pass the new category back to the previous page
+                Navigator.pop(context, newCategory);
+              },
+              child: Text('Save Category'),
+            ),
+            ElevatedButton(onPressed:(){
+              setState(() {
+                showaddcategory = false;
+              });
+            }, child: Text("Cancel"))    
+          ],)
+        ],
+        ),
+      ),
+    );
 }
+Widget addcategory1(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+     child: Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(
+              focusNode: nameFocusNode,
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Category Name'),
+            ),
+            SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: selectedIcon,
+              items: iconOptions.map((icon) {
+                return DropdownMenuItem<String>(
+                  value: icon,
+                  child: ImageIcon(AssetImage(icon)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedIcon = value;
+                });
+              },
+              decoration: InputDecoration(labelText: 'Select Icon'),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+            ElevatedButton(
+              onPressed: () {
+                // Retrieve the category name and selected icon
+                String categoryName = _nameController.text;
 
+                // Create a new Category object
+                BudgetCategory newCategory = BudgetCategory(
+                  name: categoryName,
+                  icon: selectedIcon!,
+                );
+
+                // Pass the new category back to the previous page
+                Navigator.pop(context, newCategory);
+              },
+              child: Text('Save Category'),
+            ),
+            ElevatedButton(onPressed:(){
+              setState(() {
+                showaddcategory1 = false;
+              });
+            }, child: Text("Cancel"))    
+          ],)
+        ],
+        ),
+      ),
+    );
+}
+// void _showPopup(BuildContext context) {
+//   showDialog(
+//     context: context,
+//     builder: (BuildContext context) {
+//       return AlertDialog(
+//         title: Text('Popup Title'),
+//         content: Text('Popup Content'),
+//           actions: [
+//             TextField(
+//               focusNode: nameFocusNode,
+//               controller: _nameController,
+//               decoration: InputDecoration(labelText: 'Category Name'),
+//             ),
+//             SizedBox(height: 20),
+//             DropdownButtonFormField<String>(
+//               value: selectedIcon,
+//               items: iconOptions.map((icon) {
+//                 return DropdownMenuItem<String>(
+//                   value: icon,
+//                   child: ImageIcon(AssetImage(icon)),
+//                 );
+//               }).toList(),
+//               onChanged: (value) {
+//                 setState(() {
+//                   selectedIcon = value;
+//                 });
+//               },
+//               decoration: InputDecoration(labelText: 'Select Icon'),
+//             ),
+//             SizedBox(height: 20),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children:[
+//             ElevatedButton(
+//               onPressed: () {
+//                 // Retrieve the category name and selected icon
+//                 String categoryName = _nameController.text;
+
+//                 // Create a new Category object
+//                 BudgetCategory newCategory = BudgetCategory(
+//                   name: categoryName,
+//                   icon: selectedIcon!,
+//                 );
+
+//                 // Pass the new category back to the previous page
+//                 Navigator.pop(context, newCategory);
+//               },
+//               child: Text('Save Category'),
+//             ),
+//             ElevatedButton(onPressed:(){
+//              Navigator.of(context).pop();
+//             }, child: Text("Cancel"))    
+//           ],)
+//           ]
+//           );
+//           }
+//           );
+// }
+        
+}
 class category{
   final String name;
   final String icon;
   category({required this.name, required this.icon});
 }
-
-
-
-

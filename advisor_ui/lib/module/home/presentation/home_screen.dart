@@ -83,12 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
   
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    // final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
   
     // Use the GoogleAuth credentials to authenticate with your backend server
     // and perform any necessary operations.
-    String accessToken = googleAuth.accessToken!;
-    String idToken = googleAuth.idToken!;
+    // String accessToken = googleAuth.accessToken!;
+    // String idToken = googleAuth.idToken!;
 
   
     // TODO: Implement your logic here for successful sign-in.
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
    final String username = emailController.text;
     final String password = passwordController.text;
-
+ 
     showLoadingDialog(context);
     await Future.delayed(
       const Duration(milliseconds: 2000),
@@ -244,6 +244,7 @@ void navigateToRootApp(String refreshToken) {
 
   @override
   Widget build(BuildContext context) {
+    bool showPassword=false;
     print("Build Called Again");
     return Scaffold(
       backgroundColor: const Color(0xFFD6E2EA),
@@ -337,16 +338,33 @@ void navigateToRootApp(String refreshToken) {
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    child: TextField(
-                      focusNode: passwordFocusNode,
-                      controller: passwordController, 
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Password",
-                      ),
-                      obscureText: true,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      onChanged: (value) {},
+                    child: Column(
+                      children: [
+                        TextField(
+                          focusNode: passwordFocusNode,
+                          controller: passwordController, 
+                          obscureText: !showPassword, 
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Password",
+                          ),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          onChanged: (value) {},
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: showPassword,
+                              onChanged: (value) {
+                                setState(() {
+                                  showPassword = value!;
+                                });
+                              },
+                            ),
+                            Text('Show Password'),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 8),

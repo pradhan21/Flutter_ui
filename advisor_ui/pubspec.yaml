@@ -31,7 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.4
-
+  chat_gpt_sdk: ^1.0.2+3
+  velocity_x: ^3.6.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
