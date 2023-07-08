@@ -7,5 +7,6 @@ class AppRouteName {
   static const String  profile="/profile";
   static const String  root="/root";
   static const String  stats="/stats";
+  static const String  details="/details";
   
 }

@@ -12,6 +12,7 @@ import 'core/theme/app_theme.dart';
 /// Like & Subscribe
 void main() {
   MainModule.init();
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -23,6 +24,7 @@ class MyApp extends StatefulWidget {
   class _Myappstate extends State<MyApp>{
   Widget build(BuildContext context) {
     return MaterialApp(
+      
       debugShowCheckedModeBanner: false,
       title: "Budget App",
       theme: AppTheme.light,
