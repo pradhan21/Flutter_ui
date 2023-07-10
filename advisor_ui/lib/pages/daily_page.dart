@@ -7,42 +7,43 @@ import 'package:advisor_ui/json/day_month.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/material.dart';
 import "package:flutter_vector_icons/flutter_vector_icons.dart";
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 
 class DailyPage extends StatefulWidget {
-final String accessToken;
+  final String accessToken;
   DailyPage({required this.accessToken});
-  
+
   @override
   _DailyPageState createState() => _DailyPageState();
 }
 
-class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin{
+class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   Timer? timer;
   DateTime currentDate = DateTime.now(); // Get the current date
-List<DateTime> visibleDates = [];
-List<income> incomes = [];
-List<expense> expenses = [];
-List<Category> categories = [];
-List<ExpCategory> expcategories = [];
+  List<DateTime> visibleDates = [];
+  List<income> incomes = [];
+  List<expense> expenses = [];
+  List<Category> categories = [];
+  List<ExpCategory> expcategories = [];
 
- void initState() {
+  void initState() {
     super.initState();
     for (int i = 0; i < 7; i++) {
       DateTime date = currentDate.add(Duration(days: i));
       visibleDates.add(date);
     }
-  //   Timer.periodic(Duration(seconds: 1), (_) {  fetchExpenses();
-  // fetchIncomes();
-  //     fetchCategories(widget.accessToken);
-  //    fetchexpCategories(widget.accessToken);});
+    //   Timer.periodic(Duration(seconds: 1), (_) {  fetchExpenses();
+    // fetchIncomes();
+    //     fetchCategories(widget.accessToken);
+    //    fetchexpCategories(widget.accessToken);});
     fetchExpenses();
     fetchIncomes();
     fetchCategories(widget.accessToken);
   }
+
   int activeDay = 1;
 
-    void goToPreviousDates() {
+  void goToPreviousDates() {
     setState(() {
       currentDate = currentDate.subtract(Duration(days: 1));
     });
@@ -62,17 +63,16 @@ List<ExpCategory> expcategories = [];
     }
   }
 
-@override
-void dispose() {
-  timer?.cancel(); // Cancel any active timers
-  super.dispose();
-}
-
+  @override
+  void dispose() {
+    timer?.cancel(); // Cancel any active timers
+    super.dispose();
+  }
 
   Future<void> fetchIncomes() async {
     try {
       List<income> fetchedIncomes = await fetchIncome(widget.accessToken);
-      print( fetchedIncomes);
+      print(fetchedIncomes);
       setState(() {
         incomes = fetchedIncomes;
       });
@@ -82,7 +82,7 @@ void dispose() {
   }
 
   Future<List<income>> fetchIncome(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/income/income/';
+    final url = 'http://10.0.2.2:8000/income/income/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -168,8 +168,8 @@ void dispose() {
     }
   }
 
-    Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/expensesCat/excategory/';
+  Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
+    final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -183,7 +183,6 @@ void dispose() {
 
       for (var categoryData in categoriesData) {
         expcategories.add(ExpCategory.fromJson(categoryData));
-        
       }
 
       return expcategories;
@@ -192,10 +191,11 @@ void dispose() {
           'Failed to fetch categories. Status code: ${response.statusCode}');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Color.fromARGB(255, 233, 227, 227),
+      backgroundColor: Color.fromARGB(255, 233, 227, 227),
       body: getBody(),
     );
   }
@@ -204,39 +204,44 @@ void dispose() {
     // print("daily_page_accessToken__________" + widget.accessToken);
     var size = MediaQuery.of(context).size;
     List<income> filteredIncomes = incomes.where((income) {
-    DateTime incomeDate = DateTime.parse(income.date);
-    return incomeDate.year == currentDate.year &&
-        incomeDate.month == currentDate.month &&
-        incomeDate.day == currentDate.day;
-  }).toList();
- List<expense> FilteredExpenses = expenses.where((expense) {
-  try {
-    DateTime expenseDate = DateFormat('yyyy-MM-dd').parse(expense.date);
-    return expenseDate.year == currentDate.year &&
-        expenseDate.month == currentDate.month &&
-        expenseDate.day == currentDate.day;
-  } catch (e) {
-    print('Error parsing date: $e');
-    return false; // Exclude the expense if the date parsing fails
-  }
-}).toList();
-print(FilteredExpenses);
+      DateTime incomeDate = DateTime.parse(income.date);
+      return incomeDate.year == currentDate.year &&
+          incomeDate.month == currentDate.month &&
+          incomeDate.day == currentDate.day;
+    }).toList();
+    List<expense> FilteredExpenses = expenses.where((expense) {
+      try {
+        DateTime expenseDate = DateFormat('yyyy-MM-dd').parse(expense.date);
+        return expenseDate.year == currentDate.year &&
+            expenseDate.month == currentDate.month &&
+            expenseDate.day == currentDate.day;
+      } catch (e) {
+        print('Error parsing date: $e');
+        return false; // Exclude the expense if the date parsing fails
+      }
+    }).toList();
+    print(FilteredExpenses);
 
-  double calculateTotalAmount(List<income> filteredIncomes) {
-  double total = 0;
-  for (var income in filteredIncomes) {
-    total += income.amount;
-  }
-  return total;
-}
-String getCategoryIconUrl(int categoryId, List<Category> categories) {
-  final category = categories.firstWhere((c) => c.id == categoryId, orElse: () => Category(id: 0, name: '', iconUrl: ''));
-  return category.iconUrl;
-}
-String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
-  final category = expcategories.firstWhere((c) => c.id == categoryId, orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''));
-  return category.iconUrl;
-}
+    double calculateTotalAmount(List<income> filteredIncomes) {
+      double total = 0;
+      for (var income in filteredIncomes) {
+        total += income.amount;
+      }
+      return total;
+    }
+
+    String getCategoryIconUrl(int categoryId, List<Category> categories) {
+      final category = categories.firstWhere((c) => c.id == categoryId,
+          orElse: () => Category(id: 0, name: '', iconUrl: ''));
+      return category.iconUrl;
+    }
+
+    String getexpCategoryIconUrl(
+        int categoryId, List<ExpCategory> expcategories) {
+      final category = expcategories.firstWhere((c) => c.id == categoryId,
+          orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''));
+      return category.iconUrl;
+    }
 
     return SingleChildScrollView(
       child: Column(
@@ -258,37 +263,39 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                  Text(
-                  "Daily Transaction",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: black,
-                  ),
-                ),Icon(AntDesign.search1)
+                      Text(
+                        "Daily Transaction",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: black,
+                        ),
+                      ),
+                      Icon(AntDesign.search1)
                     ],
                   ),
-                const SizedBox(height: 20,),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      
                       IconButton(
-                  onPressed: goToPreviousDates,
-                  icon: Icon(Icons.arrow_back),
-                ),
-                Text(
-                   DateFormat('EEE, MMM d, y').format(currentDate),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: black,
-                  ),
-                ),
-                IconButton(
-                  onPressed: goToFutureDates,
-                  icon: Icon(Icons.arrow_forward),
-                ),
+                        onPressed: goToPreviousDates,
+                        icon: Icon(Icons.arrow_back),
+                      ),
+                      Text(
+                        DateFormat('EEE, MMM d, y').format(currentDate),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: black,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: goToFutureDates,
+                        icon: Icon(Icons.arrow_forward),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -297,19 +304,22 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: List.generate(visibleDates.length, (index) {
-                      final DateFormat dayFormat = DateFormat('EEE'); // Format the day abbreviation
-                      final DateFormat dateFormat = DateFormat('dd'); // Format the day of the month
+                      final DateFormat dayFormat =
+                          DateFormat('EEE'); // Format the day abbreviation
+                      final DateFormat dateFormat =
+                          DateFormat('dd'); // Format the day of the month
 
-                       DateTime date = visibleDates[index];
-                        bool isCurrentDate = date.day == currentDate.day &&
-                            date.month == currentDate.month &&
-                            date.year == currentDate.year;
+                      DateTime date = visibleDates[index];
+                      bool isCurrentDate = date.day == currentDate.day &&
+                          date.month == currentDate.month &&
+                          date.year == currentDate.year;
                       // Set the index of the current date
 
                       return GestureDetector(
                         onTap: () {
                           setState(() {
-                            String currentDate = DateFormat('y-M-d').format(date);
+                            String currentDate =
+                                DateFormat('y-M-d').format(date);
                             print(currentDate);
                             activeDay = index;
                           });
@@ -319,7 +329,8 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                           child: Column(
                             children: [
                               Text(
-                                dayFormat.format(visibleDates[index]), // Display the day abbreviation
+                                dayFormat.format(visibleDates[
+                                    index]), // Display the day abbreviation
                                 style: TextStyle(fontSize: 10),
                               ),
                               SizedBox(height: 10),
@@ -327,7 +338,10 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                                 width: 30,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  color: isCurrentDate ? Colors.red : Colors.transparent, // Highlight current date in red color
+                                  color: isCurrentDate
+                                      ? Colors.red
+                                      : Colors
+                                          .transparent, // Highlight current date in red color
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: activeDay == index
@@ -337,7 +351,8 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    dateFormat.format(visibleDates[index]), // Display the day of the month
+                                    dateFormat.format(visibleDates[
+                                        index]), // Display the day of the month
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w600,
@@ -352,7 +367,6 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                       );
                     }),
                   )
-
                 ],
               ),
             ),
@@ -360,7 +374,6 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
           SizedBox(
             height: 30,
           ),
-         
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
@@ -383,10 +396,12 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                               ),
                               child: Center(
                                 child: Image.network(
-                                    getCategoryIconUrl(filteredIncomes[index].category_id, categories),
-                                    color:black,
-                                    width: 30,
-                                    height: 30,
+                                  getCategoryIconUrl(
+                                      filteredIncomes[index].category_id,
+                                      categories),
+                                  color: black,
+                                  width: 30,
+                                  height: 30,
                                 ),
                               ),
                             ),
@@ -407,7 +422,7 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                     filteredIncomes[index].note,
+                                    filteredIncomes[index].note,
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: black.withOpacity(0.5),
@@ -441,7 +456,7 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                     padding: const EdgeInsets.only(left: 65, top: 8),
                     child: Divider(
                       thickness: 0.8,
-                      color:black,
+                      color: black,
                     ),
                   )
                 ],
@@ -470,10 +485,12 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                               ),
                               child: Center(
                                 child: Image.network(
-                                    getexpCategoryIconUrl(FilteredExpenses[index].category_id, expcategories),
-                                    color:black,
-                                    width: 30,
-                                    height: 30,
+                                  getexpCategoryIconUrl(
+                                      FilteredExpenses[index].category_id,
+                                      expcategories),
+                                  color: black,
+                                  width: 30,
+                                  height: 30,
                                 ),
                               ),
                             ),
@@ -494,7 +511,7 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                                   ),
                                   SizedBox(height: 5),
                                   Text(
-                                     FilteredExpenses[index].note,
+                                    FilteredExpenses[index].note,
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: black.withOpacity(0.5),
@@ -528,7 +545,7 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                     padding: const EdgeInsets.only(left: 65, top: 8),
                     child: Divider(
                       thickness: 0.8,
-                      color:black,
+                      color: black,
                     ),
                   )
                 ],
@@ -558,7 +575,7 @@ String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Text(
-                   "\$${calculateTotalAmount(filteredIncomes).toStringAsFixed(2)}",
+                    "\$${calculateTotalAmount(filteredIncomes).toStringAsFixed(2)}",
                     style: TextStyle(
                         fontSize: 20,
                         color: black,
