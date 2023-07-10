@@ -169,7 +169,7 @@ class _NestedTabBarState extends State<NestedTabBar> with TickerProviderStateMix
 
 Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
   try {
-    final url = "http://127.0.0.1:8000/core/expenses-category-month/";
+    final url = "http://10.0.2.2:8000/core/expenses-category-month/";
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
     });

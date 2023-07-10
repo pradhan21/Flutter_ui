@@ -90,7 +90,7 @@ void initState() {
 }
 
 Future<void> fetchIncomes(String accessToken) async {
-  final url = 'http://127.0.0.1:8000/income/income/';
+  final url = 'http://10.0.2.2:8000/income/income/';
 
   final response = await http.get(Uri.parse(url), headers: {
     'Authorization': 'Bearer $accessToken',
@@ -131,7 +131,7 @@ Future<void> fetchIncomes(String accessToken) async {
 }
 
 Future<void> fetchexpense(String accessToken) async {
-  final url = 'http://127.0.0.1:8000/expenses/expenses/';
+  final url = 'http://10.0.2.2:8000/expenses/expenses/';
 
   final response = await http.get(Uri.parse(url), headers: {
     'Authorization': 'Bearer $accessToken',

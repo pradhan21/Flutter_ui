@@ -82,7 +82,7 @@ void dispose() {
   }
 
   Future<List<income>> fetchIncome(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/income/income/';
+    final url = 'http://10.0.2.2:8000/income/income/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -117,7 +117,7 @@ void dispose() {
   }
 
   Future<List<expense>> fetchExpense(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/expenses/expenses/';
+    final url = 'http://10.0.2.2:8000/expenses/expenses/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -142,7 +142,7 @@ void dispose() {
   }
 
   Future<List<Category>> fetchCategories(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/incomeCat/incomecategory/';
+    final url = 'http://10.0.2.2:8000/incomeCat/incomecategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -169,7 +169,7 @@ void dispose() {
   }
 
     Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/expensesCat/excategory/';
+    final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
