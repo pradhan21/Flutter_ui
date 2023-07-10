@@ -125,8 +125,8 @@ void dispose() {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      final expensesData = jsonData;
-      // print(jsonData);
+      final expensesData = jsonData['results'];
+      print(jsonData);
       List<expense> expenses = [];
       if (expensesData != null) {
         for (var expenseData in expensesData) {

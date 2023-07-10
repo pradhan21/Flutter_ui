@@ -1,0 +1,81 @@
+import 'package:flutter/material.dart';
+
+import '../core/route/app_route_name.dart';
+import '../theme/colors.dart';
+
+class PremiumPage extends StatefulWidget {
+  @override
+  _PremiumPageState createState() => _PremiumPageState();
+}
+
+class _PremiumPageState extends State<PremiumPage> {
+  String selectedPackage = '';
+
+  void selectPackage(String package) {
+    setState(() {
+      selectedPackage = package;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey,
+      appBar: AppBar(
+        backgroundColor:const Color.fromARGB(255, 56, 54, 54),
+        title: Text('Premium Page'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Center(
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  ' Premium',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16.0),
+               ListTile(
+              leading: const Icon(Icons.star),
+              title: const Text('Historical Data Access', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              ),
+                ElevatedButton(
+                  onPressed: (){
+                     Navigator.pushNamed(
+                context,
+                AppRouteName.payment);
+                  },
+                  child: Text('Package 1'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24.0),
+                  ),
+                ),
+                
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

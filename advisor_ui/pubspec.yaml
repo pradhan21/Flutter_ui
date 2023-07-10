@@ -48,6 +48,7 @@ dependencies:
   jwt_decoder: 
   charts_flutter: 
   random_color: 
+  flutter_stripe: ^9.2.2
 
 dev_dependencies:
   flutter_test:

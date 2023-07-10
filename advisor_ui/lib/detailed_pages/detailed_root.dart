@@ -95,10 +95,9 @@ class NestedTabBar extends StatefulWidget {
   _NestedTabBarState createState() => _NestedTabBarState();
 }
 
-class _NestedTabBarState extends State<NestedTabBar>
-    with TickerProviderStateMixin {
+class _NestedTabBarState extends State<NestedTabBar> with TickerProviderStateMixin {
   late final TabController _tabController;
-  List<expense> _expenseData = [];
+  // List<expense> _expenseData = [];
   List<PieChartSectionData>? sections = [];
   @override
   void initState() {
@@ -113,18 +112,64 @@ class _NestedTabBarState extends State<NestedTabBar>
     super.dispose();
   }
 
-  Future<void> _fetchMonthlyExpenseData() async {
-    try {
-      final List<expense> data = await fetchMonthExpenseData(widget.accessToken);
-      setState(() {
-        _expenseData = data;
-      });
-    } catch (e) {
-      print('Error fetching expense data: $e');
-    }
-  }
-  Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
-    final url = "http://127.0.0.1:8000/core/query-category-month/";
+  // Future<void> _fetchMonthlyExpenseData() async {
+  //   try {
+  //     final List<expense> data = await fetchMonthExpenseData(widget.accessToken);
+  //     setState(() {
+  //       _expenseData = data;
+  //     });
+  //   } catch (e) {
+  //     print('Error fetching expense data: $e');
+  //   }
+  // }
+// Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
+//   try {
+//     final url = "http://127.0.0.1:8000/core/expenses-category-month/";
+//     final response = await http.get(Uri.parse(url), headers: {
+//       'Authorization': 'Bearer $accessToken',
+//     });
+
+//     if (response.statusCode == 200) {
+//       final dynamic responseData = json.decode(response.body);
+//       if (responseData != null && responseData['filtered'] != null) {
+//         final dynamic filteredData = responseData['filtered'];
+//             print('expenses_____+$filteredData');
+//         if (filteredData != null) {
+//           double amount = 0;
+//           List<expense> expenses = [];
+
+//           for (var categoryData in filteredData) {
+//             final incomeItem = expense.fromJson(categoryData);
+//             amount = incomeItem.amount;
+//             expenses.add(incomeItem);
+//           }
+
+//           final expenseData = PieChartSectionData(
+//             value: amount.toDouble(),
+//             color: Colors.blue,
+//             title: 'Monthly Expense',
+//             radius: 100,
+//           );
+
+//           setState(() {
+//             sections = [expenseData];
+//           });
+
+//           return expenses;
+//         }
+//       }
+//     }
+
+//     throw Exception('Failed to fetch expense data');
+//   } catch (e) {
+//     print("error fetching monthly expense data: $e");
+//     throw Exception('Failed to fetch expense data: $e');
+//   }
+// }
+
+Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
+  try {
+    final url = "http://127.0.0.1:8000/core/expenses-category-month/";
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
     });
@@ -133,62 +178,61 @@ class _NestedTabBarState extends State<NestedTabBar>
       final dynamic responseData = json.decode(response.body);
       if (responseData != null && responseData['filtered'] != null) {
         final dynamic filteredData = responseData['filtered'];
-        int? amountexpense = 0;
-        if (filteredData is List) {
-          final List<expense> expenses = filteredData
-              .where((item) => item['amount'] != null)
-              .map((json) => expense.fromJson(json))
-              .toList();
-          final expenseItem = expenses.first;
-          amountexpense = expenseItem.amount;
+        print('expenses_____+$filteredData');
+        if (filteredData != null) {
+          List<PieChartSectionData> sections = [];
+          double totalAmount = 0;
+          List<expense> expenses = [];
 
-          print('Expenses:');
-          for (var expense in expenses) {
-            print('Category: ${expense.category}, Amount: ${expense.amount}');
+          for (var categoryData in filteredData) {
+            final incomeItem = expense.fromJson(categoryData);
+            totalAmount += incomeItem.amount;
+            expenses.add(incomeItem);
+
+            final section = PieChartSectionData(
+              value: incomeItem.amount.toDouble(),
+              color: Colors.blue,
+              title: '${incomeItem.category}',
+              radius: 100,
+            );
+            sections.add(section);
           }
 
-        final totalexpneseData = widget.dataPoints.isNotEmpty
-          ? widget.dataPoints.map((value) {
-              return PieChartSectionData(
-                value: value,
-                color: Colors.blue,
-                title: 'Total Income',
-                radius: 100,
-              );
-            }).toList()
-          : null;
+          final expenseData = PieChartSectionData(
+            value: totalAmount.toDouble(),
+            color: Colors.blue,
+            title: 'Monthly Expense',
+            radius: 100,
+          );
 
-        setState(() {
-          sections = totalexpneseData;
-        });
+          setState(() {
+            this.sections = sections;
+          });
+
           return expenses;
-        } else if (filteredData is Map) {
-          final expense expenses =
-              expense.fromJson(filteredData as Map<String, dynamic>);
-          print('Expenses:');
-          print('Category: ${expenses.category}, Amount: ${expenses.amount}');
-          return [expenses];
-        } else {
-          throw Exception('Invalid expense data format');
         }
-      } else {
-        throw Exception('Invalid expense data format');
       }
-    } else {
-      throw Exception('Failed to fetch expense data');
     }
+
+    throw Exception('Failed to fetch expense data');
+  } catch (e) {
+    print("error fetching monthly expense data: $e");
+    throw Exception('Failed to fetch expense data: $e');
   }
+}
+
+
 
   Widget buildIncomeOverview() {
     return Padding(
       padding: const EdgeInsets.only(left: 20, right: 20),
       child: Container(
         
-        width: double.infinity,
-        height: 290,
+        width: 590,
+        height: 490,
         decoration: BoxDecoration(
           color: white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(50),
           boxShadow: [
             BoxShadow(
               color: grey.withOpacity(0.01),
@@ -214,7 +258,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                         color: Color(0xff67727d),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 8),
                     // Add any other income-related widgets here
                   ],
                 ),
@@ -224,12 +268,15 @@ class _NestedTabBarState extends State<NestedTabBar>
                 child:GestureDetector(
                   onTap:(){},
                   child: Container(
-                  width: (400),
+                  width: 340,
                   height: 350,
+                  
                   child: PieChart(
                     PieChartData(
                       sections:sections,
-                      centerSpaceRadius: 0,
+                      centerSpaceRadius: 60,
+                      
+                      // size: Size(300, 300),
                     ),
                   ),
                 ),)

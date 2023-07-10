@@ -8,5 +8,7 @@ class AppRouteName {
   static const String  root="/root";
   static const String  stats="/stats";
   static const String  details="/details";
-  
+  static const String  settings="/settings";
+  static const String  premium="/premium";
+   static const String  payment="/payment ";
 }

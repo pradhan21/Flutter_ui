@@ -1,7 +1,7 @@
 class expense {
   final String date;
   final String category;
-  final int? amount;
+  final double amount;
 
   expense({
     required this.date,

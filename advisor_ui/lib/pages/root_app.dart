@@ -183,17 +183,23 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
             ),
 
             ListTile(
-              leading: const Icon(Icons.video_label),
-              title: const Text('Saved Videos'),
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
+                 Navigator.pushNamed(context, AppRouteName.settings,
+                 arguments: {
+                  'accessToken': widget.accessToken,
+
+                },);
               },
             ),
             ListTile(
-              leading: const Icon(Icons.edit),
-              title: const Text('Edit Profile'),
+              leading: const Icon(Icons.diamond_rounded),
+              title: const Text('Go Premium'),
               onTap: () {
                 Navigator.pop(context);
+                 Navigator.pushNamed(context, AppRouteName.premium);
               },
             ),
             ListTile(

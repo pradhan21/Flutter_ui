@@ -3,8 +3,11 @@ import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+
+import '../core/route/app_route_name.dart';
 class SettingsPage extends StatefulWidget{
-  
+  final String accessToken;
+  SettingsPage({required this.accessToken});
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -73,17 +76,16 @@ onChangeFunction1(bool newValue1) {
                             color: black,
                           ),
                         ),
-                        // IconButton(
-                        //   icon: const Icon(AntDesign.arrowleft),
-                        //   onPressed: () {
-                        //     Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //         builder: (context) => RootApp(),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
+                        IconButton(
+                          icon: const Icon(AntDesign.arrowleft),
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRouteName.root,
+                            arguments: {
+                              'accessToken': widget.accessToken,
+
+                            },);
+                          },
+                        ),
                       ],
                     ),
                   ],
