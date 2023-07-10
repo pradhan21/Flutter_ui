@@ -10,21 +10,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-
 class HomeScreen extends StatefulWidget {
-
-   HomeScreen({Key? key}): super(key: key); 
+  HomeScreen({Key? key}) : super(key: key);
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isSigningUp =false;// track whether to login or signin.
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email'
-    ]
-  );
+  bool _isSigningUp = false; // track whether to login or signin.
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   final List<User> _users = [];
 
   /// input form controller
@@ -46,12 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
   FocusNode contactFocusNode = FocusNode();
   TextEditingController contactController = TextEditingController();
 
-  FocusNode dobFocusNode =FocusNode();
-  TextEditingController dobController=TextEditingController();
+  FocusNode dobFocusNode = FocusNode();
+  TextEditingController dobController = TextEditingController();
 
-  FocusNode confirmpasswordFocusNode=FocusNode();
-  TextEditingController confirmpasswordController=TextEditingController();
-
+  FocusNode confirmpasswordFocusNode = FocusNode();
+  TextEditingController confirmpasswordController = TextEditingController();
 
   /// rive controller and input
   StateMachineController? controller;
@@ -74,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     lnameFocusNode.addListener(lnameFocus);
     usernameFocusNode.addListener(usernameFocus);
     confirmpasswordFocusNode.addListener(confirmFocus);
-    dobController.text="";
+    dobController.text = "";
     super.initState();
   }
 
@@ -102,7 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void contactFocus() {
     isChecking?.change(contactFocusNode.hasFocus);
   }
-   void lnameFocus() {
+
+  void lnameFocus() {
     isChecking?.change(lnameFocusNode.hasFocus);
   }
 
@@ -114,42 +108,37 @@ class _HomeScreenState extends State<HomeScreen> {
     isChecking?.change(usernameFocusNode.hasFocus);
   }
 
-   void dobFocus() {
+  void dobFocus() {
     isChecking?.change(dobFocusNode.hasFocus);
   }
 
-   void confirmFocus() {
+  void confirmFocus() {
     isHandsUp?.change(dobFocusNode.hasFocus);
   }
 
-
- 
-
   Future<void> signInWithGoogle() async {
-  try {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) {
-      // User canceled the sign-in process
-      return;
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // User canceled the sign-in process
+        return;
+      }
+
+      // final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      // Use the GoogleAuth credentials to authenticate with your backend server
+      // and perform any necessary operations.
+      // String accessToken = googleAuth.accessToken!;
+      // String idToken = googleAuth.idToken!;
+
+      // TODO: Implement your logic here for successful sign-in.
+    } catch (error) {
+      // Handle sign-in errors
+      print('Sign-In Error: $error');
     }
-  
-    // final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-  
-    // Use the GoogleAuth credentials to authenticate with your backend server
-    // and perform any necessary operations.
-    // String accessToken = googleAuth.accessToken!;
-    // String idToken = googleAuth.idToken!;
-
-  
-    // TODO: Implement your logic here for successful sign-in.
-  
-  } catch (error) {
-    // Handle sign-in errors
-    print('Sign-In Error: $error');
   }
-}
 
-  // void Signup() { 
+  // void Signup() {
   //   final String username = emailController.text;
   //   final String password = passwordController.text;
   //   int contact = int.tryParse(contactController.text) ?? 0;
@@ -184,91 +173,94 @@ class _HomeScreenState extends State<HomeScreen> {
   // }
 
   void Signup() async {
-  final String email = emailController.text;
-  final String password = passwordController.text;
-  final String confirmpassword = confirmpasswordController.text;
-  final String dob = dobController.text;
-  final String fname = fnameController.text;
-  final String lname = lnameController.text; 
-  final String username = usernameController.text;
-  int contact = int.tryParse(contactController.text) ?? 0;
-  print(email);
-  print(password);
-  print(confirmpassword);
-  print(dob);
-  print(fname);
-  print(lname);
-  print(username);
-  print(contact);
-  print(isChecked ? 'True' : 'false');
-  // Create a new user and add it to the list
-  // final User newUser = User(email:email,username: username, password: password, contact: contact);
-  // _users.add(newUser);
+    final String email = emailController.text;
+    final String password = passwordController.text;
+    final String confirmpassword = confirmpasswordController.text;
+    final String dob = dobController.text;
+    final String fname = fnameController.text;
+    final String lname = lnameController.text;
+    final String username = usernameController.text;
+    int contact = int.tryParse(contactController.text) ?? 0;
+    print(email);
+    print(password);
+    print(confirmpassword);
+    print(dob);
+    print(fname);
+    print(lname);
+    print(username);
+    print(contact);
+    print(isChecked ? 'True' : 'false');
+    // Create a new user and add it to the list
+    // final User newUser = User(email:email,username: username, password: password, contact: contact);
+    // _users.add(newUser);
 
-  // Clear the text fields
-  // emailController.clear();
-  // passwordController.clear();
-  // contactController.clear();
+    // Clear the text fields
+    // emailController.clear();
+    // passwordController.clear();
+    // contactController.clear();
 
-  // Make an HTTP request to the backend server
-  // final url = 'http://127.0.0.1:8000/api/user/register/';
-  final response = await http.post(Uri.parse('http://127.0.0.1:8000/api/user/register/'), 
-  body: <String, String> {
+    // Make an HTTP request to the backend server
+    // final url = 'http://127.0.0.1:8000/api/user/register/';
+    final response = await http.post(
+      Uri.parse('http://10.0.2.2:8000/api/user/register/'),
+      body: <String, String>{
         'email': email,
         'username': username,
         'fName': fname,
         'lName': lname,
         'date_of_birth': dob,
-        'tc': isChecked ? 'True' : 'false', // Conditionally set the value based on isChecked
+        'tc': isChecked
+            ? 'True'
+            : 'false', // Conditionally set the value based on isChecked
         'phone': contact.toString(), // Convert the int value to a String,
         'password': password,
         'password2': confirmpassword,
-      },);
-  
-  if (response.statusCode == 201) {
-    final responseBody = response.body;
-    print(responseBody);
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Success'),
-          content: const Text('Signup successful!'),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
       },
     );
-  } else {
-  print('Request failed with status: ${response.statusCode}');
-  final responseBody = response.body;
-  print(responseBody);
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Error'),
-          content: const Text('Signup failed. Please try again.'),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
 
+    if (response.statusCode == 201) {
+      final responseBody = response.body;
+      print(responseBody);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Success'),
+            content: const Text('Signup successful!'),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+      final responseBody = response.body;
+      print(responseBody);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: const Text('Signup failed. Please try again.'),
+            actions: <Widget>[
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
 //  Future<void> login() async {
 //     emailFocusNode.unfocus();
@@ -276,13 +268,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //    final String username = emailController.text;
 //     final String password = passwordController.text;
- 
+
 //     showLoadingDialog(context);
 //     await Future.delayed(
 //       const Duration(milliseconds: 2000),
 //     );
 //     if (mounted) Navigator.pop(context);
-  
 
 //     // Find the user in the list based on the username
 //     User? user;
@@ -301,85 +292,85 @@ class _HomeScreenState extends State<HomeScreen> {
 //     } catch (e) {
 //       user = null;
 //     }
-    
+
 //   }
 
-Future<void> login() async {
-  emailFocusNode.unfocus();
-  passwordFocusNode.unfocus();
+  Future<void> login() async {
+    emailFocusNode.unfocus();
+    passwordFocusNode.unfocus();
 
-  final String username = emailController.text ;
-  final String password = passwordController.text;
+    final String username = emailController.text;
+    final String password = passwordController.text;
 
-  showLoadingDialog(context);
-  await Future.delayed(
-    const Duration(milliseconds: 2000),
-  );
-  if (mounted) Navigator.pop(context);
-  try {
-    final response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/user/login/'),
-     body: <String, String> {
-        'email': username,
-        'password': password,
-      },
+    showLoadingDialog(context);
+    await Future.delayed(
+      const Duration(milliseconds: 2000),
     );
-    print(username);
-    print(password);
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      final accessToken = responseData['token']['access'];
-      // final refreshToken = token['refresh'];
-      // print(refreshToken);
-                          if (accessToken != null) {
-                          navigateToRootApp(accessToken);
-                        } else {
-                          // Handle the case when refreshToken is null
-                          // For example, show an error message or navigate to a different page
-                          print('Refresh token is null');
-                        }
-      navigateToRootApp(accessToken!);
-    } else if (response.statusCode == 404) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: const Text('Email or password is not valid'),
-            actions: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
+    if (mounted) Navigator.pop(context);
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/user/login/'),
+        body: <String, String>{
+          'email': username,
+          'password': password,
         },
       );
-    } else {
-      trigFail?.change(true);
-      // Handle other status codes or errors
+      print(username);
+      print(password);
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final accessToken = responseData['token']['access'];
+        // final refreshToken = token['refresh'];
+        // print(refreshToken);
+        if (accessToken != null) {
+          navigateToRootApp(accessToken);
+        } else {
+          // Handle the case when refreshToken is null
+          // For example, show an error message or navigate to a different page
+          print('Refresh token is null');
+        }
+        navigateToRootApp(accessToken!);
+      } else if (response.statusCode == 404) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Error'),
+              content: const Text('Email or password is not valid'),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        trigFail?.change(true);
+        // Handle other status codes or errors
+      }
+    } catch (error) {
+      // Handle network or connection errors
+      print('Error: $error');
     }
-  } catch (error) {
-    // Handle network or connection errors
-    print('Error: $error');
   }
-}
 
-void navigateToRootApp(String accessToken) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => RootApp(accessToken: accessToken)),
-    );
-  });
-}
+  void navigateToRootApp(String accessToken) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RootApp(accessToken: accessToken)),
+      );
+    });
+  }
 
-
-bool isChecked = false;
-bool showPassword=false;
-bool showConfirmPassword=false;
+  bool isChecked = false;
+  bool showPassword = false;
+  bool showConfirmPassword = false;
 
   @override
   Widget build(BuildContext context) {
@@ -480,8 +471,8 @@ bool showConfirmPassword=false;
                       children: [
                         TextField(
                           focusNode: passwordFocusNode,
-                          controller: passwordController, 
-                          obscureText: !showPassword, 
+                          controller: passwordController,
+                          obscureText: !showPassword,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: "Password",
@@ -507,294 +498,295 @@ bool showConfirmPassword=false;
                   ),
                   const SizedBox(height: 8),
                   Visibility(
-                    visible: _isSigningUp  ,
-                    child:Column(
-                    children:[
-                      Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
+                    visible: _isSigningUp,
                     child: Column(
                       children: [
-                        TextField(
-                          focusNode: confirmpasswordFocusNode,
-                          controller: confirmpasswordController, 
-                          obscureText: !showConfirmPassword, 
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Confirm Password",
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          onChanged: (value) {},
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                focusNode: confirmpasswordFocusNode,
+                                controller: confirmpasswordController,
+                                obscureText: !showConfirmPassword,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Confirm Password",
+                                ),
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                onChanged: (value) {},
+                              ),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: showConfirmPassword,
+                                    onChanged: (value) {
+                                      showConfirmPassword = value!;
+                                      setState(() {});
+                                    },
+                                  ),
+                                  Text('Show Password'),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: showConfirmPassword,
-                              onChanged: (value) {
-                                  showConfirmPassword = value!;
-                                setState(() {
-                                });
+                        const SizedBox(height: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                focusNode: fnameFocusNode,
+                                controller: fnameController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "First Name",
+                                ),
+                                // obscureText: true,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                onChanged: (value) {
+                                  numLook?.change(value.length.toDouble());
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                focusNode: lnameFocusNode,
+                                controller: lnameController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Last Name",
+                                ),
+                                // obscureText: true,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                onChanged: (value) {
+                                  numLook?.change(value.length.toDouble());
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                focusNode: usernameFocusNode,
+                                controller: usernameController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Username",
+                                ),
+                                // obscureText: true,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                onChanged: (value) {
+                                  numLook?.change(value.length.toDouble());
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            children: [
+                              TextField(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(10)
+                                ],
+                                keyboardType: TextInputType.number,
+                                focusNode: contactFocusNode,
+                                controller: contactController,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Contact",
+                                ),
+                                // obscureText: true,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                onChanged: (value) {
+                                  numLook?.change(value.length.toDouble());
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        //dob,
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          child: Column(children: [
+                            TextField(
+                              focusNode: dobFocusNode,
+                              controller: dobController,
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Select Date Of Birth",
+                              ),
+                              readOnly: true,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              onTap: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(1950),
+                                    lastDate: DateTime(2100));
+                                if (pickedDate != null) {
+                                  print(
+                                      pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
+                                  print(
+                                      formattedDate); //formatted date output using intl package =>  2021-03-16
+                                  setState(() {
+                                    dobController.text =
+                                        formattedDate; //set output date to TextField value.
+                                  });
+                                } else {}
                               },
                             ),
-                            Text('Show Password'),
-                          ],
+                          ]),
+                        ),
+                        SizedBox(height: 10),
+                        //dob,
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 1,
+                            vertical: 8,
+                          ),
+                          child: Column(children: [
+                            CheckboxListTile(
+                              title: Text(
+                                "I Agree With All Terms And Conditions",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 13,
+                                    color: blue),
+                              ),
+                              checkColor: Colors.white,
+                              value: isChecked,
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  isChecked = value!;
+                                });
+                              },
+                              controlAffinity: ListTileControlAffinity.leading,
+                            ),
+                          ]
+                              //  username ,
+                              ),
                         ),
                       ],
                     ),
-                    ),
-                    const SizedBox(height: 10),
-                      Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child : Column(
-                      children:[
-                        TextField(
-                          focusNode: fnameFocusNode,
-                          controller: fnameController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "First Name",
-                          ),
-                          // obscureText: true,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          onChanged: (value) {
-                            numLook?.change(value.length.toDouble());
-                          },
-                        ),
-                      ],
-                    ),
-                    ),
-                     const SizedBox(height: 10),
-                      Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child : Column(
-                      children:[
-                        TextField(
-                          focusNode: lnameFocusNode,
-                          controller: lnameController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Last Name",
-                          ),
-                          // obscureText: true,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          onChanged: (value) {
-                            numLook?.change(value.length.toDouble());
-                          },
-                        ),
-                      ],
-                    ),
-                    ),
-                    const SizedBox(height: 10),
-                      Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child : Column(
-                      children:[
-                        TextField(
-                          focusNode: usernameFocusNode,
-                          controller: usernameController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Username",
-                          ),
-                          // obscureText: true,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          onChanged: (value) {
-                            numLook?.change(value.length.toDouble());
-                          },
-                        ),
-                      ],
-                    ),
-                    ),
-                    const SizedBox(height: 10),
-                      Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child : Column(
-                      children:[
-                        TextField(
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly,LengthLimitingTextInputFormatter(10)],
-                          keyboardType: TextInputType.number,
-                          focusNode: contactFocusNode,
-                          controller: contactController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Contact",
-                          ),
-                          // obscureText: true,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          onChanged: (value) {
-                            numLook?.change(value.length.toDouble());
-                          },
-                        ),
-                      ],
-                    ),
-                    ),
-                    SizedBox(height: 10),
-                      //dob,
-                     Container(
-                      decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    child : Column(
-                      children:[
-                        TextField(
-                          focusNode: dobFocusNode,
-                          controller: dobController,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Select Date Of Birth",
-                          ),
-                          readOnly: true,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          onTap:() async{
-                            DateTime? pickedDate =await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1950),
-                              lastDate:DateTime(2100) 
-                            );
-                              if (pickedDate != null) {
-                              print(
-                                  pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                              String formattedDate =
-                                  DateFormat('yyyy-MM-dd').format(pickedDate);
-                              print(
-                                  formattedDate); //formatted date output using intl package =>  2021-03-16
-                              setState(() {
-                                dobController.text =
-                                    formattedDate; //set output date to TextField value.
-                              });
-                            } else {}
-                          },
-                        ),
-                      ]
                   ),
-                  ),
-                  SizedBox(height: 10),
-                      //dob,
-                     Container(
-                      decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 1,
-                      vertical: 8,
-                    ),
-                    child : Column(
-                      children:[
-                        CheckboxListTile(
-                          title:Text("I Agree With All Terms And Conditions",style: TextStyle(fontWeight: FontWeight.normal, fontSize:13, color: blue ),),
-                          checkColor: Colors.white,
-                        
-                          value: isChecked,
-                          onChanged: (bool? value) {
-                            setState(() {
-                              isChecked = value!;
-                            });
-                         },
-                         controlAffinity: ListTileControlAffinity.leading,
-                        ),
-                      ]
-                    //  username , 
-                  ),
-                  ),
-
-                  ],),
-                  )
-                  ,
                   const SizedBox(height: 32),
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 64,
                     child: ElevatedButton(
-                      onPressed:_isSigningUp ? Signup : login ,
+                      onPressed: _isSigningUp ? Signup : login,
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                       child: Text(_isSigningUp ? 'Signup' : 'Login'),
+                      child: Text(_isSigningUp ? 'Signup' : 'Login'),
                     ),
                   ),
                   const SizedBox(height: 2),
                   Align(
                     alignment: Alignment.centerRight,
-                     child: SizedBox(
-                    width: 200,
-                    height: 64,
-                    child: TextButton(
-                          onPressed: () {
-                          },
-                          
-                            child:Text("Recover Password"),
-                        ),
-                  ),),
+                    child: SizedBox(
+                      width: 200,
+                      height: 64,
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text("Recover Password"),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 32),
                   SizedBox(
                     width: MediaQuery.of(context).size.width,
                     height: 64,
                     child: TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _isSigningUp = !_isSigningUp;
-                            });
-                          },
-                          child: Text(_isSigningUp
-                              ? 'Already have an account? HomeScreen'
-                              : 'Don\'t have an account? Signup'),
-                        ),
-                  ), const SizedBox(height: 32),
+                      onPressed: () {
+                        setState(() {
+                          _isSigningUp = !_isSigningUp;
+                        });
+                      },
+                      child: Text(_isSigningUp
+                          ? 'Already have an account? HomeScreen'
+                          : 'Don\'t have an account? Signup'),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
                   Visibility(
-                    visible: _isSigningUp  ,
-                    child:SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 64,
-                    child: TextButton(
-                           onPressed: signInWithGoogle,
+                      visible: _isSigningUp,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        height: 64,
+                        child: TextButton(
+                          onPressed: signInWithGoogle,
                           child: Text('Sign in with Google'),
                         ),
-                  ))
-                  ,
-
+                      )),
                 ],
               ),
             )
@@ -804,9 +796,10 @@ bool showConfirmPassword=false;
     );
   }
 }
- class User {
+
+class User {
   final String username;
   final String password;
   final int contact;
   User({required this.username, required this.password, required this.contact});
-  }
+}
