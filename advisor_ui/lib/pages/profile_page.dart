@@ -21,7 +21,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late var Token;
   late Future<UserProfile> _profileFuture;
-  TextEditingController _email =TextEditingController();
+  TextEditingController _email = TextEditingController();
   TextEditingController dateOfBirth = TextEditingController();
   TextEditingController password = TextEditingController();
   Map<String, dynamic>? userData;
@@ -55,19 +55,18 @@ class _ProfilePageState extends State<ProfilePage> {
 //     throw Exception('Failed to fetch user profile data');
 //   }
 // }
-void _fetchProfileData() {
-    final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
+  void _fetchProfileData() {
+    final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
     final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
 
-     _profileFuture = http.get(url, headers: headers).then((response) {
+    _profileFuture = http.get(url, headers: headers).then((response) {
       // print('Response status: ${response.statusCode}');
       // print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        
+
         // print(responseData);
         return UserProfile.fromJson(responseData);
-        
       } else {
         throw Exception('Failed to fetch profile data');
       }
@@ -78,296 +77,314 @@ void _fetchProfileData() {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      backgroundColor: grey.withOpacity(0.05),
-      body: FutureBuilder<UserProfile>(
-      future: _profileFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          final userProfile = snapshot.data!;
-    var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child:Container(
-        color: white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            // decoration: BoxDecoration(color: white, boxShadow: [
-            //   BoxShadow(
-            //     color: grey.withOpacity(0.01),
-            //     spreadRadius: 10,
-            //     blurRadius: 3,
-            //     // changes position of shadow
-            //   ),
-            // ]),
-                decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Colors.blue,
-                    Colors.red,
-                  ],
-                )
-              ),
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 30, right: 20, left: 20, bottom: 25),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Profile",
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: black),
-                      ),
-                      IconButton(
-                          icon: const Icon(AntDesign.arrowleft),
-                          // onPressed: (){},
-                          onPressed: (){
-                            Navigator.push(context,
-                             MaterialPageRoute(
-                              builder: (context) => RootApp(accessToken: widget.accessToken),
-                              ),);
-                          },
-                      )
-                      
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Column(
+        backgroundColor: grey.withOpacity(0.05),
+        body: FutureBuilder<UserProfile>(
+            future: _profileFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                final userProfile = snapshot.data!;
+                var size = MediaQuery.of(context).size;
+                return SingleChildScrollView(
+                    child: Container(
+                  color: white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        width: (size.width - 40) * 0.4,
-                        child: Container(
-                          child: Stack(
+                        // decoration: BoxDecoration(color: white, boxShadow: [
+                        //   BoxShadow(
+                        //     color: grey.withOpacity(0.01),
+                        //     spreadRadius: 10,
+                        //     blurRadius: 3,
+                        //     // changes position of shadow
+                        //   ),
+                        // ]),
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          colors: [
+                            Colors.blue,
+                            Colors.red,
+                          ],
+                        )),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              top: 30, right: 20, left: 20, bottom: 25),
+                          child: Column(
                             children: [
-                              RotatedBox(
-                                quarterTurns: -2,
-                                child: CircularPercentIndicator(
-                                    circularStrokeCap: CircularStrokeCap.round,
-                                    backgroundColor: grey.withOpacity(0.3),
-                                    radius: 85.0,
-                                    lineWidth: 6.0,
-                                    percent: 0.53,
-                                    progressColor: primary),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Profile",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: black),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(AntDesign.arrowleft),
+                                    // onPressed: (){},
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => RootApp(
+                                              accessToken: widget.accessToken),
+                                        ),
+                                      );
+                                    },
+                                  )
+                                ],
                               ),
-                              Positioned(
-                                top: 35,
-                                left:5,
-                                bottom: 26,
-                                child: Container(
-                                  width: 130,
-                                  height: 130,
-                                  decoration:const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                           image:NetworkImage(
-                                              "https://images.unsplash.com/photo-1531256456869-ce942a665e80?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTI4fHxwcm9maWxlfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"),
-                                          fit: BoxFit.cover)),
-                                ),
-                              )
+                              SizedBox(
+                                height: 25,
+                              ),
+                              Column(
+                                children: [
+                                  Container(
+                                    width: (size.width - 40) * 0.4,
+                                    child: Container(
+                                      child: Stack(
+                                        children: [
+                                          RotatedBox(
+                                            quarterTurns: -2,
+                                            child: CircularPercentIndicator(
+                                                circularStrokeCap:
+                                                    CircularStrokeCap.round,
+                                                backgroundColor:
+                                                    grey.withOpacity(0.3),
+                                                radius: 85.0,
+                                                lineWidth: 6.0,
+                                                percent: 0.53,
+                                                progressColor: primary),
+                                          ),
+                                          Positioned(
+                                            top: 35,
+                                            left: 5,
+                                            bottom: 26,
+                                            child: Container(
+                                              width: 130,
+                                              height: 130,
+                                              decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          "https://images.unsplash.com/photo-1531256456869-ce942a665e80?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTI4fHxwcm9maWxlfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"),
+                                                      fit: BoxFit.cover)),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Container(
+                                    // width: (size.width - 40) * 0.6,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "${userProfile.fName} ${userProfile.lName} ",
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: black),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(width: 28),
+                                              Icon(Icons.email_outlined),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "${userProfile.email}",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                        black.withOpacity(0.7)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Container(
+                                          child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(width: 108),
+                                              Icon(Icons.phone),
+                                              SizedBox(width: 8),
+                                              Text(
+                                                "${userProfile.phone}",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color:
+                                                        black.withOpacity(0.7)),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: 25,
+                              ),
+                              // Container(
+                              //   width: double.infinity,
+                              //   decoration: BoxDecoration(
+                              //       color: black,
+                              //       borderRadius: BorderRadius.circular(12),
+                              //       boxShadow: [
+                              //         BoxShadow(
+                              //           color: primary.withOpacity(0.01),
+                              //           spreadRadius: 10,
+                              //           blurRadius: 3,
+                              //           // changes position of shadow
+                              //         ),
+                              //       ]),
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.only(
+                              //         left: 20, right: 20, top: 25, bottom: 25),
+                              //     child: Row(
+                              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              //       children: [
+                              //         Column(
+                              //           crossAxisAlignment: CrossAxisAlignment.start,
+                              //           children: [
+                              //             Text(
+                              //               "United Bank Asia",
+                              //               style: TextStyle(
+                              //                   fontWeight: FontWeight.w500,
+                              //                   fontSize: 12,
+                              //                   color: white),
+                              //             ),
+                              //             SizedBox(
+                              //               height: 10,
+                              //             ),
+                              //             Text(
+                              //               "\$2446.90",
+                              //               style: TextStyle(
+                              //                   fontWeight: FontWeight.bold,
+                              //                   fontSize: 20,
+                              //                   color: white),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //         Container(
+                              //           decoration: BoxDecoration(
+                              //               borderRadius: BorderRadius.circular(10),
+                              //               border: Border.all(color: white)),
+                              //           child: Padding(
+                              //             padding: const EdgeInsets.all(13.0),
+                              //             child: Text(
+                              //               "Update",
+                              //               style: TextStyle(color: white),
+                              //             ),
+                              //           ),
+                              //         )
+                              //       ],
+                              //     ),
+                              //   ),
+                              // )
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        // width: (size.width - 40) * 0.6,
+                      SizedBox(
+                        height: 50,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "${userProfile.fName} ${userProfile.lName} ",
+                              "Email",
                               style: TextStyle(
-                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: Color(0xff67727d)),
+                            ),
+                            TextField(
+                              controller: _email,
+                              cursorColor: black,
+                              style: TextStyle(
+                                  fontSize: 17,
                                   fontWeight: FontWeight.bold,
                                   color: black),
+                              decoration: InputDecoration(
+                                  hintText: "${userProfile.email}",
+                                  border: InputBorder.none),
                             ),
                             SizedBox(
-                              height: 10,
+                              height: 20,
                             ),
-                            Container(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 28),
-                                  Icon(Icons.email_outlined),
-                                  SizedBox(width: 8), 
-                                  Text(
-                                    "${userProfile.email}",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: black.withOpacity(0.7)),
-                                    ),
-                                ],
-                              ),
+                            Text(
+                              "Date of birth",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: Color(0xff67727d)),
                             ),
-                            Container(
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(width: 108),
-                                  Icon(Icons.phone),
-                                  SizedBox(width: 8), 
-                                  Text(
-                                    "${userProfile.phone}",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: black.withOpacity(0.7)),
-                                    ),
-                                ],
-                              ),
-                            )
+                            TextField(
+                              controller: dateOfBirth,
+                              cursorColor: black,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: black),
+                              decoration: InputDecoration(
+                                  hintText: "${userProfile.dateOfBirth}",
+                                  border: InputBorder.none),
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text(
+                              "Date of birth",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  color: Color(0xff67727d)),
+                            ),
+                            TextField(
+                              obscureText: true,
+                              controller: password,
+                              cursorColor: black,
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: black),
+                              decoration: InputDecoration(
+                                  hintText: "Password",
+                                  border: InputBorder.none),
+                            ),
                           ],
                         ),
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  // Container(
-                  //   width: double.infinity,
-                  //   decoration: BoxDecoration(
-                  //       color: black,
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       boxShadow: [
-                  //         BoxShadow(
-                  //           color: primary.withOpacity(0.01),
-                  //           spreadRadius: 10,
-                  //           blurRadius: 3,
-                  //           // changes position of shadow
-                  //         ),
-                  //       ]),
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.only(
-                  //         left: 20, right: 20, top: 25, bottom: 25),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.start,
-                  //           children: [
-                  //             Text(
-                  //               "United Bank Asia",
-                  //               style: TextStyle(
-                  //                   fontWeight: FontWeight.w500,
-                  //                   fontSize: 12,
-                  //                   color: white),
-                  //             ),
-                  //             SizedBox(
-                  //               height: 10,
-                  //             ),
-                  //             Text(
-                  //               "\$2446.90",
-                  //               style: TextStyle(
-                  //                   fontWeight: FontWeight.bold,
-                  //                   fontSize: 20,
-                  //                   color: white),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         Container(
-                  //           decoration: BoxDecoration(
-                  //               borderRadius: BorderRadius.circular(10),
-                  //               border: Border.all(color: white)),
-                  //           child: Padding(
-                  //             padding: const EdgeInsets.all(13.0),
-                  //             child: Text(
-                  //               "Update",
-                  //               style: TextStyle(color: white),
-                  //             ),
-                  //           ),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // )
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 50,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Email",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: Color(0xff67727d)),
-                ),
-                TextField(
-                  controller: _email,
-                  cursorColor: black,
-                  style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.bold, color: black),
-                  decoration: InputDecoration(
-                      hintText: "${userProfile.email}", border: InputBorder.none),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Date of birth",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: Color(0xff67727d)),
-                ),
-                TextField(
-                  controller: dateOfBirth,
-                  cursorColor: black,
-                  style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.bold, color: black),
-                  decoration: InputDecoration(
-                      hintText: "${userProfile.dateOfBirth}", border: InputBorder.none),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "Date of birth",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                      color: Color(0xff67727d)),
-                ),
-                TextField(
-                  obscureText: true,
-                  controller: password,
-                  cursorColor: black,
-                  style: TextStyle(
-                      fontSize: 17, fontWeight: FontWeight.bold, color: black),
-                  decoration: InputDecoration(
-                      hintText: "Password", border: InputBorder.none),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-    ));}}));
+                ));
+              }
+            }));
   }
-  }
- 
+}
