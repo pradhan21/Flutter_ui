@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 
+import 'webviewpay.dart';
+
 //import .env file
 
 class CardFromScreen extends StatefulWidget {
-  final String secretKey="sk_test_51NNPZVGvjAuWKVBtAKWOAfUdZE7Kh4ea7uhW4NDHp4yD0CvXAv2aEpZBqdxxzMoCjhW9M1T61wgCwpLBDEVST43N00l02uKVyl";
-  final String stripePublishableKey="pk_test_51NNPZVGvjAuWKVBt4nen9FtK5T1s1ZaqxJ2OsvMgUGXa1mPRq3bTkEOOtKJIgB3cSyo24Rt7vHQf9OAYahskBM3s00xktbReww";
+  final String secretKey =
+      "sk_test_51NNPZVGvjAuWKVBtAKWOAfUdZE7Kh4ea7uhW4NDHp4yD0CvXAv2aEpZBqdxxzMoCjhW9M1T61wgCwpLBDEVST43N00l02uKVyl";
+  final String stripePublishableKey =
+      "pk_test_51NNPZVGvjAuWKVBt4nen9FtK5T1s1ZaqxJ2OsvMgUGXa1mPRq3bTkEOOtKJIgB3cSyo24Rt7vHQf9OAYahskBM3s00xktbReww";
   @override
   State<CardFromScreen> createState() => _CardFromScreenState();
 }
@@ -159,8 +163,7 @@ class _CardFromScreenState extends State<CardFromScreen> {
       var response = await http.post(
         Uri.parse('https://api.stripe.com/v1/payment_intents'),
         headers: {
-          'Authorization':
-              'Bearer ${widget.secretKey}',
+          'Authorization': 'Bearer ${widget.secretKey}',
           'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: body,

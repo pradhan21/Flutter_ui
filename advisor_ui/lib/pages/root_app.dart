@@ -16,16 +16,16 @@ import '../core/route/app_route_name.dart';
 import '../module/home/presentation/home_screen.dart';
 
 class RootApp extends StatefulWidget {
-
   final String accessToken;
   RootApp({required this.accessToken});
   @override
   _RootAppState createState() => _RootAppState();
 }
+
 class _RootAppState extends State<RootApp> {
-  dynamic responseData; 
+  dynamic responseData;
   late Future<UserProfile> _profileFuture;
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   int pageIndex = 0;
   late List<Widget> pages;
@@ -41,12 +41,12 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   void initState() {
     super.initState();
     _profileFuture = _fetchProfileData(widget.accessToken);
-     // Initialize the pages list after accessing the widget.accessToken
+    // Initialize the pages list after accessing the widget.accessToken
     pages = [
       DailyPage(accessToken: widget.accessToken),
       StatsPage(accessToken: widget.accessToken),
       BudgetPage(),
-      ChatScreen(),
+      // ChatScreen(),
       CreatBudgetPage(accessToken: widget.accessToken),
     ];
   }
@@ -54,23 +54,23 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void dispose() {
     super.dispose();
-
   }
- Future<bool> validateToken(String accessToken) async {
-  final url = Uri.parse('http://127.0.0.1:8000/api/user/validate/');
-  final headers = {'Authorization': 'Bearer $accessToken'};
 
-  final response = await http.get(url, headers: headers);
+  Future<bool> validateToken(String accessToken) async {
+    final url = Uri.parse('http://127.0.0.1:8000/api/user/validate/');
+    final headers = {'Authorization': 'Bearer $accessToken'};
 
-  if (response.statusCode == 200) {
-    final responseData = jsonDecode(response.body);
-    final bool isValid = responseData['valid'];
-    // print("token validate-----" + responseData);
-    return isValid;
-  } else {
-    throw Exception('Failed to validate token');
+    final response = await http.get(url, headers: headers);
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      final bool isValid = responseData['valid'];
+      // print("token validate-----" + responseData);
+      return isValid;
+    } else {
+      throw Exception('Failed to validate token');
+    }
   }
-}
 
 //   Future<UserProfile> _fetchProfileData(String accessToken) async {
 //   final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
@@ -86,28 +86,28 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 //     throw Exception('Failed to fetch profile data');
 //   }
 // }
- Future<UserProfile> _fetchProfileData(String accessToken) async {
-  final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
-  final headers = {'Authorization': 'Bearer $accessToken'};
+  Future<UserProfile> _fetchProfileData(String accessToken) async {
+    final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
+    final headers = {'Authorization': 'Bearer $accessToken'};
 
-  var response = await http.get(url, headers: headers);
-  if (response.statusCode == 200) {
-    final responseData = jsonDecode(response.body);
-    // print(responseData); // Debug print the response data
+    var response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      // print(responseData); // Debug print the response data
 
-    if (responseData is Map<String, dynamic>) {
-      // Check if the response data is of the expected type
-      final userProfile = UserProfile.fromJson(responseData);
-      // print(userProfile); // Debug print the parsed user profile object
-      return userProfile;
+      if (responseData is Map<String, dynamic>) {
+        // Check if the response data is of the expected type
+        final userProfile = UserProfile.fromJson(responseData);
+        // print(userProfile); // Debug print the parsed user profile object
+        return userProfile;
+      } else {
+        throw Exception('Invalid response data format');
+      }
     } else {
-      throw Exception('Invalid response data format');
+      throw Exception(
+          'Failed to fetch profile data. Status code: ${response.statusCode}');
     }
-  } else {
-    throw Exception('Failed to fetch profile data. Status code: ${response.statusCode}');
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -127,8 +127,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
           children: [
             // Carries the details of User
             const DrawerHeader(
-              padding: const EdgeInsets.only(
-                  top: 0),
+              padding: const EdgeInsets.only(top: 0),
               decoration: BoxDecoration(
                 color: Colors.green,
               ),
@@ -147,37 +146,36 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
                     style: TextStyle(fontSize: 30.0, color: Colors.teal),
                   ),
                 ),
-              ), 
               ),
+            ),
 
             // ListTile Widget // Provides the options
             ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('My Profile'),
-               onTap: () {
-                Navigator.pop(context); // Close the drawer
-                Navigator.pushNamed(
-                context,
-                AppRouteName.profile,
-                arguments: {
-                  'accessToken': widget.accessToken,
-                  'responseData': responseData,
-
-                },
-              );
-          } 
-            ),
+                leading: const Icon(Icons.person),
+                title: const Text('My Profile'),
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  Navigator.pushNamed(
+                    context,
+                    AppRouteName.profile,
+                    arguments: {
+                      'accessToken': widget.accessToken,
+                      'responseData': responseData,
+                    },
+                  );
+                }),
 
             ListTile(
               leading: const Icon(Icons.book),
               title: const Text("Detailed View"),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, AppRouteName.details,
-                 arguments: {
-                  'accessToken': widget.accessToken,
-
-                },
+                Navigator.pushNamed(
+                  context,
+                  AppRouteName.details,
+                  arguments: {
+                    'accessToken': widget.accessToken,
+                  },
                 );
               },
             ),
@@ -187,11 +185,13 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
               title: const Text('Settings'),
               onTap: () {
                 Navigator.pop(context);
-                 Navigator.pushNamed(context, AppRouteName.settings,
-                 arguments: {
-                  'accessToken': widget.accessToken,
-
-                },);
+                Navigator.pushNamed(
+                  context,
+                  AppRouteName.settings,
+                  arguments: {
+                    'accessToken': widget.accessToken,
+                  },
+                );
               },
             ),
             ListTile(
@@ -199,7 +199,7 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
               title: const Text('Go Premium'),
               onTap: () {
                 Navigator.pop(context);
-                 Navigator.pushNamed(context, AppRouteName.premium);
+                Navigator.pushNamed(context, AppRouteName.premium);
               },
             ),
             ListTile(
@@ -209,14 +209,14 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  HomeScreen()),
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
                 );
               },
             ),
           ],
         ),
       ),
-      body:GestureDetector(
+      body: GestureDetector(
         onHorizontalDragEnd: (DragEndDetails details) {
           if (details.primaryVelocity! > 0) {
             // Swipe from left to right (open drawer)

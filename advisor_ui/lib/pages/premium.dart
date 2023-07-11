@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import '../core/route/app_route_name.dart';
 import '../theme/colors.dart';
+import 'webviewpay.dart';
+import 'package:http/http.dart' as http;
 
 class PremiumPage extends StatefulWidget {
   @override
@@ -10,6 +14,7 @@ class PremiumPage extends StatefulWidget {
 
 class _PremiumPageState extends State<PremiumPage> {
   String selectedPackage = '';
+  late String url;
 
   void selectPackage(String package) {
     setState(() {
@@ -22,7 +27,7 @@ class _PremiumPageState extends State<PremiumPage> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        backgroundColor:const Color.fromARGB(255, 56, 54, 54),
+        backgroundColor: const Color.fromARGB(255, 56, 54, 54),
         title: Text('Premium Page'),
       ),
       body: Padding(
@@ -47,7 +52,7 @@ class _PremiumPageState extends State<PremiumPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   ' Premium',
                   style: TextStyle(
                     fontSize: 18.0,
@@ -55,39 +60,95 @@ class _PremiumPageState extends State<PremiumPage> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-               ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Historical Data Access', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              ),
-              ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Add Free Services', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              ),
-              ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Export to Excel Reports', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              ),
-              ListTile(
-              leading: const Icon(Icons.star),
-              title: const Text('Machine Learning Services', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
-              ),
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text(
+                    'Historical Data Access',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text(
+                    'Add Free Services',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text(
+                    'Export to Excel Reports',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.star),
+                  title: const Text(
+                    'Machine Learning Services',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                ),
                 ElevatedButton(
-                  onPressed: (){
-                     Navigator.pushNamed(
-                context,
-                AppRouteName.payment);
+                  // onPressed: () {
+                  //   Navigator.pushNamed(
+                  //     context,
+                  //     AppRouteName.payment,
+                  //   );
+                  // },
+                  onPressed: () async {
+                    if (await checkout() == true) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => WebViewPayment(url: url)),
+                      );
+                    }
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => WebViewPayment()),
+                    // );
                   },
                   child: Text('Package 1'),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 24.0),
                   ),
                 ),
-                
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> checkout() async {
+    //* ------- checkout according to the user this creates a order to the order table a changes the payment status to paid ---------->//*
+    try {
+      Map<String, dynamic> body = {
+        "order": [
+          {"name": "Premium", "product": 11, "quantity": 1, "price": 99}
+        ]
+      };
+      var response_put = await http.post(
+        Uri.parse('http://10.0.2.2:8000/order/create-checkout-session/'),
+        headers: {
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg5MTQ5Nzg3LCJpYXQiOjE2ODkwNjIxODcsImp0aSI6Ijc5ODUyNDZhOTUwMTRjYzk5YTgwZDNiNDJlN2UwNjk1IiwidXNlcl9pZCI6Mn0.PZYDWRWQPhnifxxd-UeMFJaLYcwbf32pHLP3xZbBj3A',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      // print("Response body: ${response_put.body}\n\n\n");
+      Map<String, dynamic> decodedJson = jsonDecode(response_put.body);
+      Map<String, dynamic> session = decodedJson['session'];
+      url = session['url'];
+      print("URL: $url");
+
+      // print(response_put.body);
+      return true;
+    } catch (e) {
+      throw Exception(e);
+    }
   }
 }
