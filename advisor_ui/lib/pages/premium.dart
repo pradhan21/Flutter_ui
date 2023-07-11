@@ -59,6 +59,18 @@ class _PremiumPageState extends State<PremiumPage> {
               leading: const Icon(Icons.star),
               title: const Text('Historical Data Access', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
               ),
+              ListTile(
+              leading: const Icon(Icons.star),
+              title: const Text('Add Free Services', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              ),
+              ListTile(
+              leading: const Icon(Icons.star),
+              title: const Text('Export to Excel Reports', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              ),
+              ListTile(
+              leading: const Icon(Icons.star),
+              title: const Text('Machine Learning Services', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+              ),
                 ElevatedButton(
                   onPressed: (){
                      Navigator.pushNamed(

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:math';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -86,10 +86,9 @@ class _DetailedRootState extends State<DetailedRoot>
 
 class NestedTabBar extends StatefulWidget {
   final String outerTab;
-  final List<expense> expenseData;
   final String accessToken;
  
-  NestedTabBar({required this.outerTab,this.expenseData = const [],required this.accessToken});
+  NestedTabBar({required this.outerTab,required this.accessToken});
  final List<double> dataPoints = [20, 30, 50];
   @override
   _NestedTabBarState createState() => _NestedTabBarState();
@@ -112,60 +111,15 @@ class _NestedTabBarState extends State<NestedTabBar> with TickerProviderStateMix
     super.dispose();
   }
 
-  // Future<void> _fetchMonthlyExpenseData() async {
-  //   try {
-  //     final List<expense> data = await fetchMonthExpenseData(widget.accessToken);
-  //     setState(() {
-  //       _expenseData = data;
-  //     });
-  //   } catch (e) {
-  //     print('Error fetching expense data: $e');
-  //   }
-  // }
-// Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
-//   try {
-//     final url = "http://127.0.0.1:8000/core/expenses-category-month/";
-//     final response = await http.get(Uri.parse(url), headers: {
-//       'Authorization': 'Bearer $accessToken',
-//     });
-
-//     if (response.statusCode == 200) {
-//       final dynamic responseData = json.decode(response.body);
-//       if (responseData != null && responseData['filtered'] != null) {
-//         final dynamic filteredData = responseData['filtered'];
-//             print('expenses_____+$filteredData');
-//         if (filteredData != null) {
-//           double amount = 0;
-//           List<expense> expenses = [];
-
-//           for (var categoryData in filteredData) {
-//             final incomeItem = expense.fromJson(categoryData);
-//             amount = incomeItem.amount;
-//             expenses.add(incomeItem);
-//           }
-
-//           final expenseData = PieChartSectionData(
-//             value: amount.toDouble(),
-//             color: Colors.blue,
-//             title: 'Monthly Expense',
-//             radius: 100,
-//           );
-
-//           setState(() {
-//             sections = [expenseData];
-//           });
-
-//           return expenses;
-//         }
-//       }
-//     }
-
-//     throw Exception('Failed to fetch expense data');
-//   } catch (e) {
-//     print("error fetching monthly expense data: $e");
-//     throw Exception('Failed to fetch expense data: $e');
-//   }
-// }
+   Color getRandomColor() {
+    final random = Random();
+    return Color.fromRGBO(
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1,
+    );
+  }
 
 Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
   try {
@@ -200,7 +154,7 @@ Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
 
           final expenseData = PieChartSectionData(
             value: totalAmount.toDouble(),
-            color: Colors.blue,
+            color: getRandomColor(),
             title: 'Monthly Expense',
             radius: 100,
           );

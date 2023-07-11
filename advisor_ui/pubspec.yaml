@@ -49,6 +49,7 @@ dependencies:
   charts_flutter: 
   random_color: 
   flutter_stripe: ^9.2.2
+  flutter_tawk: ^0.1.0
 
 dev_dependencies:
   flutter_test:

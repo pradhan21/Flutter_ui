@@ -148,7 +148,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
 /////api to get list of category////////////////////////////////////////////////////////////////////
   Future<List<Category>> fetchCategories(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/incomeCat/incomecategory/';
+    final url = 'http://10.0.2.2:8000/incomeCat/incomecategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -175,7 +175,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
 ////////api integration for fetching the category lists//////////////////////////////////////////////
   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
-    final url = 'http://127.0.0.1:8000/expensesCat/excategory/';
+    final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -202,7 +202,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
 ////////////////////////////////////api to add new income/////////////////////////////////////////////////////////
 void createIncome(String budgetName, String budgetPrice, int category ) async {
-  final url = 'http://127.0.0.1:8000/income/income/'; // Update with the correct API endpoint
+  final url = 'http://10.0.2.2:8000/income/income/'; // Update with the correct API endpoint
 
   // Replace 'accessToken' with your actual access token
   final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
@@ -230,7 +230,7 @@ void createIncome(String budgetName, String budgetPrice, int category ) async {
 
 ////////////////////////////////////api to add new expenses/////////////////////////////////////////////////////////
 void createexpenses(String expname, String expprice,String note , int category ) async {
-  final url = 'http://127.0.0.1:8000/expenses/expenses/'; // Update with the correct API endpoint
+  final url = 'http://10.0.2.2:8000/expenses/expenses/'; // Update with the correct API endpoint
 
   // Replace 'accessToken' with your actual access token
   final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
