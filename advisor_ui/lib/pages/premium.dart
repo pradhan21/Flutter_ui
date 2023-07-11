@@ -8,6 +8,8 @@ import 'webviewpay.dart';
 import 'package:http/http.dart' as http;
 
 class PremiumPage extends StatefulWidget {
+    final String accessToken;
+  PremiumPage({required this.accessToken});
   @override
   _PremiumPageState createState() => _PremiumPageState();
 }
@@ -133,7 +135,7 @@ class _PremiumPageState extends State<PremiumPage> {
         Uri.parse('http://10.0.2.2:8000/order/create-checkout-session/'),
         headers: {
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjg5MTQ5Nzg3LCJpYXQiOjE2ODkwNjIxODcsImp0aSI6Ijc5ODUyNDZhOTUwMTRjYzk5YTgwZDNiNDJlN2UwNjk1IiwidXNlcl9pZCI6Mn0.PZYDWRWQPhnifxxd-UeMFJaLYcwbf32pHLP3xZbBj3A',
+              'Bearer ${widget.accessToken}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(body),

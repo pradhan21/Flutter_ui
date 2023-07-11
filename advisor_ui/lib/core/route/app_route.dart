@@ -29,14 +29,17 @@ class AppRoute {
         );
 
          case AppRouteName.payment:
+          
         return MaterialPageRoute(
           builder: (_) =>  CardFromScreen(),
           settings: settings,
         );
 
         case AppRouteName.premium:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final accessToken=arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  PremiumPage(),
+          builder: (_) =>  PremiumPage(accessToken: accessToken),
           settings: settings,
         );
         case AppRouteName.settings:

@@ -46,7 +46,7 @@ class _RootAppState extends State<RootApp> {
       DailyPage(accessToken: widget.accessToken),
       StatsPage(accessToken: widget.accessToken),
       BudgetPage(),
-      // ChatScreen(),
+      ChatScreen(),
       CreatBudgetPage(accessToken: widget.accessToken),
     ];
   }
@@ -199,7 +199,11 @@ class _RootAppState extends State<RootApp> {
               title: const Text('Go Premium'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, AppRouteName.premium);
+                Navigator.pushNamed(context, AppRouteName.premium,
+                arguments: {
+                    'accessToken': widget.accessToken,
+                  },
+                );
               },
             ),
             ListTile(
