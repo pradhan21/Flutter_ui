@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:advisor_ui/pages/budget_page.dart';
 import 'package:advisor_ui/pages/chat.dart';
 import 'package:advisor_ui/pages/create_budge_page.dart';
+import 'package:advisor_ui/pages/customer_portal.dart';
 import 'package:advisor_ui/pages/daily_page.dart';
 import 'package:advisor_ui/pages/profile_page.dart';
 import 'package:advisor_ui/pages/stats_page.dart';
@@ -57,7 +58,7 @@ class _RootAppState extends State<RootApp> {
   }
 
   Future<bool> validateToken(String accessToken) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/user/validate/');
+    final url = Uri.parse('http://10.0.2.2:8000/api/user/validate/');
     final headers = {'Authorization': 'Bearer $accessToken'};
 
     final response = await http.get(url, headers: headers);
@@ -87,7 +88,7 @@ class _RootAppState extends State<RootApp> {
 //   }
 // }
   Future<UserProfile> _fetchProfileData(String accessToken) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
+    final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
     final headers = {'Authorization': 'Bearer $accessToken'};
 
     var response = await http.get(url, headers: headers);
@@ -199,10 +200,22 @@ class _RootAppState extends State<RootApp> {
               title: const Text('Go Premium'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, AppRouteName.premium,
-                arguments: {
+                Navigator.pushNamed(
+                  context,
+                  AppRouteName.premium,
+                  arguments: {
                     'accessToken': widget.accessToken,
                   },
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.payment_rounded),
+              title: const Text('Manage Subscription'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SubscriptionView()),
                 );
               },
             ),
