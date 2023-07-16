@@ -13,6 +13,19 @@ class BudgetPage extends StatefulWidget {
 
 class _BudgetPageState extends State<BudgetPage> {
   int activeDay = 3;
+  TextEditingController _amountController = TextEditingController();
+  FocusNode amountFocusNode = FocusNode();
+
+
+  @override
+  void initState(){
+    amountFocusNode.addListener;
+  }
+
+  void dispose(){
+    amountFocusNode.removeListener;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,12 +36,77 @@ class _BudgetPageState extends State<BudgetPage> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
-
+   
+   String selectedOption = 'Overall';
+   void _showPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Overall Budget'),
+          content: Text('Set Budget spending for the rest of the year',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: black.withOpacity(0.5)),),
+          actions: [
+            TextField(
+              focusNode: amountFocusNode,
+              controller: _amountController,
+              decoration: InputDecoration(labelText: 'Amount'),
+            ),
+            const SizedBox(height: 20),
+           Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Create Budget'),
+            ),
+            ElevatedButton(onPressed:(){
+             Navigator.of(context).pop();
+            }, child: Text("Cancel"))
+          ],)
+          ],
+        );
+      },
+    );
+  }
+  void _showcustomPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Overall Budget'),
+          content: Text('Set Budget spending for the rest of the year',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: black.withOpacity(0.5)),),
+          actions: [
+            TextField(
+              focusNode: amountFocusNode,
+              controller: _amountController,
+              decoration: InputDecoration(labelText: 'Amount'),
+            ),
+            const SizedBox(height: 20),
+           Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Create Budget'),
+            ),
+            ElevatedButton(onPressed:(){
+             Navigator.of(context).pop();
+            }, child: Text("Cancel"))
+          ],)
+          ],
+        );
+      },
+    );
+  }
     return SingleChildScrollView(
       child: Column(
         children: [
           Container(
-            decoration: BoxDecoration(color: white, boxShadow: [
+            decoration: BoxDecoration(color: black, boxShadow: [
               BoxShadow(
                 color: grey.withOpacity(0.01),
                 spreadRadius: 10,
@@ -38,31 +116,77 @@ class _BudgetPageState extends State<BudgetPage> {
             ]),
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 30, right: 20, left: 20, bottom: 25),
+                  top: 50, right: 20, left: 20, bottom: 25),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      const SizedBox(width: 20),
                       Text(
                         "Budget",
                         style: TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: black),
+                            fontWeight: FontWeight.bold, 
+                            color: white),
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.add,
-                            size: 25,
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Icon(AntDesign.search1)
-                        ],
-                      )
+                      IconButton(onPressed: (){
+                        PopupMenuButton(
+                   // add icon, by default "3 dot" icon
+                   // icon: Icon(Icons.book)
+                   itemBuilder: (context){
+                     return [
+                            PopupMenuItem<int>(
+                                value: 0,
+                                child: Text("My Account"),
+                            ),
+
+                            PopupMenuItem<int>(
+                                value: 1,
+                                child: Text("Settings"),
+                            ),
+
+                            PopupMenuItem<int>(
+                                value: 2,
+                                child: Text("Logout"),
+                            ),
+                        ];
+                   },
+                   onSelected:(value){
+                      if(value == 0){
+                         print("My account menu is selected.");
+                      }else if(value == 1){
+                         print("Settings menu is selected.");
+                      }else if(value == 2){
+                         print("Logout menu is selected.");
+                      }
+                   }
+                  );
+                      }, icon:Icon(Icons.add_circle_rounded,),color:white ,)
+                      // DropdownButton<String>(
+                      //   value: selectedOption,
+                      //   items: [
+                      //     DropdownMenuItem<String>(
+                      //       value: 'Overall',
+                      //       child: Text('Overall'),
+                      //     ),
+                      //     DropdownMenuItem<String>(
+                      //       value: 'Specific',
+                      //       child: Text('Specific'),
+                      //     ),
+                      //   ],
+                      //   onChanged: (value) {
+                      //     setState(() {
+                      //       selectedOption = value!;
+                      //       if (selectedOption == 'Overall') {
+                      //         _showPopup(context);
+                      //       } else if (selectedOption == 'Specific') {
+                      //         // Perform some action for the 'Specific' option
+                      //         _showcustomPopup(context);
+                      //       }
+                      //     });
+                      //   },
+                      // ),
                     ],
                   ),
                   SizedBox(
@@ -83,7 +207,7 @@ class _BudgetPageState extends State<BudgetPage> {
                               children: [
                                 Text(
                                   months[index]['label'],
-                                  style: TextStyle(fontSize: 10),
+                                  style: TextStyle(fontSize: 10, color: white),
                                 ),
                                 SizedBox(
                                   height: 10,
@@ -91,13 +215,13 @@ class _BudgetPageState extends State<BudgetPage> {
                                 Container(
                                   decoration: BoxDecoration(
                                       color: activeDay == index
-                                          ? primary
-                                          : black.withOpacity(0.02),
+                                          ? white
+                                          : white.withOpacity(0.02),
                                       borderRadius: BorderRadius.circular(5),
                                       border: Border.all(
                                           color: activeDay == index
-                                              ? primary
-                                              : black.withOpacity(0.1))),
+                                              ? white
+                                              : white.withOpacity(0.1))),
                                   child: Padding(
                                     padding: const EdgeInsets.only(
                                         left: 12, right: 12, top: 7, bottom: 7),
@@ -107,8 +231,8 @@ class _BudgetPageState extends State<BudgetPage> {
                                           fontSize: 10,
                                           fontWeight: FontWeight.w600,
                                           color: activeDay == index
-                                              ? white
-                                              : black),
+                                              ? black
+                                              : white),
                                     ),
                                   ),
                                 )
@@ -230,6 +354,9 @@ class _BudgetPageState extends State<BudgetPage> {
           )
         ],
       ),
+
+
+      
     );
-  }
+}
 }

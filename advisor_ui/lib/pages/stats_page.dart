@@ -224,7 +224,7 @@ setState(() {
       child: Column(
         children: [
           Container(
-            decoration: BoxDecoration(color: white, boxShadow: [
+            decoration: BoxDecoration(color: black, boxShadow: [
               BoxShadow(
                 color: grey.withOpacity(0.01),
                 spreadRadius: 10,
@@ -234,20 +234,21 @@ setState(() {
             ]),
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 30, right: 20, left: 20, bottom: 25),
+                  top: 50, right: 20, left: 20, bottom: 25),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      IconButton(onPressed:(){}, icon: Icon(Icons.menu_sharp)),
                       Text(
                         "Stats",
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: black),
+                            color: white),
                       ),
-                      Icon(AntDesign.search1)
+                      Icon(AntDesign.search1, color: white,)
                     ],
                   ),
                   SizedBox(
@@ -259,19 +260,19 @@ setState(() {
                       
                       IconButton(
                   onPressed: goToPreviousDates,
-                  icon: Icon(Icons.arrow_back),
+                  icon: Icon(Icons.arrow_back,color:white),
                 ),
                 Text(
                    DateFormat(' MMM, y').format(currentDate),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: black,
+                    color: white,
                   ),
                 ),
                 IconButton(
                   onPressed: goToFutureDates,
-                  icon: Icon(Icons.arrow_forward),
+                  icon: Icon(Icons.arrow_forward,color: white,),
                 ),
                     ],
                   ),
@@ -346,10 +347,11 @@ setState(() {
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Container(
+              // color: Colors.grey[850],
               width: double.infinity,
               height: 250,
               decoration: BoxDecoration(
-                  color: white,
+                  color: grey,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -375,7 +377,7 @@ setState(() {
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 13,
-                                color: Color(0xff67727d)),
+                                color: white),
                           ),
                           SizedBox(
                             height: 10,
@@ -412,10 +414,11 @@ setState(() {
               spacing: 20,
               children: List.generate(expenses.length, (index) {
                 return Container(
+                
                   width: (size.width - 60) / 2,
                   height: 170,
                   decoration: BoxDecoration(
-                      color: white,
+                      color: grey,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -433,6 +436,7 @@ setState(() {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
+                          
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
@@ -478,7 +482,7 @@ setState(() {
               width: double.infinity,
               height: 290,
               decoration: BoxDecoration(
-                  color: white,
+                  color: grey,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -520,7 +524,7 @@ setState(() {
                       ),
                     ),
                     Positioned(
-                      bottom: 0,
+                      top: -15,
                       child: Container(
                         width: (size.width - 20),
                         height: 350,
@@ -528,6 +532,7 @@ setState(() {
                       PieChartData(
                         sections: sections,
                         centerSpaceRadius: 0,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                     ))

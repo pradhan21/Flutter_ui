@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:advisor_ui/api_data/userProfile.dart';
 import 'package:advisor_ui/json/create_budget_json.dart';
 import 'package:advisor_ui/pages/scanned_values_page.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobile_vision_2/flutter_mobile_vision_2.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'addCategory.dart';
 import 'package:http/http.dart' as http;
 
@@ -270,7 +272,7 @@ void createexpenses(String expname, String expprice,String note , int category )
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: grey.withOpacity(0.05),
+      backgroundColor: Color.fromARGB(255, 233, 227, 227),
       body: getBody(context),
     );
   }
@@ -284,14 +286,40 @@ void createexpenses(String expname, String expprice,String note , int category )
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
+            color:black,
               child: Padding(
             padding:
-                const EdgeInsets.only(top: 30, right: 20, left: 20, bottom: 25),
+                const EdgeInsets.only(top: 0),
             child: Column(
               children: [
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                   Container(
+                     decoration: BoxDecoration(color: black,),
+                    //  width: 411,
+                    //  height: 160,
+                     child:Padding(
+                       padding:
+                const EdgeInsets.only(top: 55, right: 20, left: 20, bottom: 25), 
+                     child : Column(
+                      children:[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children:[
+                            const SizedBox(width: 80),
+                            Text(
+                              "Create Income/expenses",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold, 
+                                  color: white),
+                            ),]
+                        ),
+                        const SizedBox(height: 30),
+                        Row(
+                      children:[
+                     const SizedBox(width: 50),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -302,10 +330,11 @@ void createexpenses(String expname, String expprice,String note , int category )
                         });
                       },
                       style: ButtonStyle(
+                        
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 21, 126, 191)),
+                            button),
                       ),
-                      child: Text('Income'),
+                      child: Text('Income', style: TextStyle(color:white , fontSize: 18),),
                     ),
                     SizedBox(width: 20),
                     ElevatedButton(
@@ -319,11 +348,12 @@ void createexpenses(String expname, String expprice,String note , int category )
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromARGB(255, 21, 126, 191)),
+                            button),
                       ),
-                      child: Text('Expenses'),
-                    ),
-                  ],
+                      child: Text('Expenses',style: TextStyle(color:white,fontSize: 18)),
+                    ),],)]
+                   ),),
+                ),],
                 ),
               ],
             ),
@@ -331,7 +361,7 @@ void createexpenses(String expname, String expprice,String note , int category )
           //////////////category integration////////////////
           if (showwidget1) ...[
             Container(
-              decoration: BoxDecoration(color: white, boxShadow: [
+              decoration: BoxDecoration(color: grey, boxShadow: [
                 BoxShadow(
                   color: grey.withOpacity(0.01),
                   spreadRadius: 10,
@@ -385,10 +415,11 @@ void createexpenses(String expname, String expprice,String note , int category )
                             });
                             // _showPopup(context);
                           },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 21, 126, 191)),
-                          ),
+                           style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                           child: Text('Add Category'))
                     ],
                   ),
@@ -495,7 +526,7 @@ void createexpenses(String expname, String expprice,String note , int category )
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 17,
-                      color: Color(0xff67727d),
+                      color: Color.fromARGB(255, 0, 0, 0),
                     ),
                   ),
                   TextField(
@@ -553,10 +584,16 @@ void createexpenses(String expname, String expprice,String note , int category )
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 21, 126, 191),
+                          color: button,
                           borderRadius: BorderRadius.circular(15),
                         ),
                         child: IconButton(
+                          
+                           style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>( 
+                            button),
+                      ),
                           icon: const Icon(AntDesign.arrowright),
                           onPressed: () {
                             // Call the createIncome function with the input values
@@ -627,10 +664,11 @@ void createexpenses(String expname, String expprice,String note , int category )
                               showaddcategory1 = true;
                             });
                           },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Color.fromARGB(255, 21, 126, 191)),
-                          ),
+                           style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                           child: Text('Add Category'))
                       // IconButton(
                       //   icon: Icon(Icons.add),
@@ -814,9 +852,14 @@ void createexpenses(String expname, String expprice,String note , int category )
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 21, 126, 191),
+                            color: button,
                             borderRadius: BorderRadius.circular(15)),
                         child: IconButton(
+                           style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                           icon: const Icon(AntDesign.arrowright),
                           onPressed: () {
                             // print(_budgetNameexp.text);
@@ -871,6 +914,11 @@ void createexpenses(String expname, String expprice,String note , int category )
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
+                   style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                   onPressed: () {
                     Navigator.pop(context);
                     // Retrieve the category name and selected icon
@@ -902,6 +950,11 @@ void createexpenses(String expname, String expprice,String note , int category )
                   child: Text('Save Category'),
                 ),
                 ElevatedButton(
+                   style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                     onPressed: () {
                       setState(() {
                         showaddcategory = false;
@@ -963,6 +1016,11 @@ void createexpenses(String expname, String expprice,String note , int category )
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
+                   style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                   onPressed: () {
                     // Retrieve the category name and selected icon
                     String categoryName = _nameController.text;
@@ -979,6 +1037,11 @@ void createexpenses(String expname, String expprice,String note , int category )
                   child: Text('Save Category'),
                 ),
                 ElevatedButton(
+                  style: ButtonStyle(
+                        
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            button),
+                      ),
                     onPressed: () {
                       setState(() {
                         showaddcategory1 = false;
@@ -1049,8 +1112,8 @@ void createexpenses(String expname, String expprice,String note , int category )
 //           );
 //           }
 //           );
-// }
 }
+
 
 class category {
   final String name;

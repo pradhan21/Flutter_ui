@@ -247,9 +247,9 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       child: Column(
         children: [
           Container(
-            decoration: BoxDecoration(color: white, boxShadow: [
+            decoration: BoxDecoration(color: black, boxShadow: [
               BoxShadow(
-                color: grey.withOpacity(0.01),
+                color: const Color.fromARGB(255, 47, 47, 47),
                 spreadRadius: 10,
                 blurRadius: 3,
                 // changes position of shadow
@@ -257,21 +257,22 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
             ]),
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 30, right: 20, left: 20, bottom: 25),
+                  top: 50, right: 20, left: 20, bottom: 25),
               child: Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      IconButton(onPressed:(){}, icon: Icon(Icons.menu_sharp)),
                       Text(
                         "Daily Transaction",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: black,
+                          color: white,
                         ),
                       ),
-                      Icon(AntDesign.search1)
+                      Icon(AntDesign.search1,color: white,)
                     ],
                   ),
                   const SizedBox(
@@ -282,19 +283,19 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                     children: [
                       IconButton(
                         onPressed: goToPreviousDates,
-                        icon: Icon(Icons.arrow_back),
+                        icon: Icon(Icons.arrow_back, color: white,),
                       ),
                       Text(
                         DateFormat('EEE, MMM d, y').format(currentDate),
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: black,
+                          color: white,
                         ),
                       ),
                       IconButton(
                         onPressed: goToFutureDates,
-                        icon: Icon(Icons.arrow_forward),
+                        icon: Icon(Icons.arrow_forward,color: white,),
                       ),
                     ],
                   ),
@@ -331,7 +332,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                               Text(
                                 dayFormat.format(visibleDates[
                                     index]), // Display the day abbreviation
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(fontSize: 10, color: white),
                               ),
                               SizedBox(height: 10),
                               Container(
@@ -340,13 +341,12 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                 decoration: BoxDecoration(
                                   color: isCurrentDate
                                       ? Colors.red
-                                      : Colors
-                                          .transparent, // Highlight current date in red color
+                                      : white, // Highlight current date in red color
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                     color: activeDay == index
-                                        ? primary
-                                        : black.withOpacity(0.1),
+                                        ? white
+                                        : white,
                                   ),
                                 ),
                                 child: Center(
@@ -374,8 +374,15 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
           SizedBox(
             height: 30,
           ),
-          Padding(
+          Container(
+            
+            decoration: BoxDecoration(borderRadius:BorderRadius.circular(12),color: grey,),
+            child:Column(
+              children:[
+                const SizedBox(height: 20,),
+            Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
+            
             child: Column(
                 children: List.generate(filteredIncomes.length, (index) {
               return Column(
@@ -392,7 +399,8 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                               height: 50,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: grey.withOpacity(0.1),
+                                border: Border.all(color: white),
+                                color: grey,
                               ),
                               child: Center(
                                 child: Image.network(
@@ -445,7 +453,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                               style: TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15,
-                                  color: Colors.green),
+                                  color: Color.fromARGB(255, 0, 106, 12)),
                             ),
                           ],
                         ),
@@ -465,7 +473,9 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
           ),
           Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
+            
             child: Column(
+              
                 children: List.generate(FilteredExpenses.length, (index) {
               return Column(
                 children: [
@@ -481,7 +491,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                               height: 50,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: grey.withOpacity(0.1),
+                                color: grey,
                               ),
                               child: Center(
                                 child: Image.network(
@@ -566,7 +576,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                     "Total",
                     style: TextStyle(
                         fontSize: 16,
-                        color: black.withOpacity(0.4),
+                        color: black,
                         fontWeight: FontWeight.w600),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -585,8 +595,9 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                 ),
               ],
             ),
-          )
-        ],
+          ),
+          const SizedBox(height: 30,),]),
+      ),],
       ),
     );
   }

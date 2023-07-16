@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:advisor_ui/pages/budget_page.dart';
 import 'package:advisor_ui/pages/chat.dart';
 import 'package:advisor_ui/pages/create_budge_page.dart';
 import 'package:advisor_ui/pages/daily_page.dart';
-import 'package:advisor_ui/pages/profile_page.dart';
 import 'package:advisor_ui/pages/stats_page.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +12,7 @@ import 'package:http/http.dart' as http;
 import '../api_data/userProfile.dart';
 import '../core/route/app_route_name.dart';
 import '../module/home/presentation/home_screen.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class RootApp extends StatefulWidget {
   final String accessToken;
@@ -22,10 +21,13 @@ class RootApp extends StatefulWidget {
   _RootAppState createState() => _RootAppState();
 }
 
-class _RootAppState extends State<RootApp> {
+class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
+   bool isKeyboardVisible = false;
   dynamic responseData;
   late Future<UserProfile> _profileFuture;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+ TextEditingController _amountController = TextEditingController();
+  FocusNode amountFocusNode = FocusNode();
 
   int pageIndex = 0;
   late List<Widget> pages;
@@ -40,6 +42,7 @@ class _RootAppState extends State<RootApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance!.addObserver(this);
     _profileFuture = _fetchProfileData(widget.accessToken);
     // Initialize the pages list after accessing the widget.accessToken
     pages = [
@@ -49,13 +52,24 @@ class _RootAppState extends State<RootApp> {
       ChatScreen(),
       CreatBudgetPage(accessToken: widget.accessToken),
     ];
+     amountFocusNode.addListener;
   }
 
   @override
   void dispose() {
+    amountFocusNode.removeListener;
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
+ @override
+  void didChangeMetrics() {
+    super.didChangeMetrics();
+    final keyboardHeight = WidgetsBinding.instance!.window.viewInsets.bottom;
+    setState(() {
+      isKeyboardVisible = keyboardHeight > 0;
+    });
+  }
   Future<bool> validateToken(String accessToken) async {
     final url = Uri.parse('http://127.0.0.1:8000/api/user/validate/');
     final headers = {'Authorization': 'Bearer $accessToken'};
@@ -110,18 +124,17 @@ class _RootAppState extends State<RootApp> {
   }
 
   @override
-  Widget build(BuildContext context) {
+ Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
-      // backgroundColor:black,
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0.0,
-      //   iconTheme: IconThemeData(color: Colors.black),
-      //   // title: Text('Your App Title'),
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: white),
+      ),
       drawer: Drawer(
+        
         child: ListView(
           padding: const EdgeInsets.all(0),
           children: [
@@ -129,10 +142,12 @@ class _RootAppState extends State<RootApp> {
             const DrawerHeader(
               padding: const EdgeInsets.only(top: 0),
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: black,
+
+                // borderRadius: BorderRadius.circular(12),
               ),
               child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(color: Colors.green),
+                decoration: BoxDecoration(color: Colors.black87),
                 accountName: Text(
                   "Aniraj Shahi",
                   style: TextStyle(fontSize: 18),
@@ -143,7 +158,7 @@ class _RootAppState extends State<RootApp> {
                   backgroundColor: Colors.white,
                   child: Text(
                     "A",
-                    style: TextStyle(fontSize: 30.0, color: Colors.teal),
+                    style: TextStyle(fontSize: 30.0, color: Colors.teal), 
                   ),
                 ),
               ),
@@ -230,20 +245,118 @@ class _RootAppState extends State<RootApp> {
         child: getBody(),
       ),
       bottomNavigationBar: getFooter(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          selectedTab(4);
-        },
-        child: Icon(
-          Icons.add,
-          size: 25,
+       
+    floatingActionButton: getFloatingActionButton(),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    resizeToAvoidBottomInset: false,
+  );
+}
+Widget getFloatingActionButton() {
+  if (pageIndex == 2 && !isKeyboardVisible) {
+    return SpeedDial(
+      animatedIcon: AnimatedIcons.menu_close,
+      backgroundColor: button,
+      overlayColor: Colors.black,
+      overlayOpacity: 0.6,
+      children: [
+        SpeedDialChild(
+          backgroundColor: button,
+          child: Icon(Icons.add),
+          label: 'Overall Budget',
+          onTap: () {
+            // Handle add expense action
+            _showPopup(context);
+          },
         ),
-        backgroundColor: Color.fromARGB(255, 21, 126, 191),
+        SpeedDialChild(
+          backgroundColor: button,
+          child: Icon(Icons.add),
+          label: 'Custom Budget',
+          onTap: () {
+            // Handle add income action
+            _showcustomPopup(context);
+          },
+        ),
+      ],
+    );
+  } else {
+    return FloatingActionButton(
+      onPressed: () {
+        selectedTab(4);
+      },
+      child: Icon(
+        Icons.add,
+        size: 25,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      backgroundColor: button,
     );
   }
+}
 
+void _showPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Overall Budget'),
+          content: Text('Set Budget spending for the rest of the year',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: black.withOpacity(0.5)),),
+          actions: [
+            TextField(
+              focusNode: amountFocusNode,
+              controller: _amountController,
+              decoration: InputDecoration(labelText: 'Amount'),
+            ),
+            const SizedBox(height: 20),
+           Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Create Budget'),
+            ),
+            ElevatedButton(onPressed:(){
+             Navigator.of(context).pop();
+            }, child: Text("Cancel"))
+          ],)
+          ],
+        );
+      },
+    );
+  }
+  void _showcustomPopup(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Overall Budget'),
+          content: Text('Set Budget spending for the rest of the year',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: black.withOpacity(0.5)),),
+          actions: [
+            TextField(
+              focusNode: amountFocusNode,
+              controller: _amountController,
+              decoration: InputDecoration(labelText: 'Amount'),
+            ),
+            const SizedBox(height: 20),
+           Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Create Budget'),
+            ),
+            ElevatedButton(onPressed:(){
+             Navigator.of(context).pop();
+            }, child: Text("Cancel"))
+          ],)
+          ],
+        );
+      },
+    );
+  }
   Widget getBody() {
     // print(widget.accessToken);
     return IndexedStack(
