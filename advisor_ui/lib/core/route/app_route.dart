@@ -5,6 +5,7 @@ import 'package:advisor_ui/module/home/presentation/home_screen.dart';
 import '../../detailed_pages/detailed_root.dart';
 import '../../pages/budget_page.dart';
 import '../../pages/create_budge_page.dart';
+import '../../pages/customer_portal.dart';
 import '../../pages/daily_page.dart';
 import '../../pages/profile_page.dart';
 import '../../pages/root_app.dart';
@@ -22,9 +23,12 @@ class AppRoute {
           builder: (_) =>  HomeScreen(),
           settings: settings,
         );
+        
         case AppRouteName.budget:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final accessToken=arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  BudgetPage(),
+          builder: (_) =>  BudgetPage(accessToken: accessToken),
           settings: settings,
         );
 
@@ -34,6 +38,14 @@ class AppRoute {
           builder: (_) =>  CardFromScreen(),
           settings: settings,
         );
+
+
+         case AppRouteName.customer:
+        return MaterialPageRoute(
+          builder: (_) =>  SubscriptionView(),
+          settings: settings,
+        );
+
 
         case AppRouteName.premium:
         final arguments = settings.arguments as Map<String, dynamic>;

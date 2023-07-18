@@ -11,4 +11,5 @@ class AppRouteName {
   static const String  settings="/settings";
   static const String  premium="/premium";
    static const String  payment="/payment ";
+   static const String  customer="/customer ";
 }

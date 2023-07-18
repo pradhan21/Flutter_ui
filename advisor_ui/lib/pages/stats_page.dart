@@ -263,7 +263,7 @@ setState(() {
                   icon: Icon(Icons.arrow_back,color:white),
                 ),
                 Text(
-                   DateFormat(' MMM, y').format(currentDate),
+                   DateFormat(' MMMM, y').format(currentDate),
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

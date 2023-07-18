@@ -139,3 +139,36 @@ class expense {
   );
 }
 }
+
+class Limit {
+  final int id;
+  final double amount;
+  final int categoryId;
+
+  Limit({required this.id, required this.amount, required this.categoryId});
+
+  factory Limit.fromJson(Map<String, dynamic> json) {
+    return Limit(
+      id: json['id'],
+      amount: json['category_limit'],
+      categoryId: json['expenses_Category'],
+    );
+  }
+}
+
+class Limits {
+  final int id;
+  final double amount;
+
+
+  Limits({required this.id, required this.amount});
+
+  factory Limits.fromJson(Map<String, dynamic> json) {
+    return Limits(
+      id: json['id'],
+      amount: json['overall_limit'],
+  
+    );
+  }
+}
+

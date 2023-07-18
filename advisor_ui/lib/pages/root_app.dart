@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:advisor_ui/pages/budget_page.dart';
+// import 'package:advisor_ui/pages/chat_page.dart';
 import 'package:advisor_ui/pages/chat.dart';
 import 'package:advisor_ui/pages/create_budge_page.dart';
 import 'package:advisor_ui/pages/daily_page.dart';
@@ -28,7 +29,8 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
  TextEditingController _amountController = TextEditingController();
   FocusNode amountFocusNode = FocusNode();
-
+  List<ExpCategory> expcategories = [];
+  ExpCategory? selectedCategory;
   int pageIndex = 0;
   late List<Widget> pages;
   // List<Widget> pages = [
@@ -44,11 +46,12 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
     _profileFuture = _fetchProfileData(widget.accessToken);
+    fetchexpCategories(widget.accessToken);
     // Initialize the pages list after accessing the widget.accessToken
     pages = [
       DailyPage(accessToken: widget.accessToken),
       StatsPage(accessToken: widget.accessToken),
-      BudgetPage(),
+      BudgetPage(accessToken:widget.accessToken ),
       ChatScreen(),
       CreatBudgetPage(accessToken: widget.accessToken),
     ];
@@ -123,6 +126,179 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     }
   }
 
+   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
+    final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
+
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization': 'Bearer $accessToken',
+    });
+    
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final categoriesData = jsonData['filtered'];
+      // print("Expenses Categories:__________" + categoriesData.toString());
+      
+
+      for (var categoryData in categoriesData) {
+        expcategories.add(ExpCategory.fromJson(categoryData));
+        // print(expcategories);
+      }
+
+      return expcategories;
+    } else {
+      throw Exception(
+          'Failed to fetch categories. Status code: ${response.statusCode}');
+    }
+  }
+
+
+Future<void> _createcustomBudget(double amount, int category) async {
+  // Check if a limit already exists for the category and user
+  final existingLimit = await _fetchExistingLimit(category);
+
+  if (existingLimit != null) {
+    // Limit already exists, show an error message or handle accordingly
+    print('Limit already exists for the category');
+    return;
+  }
+
+  // Continue with creating the new limit
+  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
+
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${widget.accessToken}',
+    // Add any required headers
+  };
+
+  final body = jsonEncode({
+    'category_limit': amount,
+    'expenses_Category': category,
+  });
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  if (response.statusCode == 201) {
+    // Budget created successfully
+    // You can perform any additional actions here
+    print('Budget created successfully');
+  } else {
+    // Failed to create budget
+    // Handle the error accordingly
+    print('Failed to create budget. Status code: ${response.statusCode}');
+  }
+}
+
+Future<Limit?> _fetchExistingLimit(int categoryId) async {
+  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/?expenses_Category=$categoryId'); // Replace with your API URL
+
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${widget.accessToken}',
+    // Add any required headers
+  };
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    final jsonData = jsonDecode(response.body);
+
+    if (jsonData is List && jsonData.isNotEmpty) {
+      // Limit already exists for the category
+      // Return the existing limit object
+      return Limit.fromJson(jsonData[0]);
+    }
+  }
+
+  return null; // No limit found for the category
+}
+
+ Future<bool> checkLimitExists(int categoryId) async {
+  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/?expenses_Category=$categoryId');
+  final headers = {
+    'Authorization': 'Bearer ${widget.accessToken}',
+    'Content-Type': 'application/json',
+  };
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    final jsonData = jsonDecode(response.body);
+    if (jsonData is List && jsonData.isNotEmpty) {
+      // Limit already exists for the category
+      return true;
+    }
+  }
+
+  return false; // Limit does not exist for the category
+}
+
+Future<void> _createBudget(double amount) async {
+  // Check if an overall budget already exists
+  final existingBudget = await _fetchExistingBudget();
+
+  if (existingBudget != null) {
+    // Overall budget already exists, show an error message or handle accordingly
+    print('Overall budget already exists');
+    return;
+  }
+
+  // Continue with creating the new budget
+  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
+
+  final headers = {
+    'Authorization': 'Bearer ${widget.accessToken}',
+    'Content-Type': 'application/json',
+  };
+
+  final body = jsonEncode({
+    'category_limit': amount,
+  });
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  if (response.statusCode == 201) {
+    // Budget created successfully
+    // You can perform any additional actions here
+    print('Budget created successfully');
+  } else {
+    // Failed to create budget
+    // Handle the error accordingly
+    print('Failed to create budget. Status code: ${response.statusCode}');
+  }
+}
+
+
+Future<Limits?> _fetchExistingBudget() async {
+  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
+
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${widget.accessToken}',
+    // Add any required headers
+  };
+
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode == 200) {
+    final jsonData = jsonDecode(response.body);
+
+    if (jsonData is List && jsonData.isNotEmpty) {
+      // Iterate through the response data and check if an overall limit exists
+      for (var item in jsonData) {
+        if (item['overall_limit'] != null) {
+          // Overall limit found, return the limit object
+          return Limits.fromJson(item);
+        }
+      }
+    }
+  }
+
+  return null; // No overall budget found
+}
+
+
+ bool _customTileExpanded = false;
   @override
  Widget build(BuildContext context) {
     return Scaffold(
@@ -209,6 +385,43 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
                 );
               },
             ),
+             ExpansionTile(
+              leading: const Icon(Icons.workspace_premium_outlined),
+          title: const Text('Subscription'),
+          // subtitle: const Text('Custom expansion arrow icon'),
+          trailing: Icon(
+            _customTileExpanded
+                ? Icons.arrow_drop_down_circle
+                : Icons.arrow_drop_down,
+          ),
+          children:  <Widget>[
+             ListTile(
+              leading: const Icon(Icons.diamond_rounded),
+              title: const Text('Go Premium'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, AppRouteName.premium,
+                arguments: {
+                    'accessToken': widget.accessToken,
+                  },
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Customer Portal'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, AppRouteName.customer);
+              },
+            ),
+          ],
+          onExpansionChanged: (bool expanded) {
+            setState(() {
+              _customTileExpanded = expanded;
+            });
+          },
+        ),
             ListTile(
               leading: const Icon(Icons.diamond_rounded),
               title: const Text('Go Premium'),
@@ -265,7 +478,7 @@ Widget getFloatingActionButton() {
           label: 'Overall Budget',
           onTap: () {
             // Handle add expense action
-            _showPopup(context);
+           _showPopup(context);
           },
         ),
         SpeedDialChild(
@@ -275,6 +488,7 @@ Widget getFloatingActionButton() {
           onTap: () {
             // Handle add income action
             _showcustomPopup(context);
+             
           },
         ),
       ],
@@ -293,7 +507,103 @@ Widget getFloatingActionButton() {
   }
 }
 
-void _showPopup(BuildContext context) {
+void _showcustomPopup(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            title: Text('Custom Budget'),
+            content: Text(
+              'Set Budget spending for a certain category for the rest of the year',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: Colors.black.withOpacity(0.5),
+              ),
+            ),
+            actions: [
+              TextField(
+                focusNode: amountFocusNode,
+                controller: _amountController,
+                decoration: InputDecoration(labelText: 'Amount'),
+              ),
+              const SizedBox(height: 20),
+              DropdownButton<ExpCategory>(
+                value: selectedCategory,
+                onChanged: (ExpCategory? newValue) {
+                  setState(() {
+                    selectedCategory = newValue; // Update the selectedCategory variable
+                  });
+                },
+                items: expcategories.map<DropdownMenuItem<ExpCategory>>(
+                  (ExpCategory value) {
+                    return DropdownMenuItem<ExpCategory>(
+                      value: value,
+                      child: Text(value.name),
+                    );
+                  },
+                ).toList(),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async {
+                      final double amount = double.parse(_amountController.text);
+                      final int categoryId = selectedCategory?.id ?? 0;
+
+                      // Check if a limit already exists for the category
+                      final limitExists = await checkLimitExists(categoryId);
+
+                      if (limitExists) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Limit Already Exists'),
+                              content: Text('A limit for the selected category already exists.'),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop(); // Close the previous dialog
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+                        // Call the API to create the new budget limit
+                        _createcustomBudget(amount, categoryId);
+                        Navigator.of(context).pop(); // Close the dialog
+                      }
+                    },
+                    child: Text('Create Budget'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('Cancel'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+
+  void _showPopup(BuildContext context)  {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -311,40 +621,34 @@ void _showPopup(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:[
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async{
+                final double amount = double.parse(_amountController.text);
+                final existingBudget  = await _fetchExistingBudget();
+
+                      if (existingBudget != null) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Limit Already Exists'),
+                              content: Text('A limit for the overall budget already exists.'),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pop(); // Close the previous dialog
+                                  },
+                                  child: Text('OK'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else {
+               _createBudget(amount);
                 Navigator.of(context).pop();
-              },
-              child: Text('Create Budget'),
-            ),
-            ElevatedButton(onPressed:(){
-             Navigator.of(context).pop();
-            }, child: Text("Cancel"))
-          ],)
-          ],
-        );
-      },
-    );
-  }
-  void _showcustomPopup(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Overall Budget'),
-          content: Text('Set Budget spending for the rest of the year',style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: black.withOpacity(0.5)),),
-          actions: [
-            TextField(
-              focusNode: amountFocusNode,
-              controller: _amountController,
-              decoration: InputDecoration(labelText: 'Amount'),
-            ),
-            const SizedBox(height: 20),
-           Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children:[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+                      }
               },
               child: Text('Create Budget'),
             ),

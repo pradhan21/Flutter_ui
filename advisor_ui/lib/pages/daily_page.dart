@@ -72,7 +72,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   Future<void> fetchIncomes() async {
     try {
       List<income> fetchedIncomes = await fetchIncome(widget.accessToken);
-      print(fetchedIncomes);
+      // print(fetchedIncomes);
       setState(() {
         incomes = fetchedIncomes;
       });
@@ -126,7 +126,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final expensesData = jsonData['results'];
-      print(jsonData);
+      // print(jsonData);
       List<expense> expenses = [];
       if (expensesData != null) {
         for (var expenseData in expensesData) {

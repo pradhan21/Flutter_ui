@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 class CreatBudgetPage extends StatefulWidget {
   final String accessToken;
   CreatBudgetPage({required this.accessToken});
+ 
   @override
   _BudgetAddPageState createState() => _BudgetAddPageState();
 }
@@ -279,7 +280,7 @@ void createexpenses(String expname, String expprice,String note , int category )
 
   Widget getBody(BuildContext context) {
    
-    // print("BudgetPage__________:${widget.accessToken}");
+    print("BudgetPage__________:${widget.accessToken}");
     var size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
