@@ -4,6 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'core/route/app_route.dart';
 import 'core/route/app_route_name.dart';
 import 'core/theme/app_theme.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +13,7 @@ void main() async {
   Stripe.publishableKey = stripePublishableKey;
   runApp(const MyApp());
 }
-
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =FlutterLocalNotificationsPlugin();
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
   

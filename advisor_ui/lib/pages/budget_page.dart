@@ -506,6 +506,7 @@ Future<void> editCategoryPopup(BuildContext context, categorylimit category) asy
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
                     onPressed: () async {
                       
                       await updateCategorydata(category.cat_id, editedTotal);
@@ -514,6 +515,7 @@ Future<void> editCategoryPopup(BuildContext context, categorylimit category) asy
                     child: Text('Update'),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
                     onPressed: () {
                       deletecategorydata(category.cat_id);
                       Navigator.pop(context); // Close the popup
@@ -572,6 +574,7 @@ Future<void> editOverallPopup(BuildContext context, overalllimit overall) async 
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
                     onPressed: () {
                       updateoveralldata(overall.cat_id, editedTotal);
                       Navigator.pop(context); // Close the popup
@@ -579,6 +582,7 @@ Future<void> editOverallPopup(BuildContext context, overalllimit overall) async 
                     child: Text('Update'),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
                     onPressed: () {
                       deleteoveralldata(overall.cat_id);
                       Navigator.pop(context); // Close the popup

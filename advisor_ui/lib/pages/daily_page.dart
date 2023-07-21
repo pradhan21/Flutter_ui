@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import "package:flutter_vector_icons/flutter_vector_icons.dart";
 import 'package:intl/intl.dart';
 
+import '../core/route/app_route_name.dart';
+
 class DailyPage extends StatefulWidget {
   final String accessToken;
   DailyPage({required this.accessToken});
@@ -25,6 +27,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   List<expense> expenses = [];
   List<Category> categories = [];
   List<ExpCategory> expcategories = [];
+  List<ExpCategory> expcategoy = [];
 
   void initState() {
     super.initState();
@@ -39,6 +42,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     fetchExpenses();
     fetchIncomes();
     fetchCategories(widget.accessToken);
+    fetchexpCategories(widget.accessToken);
   }
 
   int activeDay = 1;
@@ -169,6 +173,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   }
 
   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
+    print("hello ");
     final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
@@ -178,13 +183,18 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final categoriesData = jsonData['filtered'];
-      // print("Expenses Categories:__________" + categoriesData.toString());
+      print("URI Expenses Categories:__________$jsonData" );
       List<ExpCategory> expcategories = [];
-
       for (var categoryData in categoriesData) {
         expcategories.add(ExpCategory.fromJson(categoryData));
+       
       }
-
+      for (var data in expcategories) {
+      print('Category Name: ${data.id}');
+      print('Category Limit: ${data.name}');
+      print('Category Total: ${data.iconUrl}');
+      print('------------------------');
+    }
       return expcategories;
     } else {
       throw Exception(
@@ -197,6 +207,16 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 233, 227, 227),
       body: getBody(),
+      //  floatingActionButton: FloatingActionButton(
+      //   backgroundColor: button,
+      //   onPressed: (){
+      //     Navigator.pushNamed(context,AppRouteName.note,  arguments: {
+      //               'accessToken': widget.accessToken,
+      //             },);
+      //   },
+      //   tooltip: 'Increment',
+      //   child: const Icon(AntDesign.book),
+      // ),
     );
   }
 
@@ -222,13 +242,20 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     }).toList();
     print(FilteredExpenses);
 
-    double calculateTotalAmount(List<income> filteredIncomes) {
-      double total = 0;
+    double calculateTotalAmount(List<income> filteredIncomes,List<expense> filteredExpenses) {
+      double itotal = 0;
       for (var income in filteredIncomes) {
-        total += income.amount;
+        itotal += income.amount;
       }
-      return total;
+      double etotal=0;
+      for(var expense in filteredExpenses){
+        etotal += expense.amount;
+      }
+
+      double gtotal=itotal-etotal;
+      return gtotal;
     }
+  
 
     String getCategoryIconUrl(int categoryId, List<Category> categories) {
       final category = categories.firstWhere((c) => c.id == categoryId,
@@ -236,10 +263,15 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       return category.iconUrl;
     }
 
-    String getexpCategoryIconUrl(
-        int categoryId, List<ExpCategory> expcategories) {
-      final category = expcategories.firstWhere((c) => c.id == categoryId,
-          orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''));
+    String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
+      int cid=categoryId;
+      print(cid);
+      print(expcategories);
+      final category = expcategories.firstWhere(
+        (c) => c.id == categoryId,
+        orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''), // Provide default values when not found
+      );
+      print(category.iconUrl);
       return category.iconUrl;
     }
 
@@ -261,9 +293,9 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(onPressed:(){}, icon: Icon(Icons.menu_sharp)),
+                      // const SizedBox(width:35),
                       Text(
                         "Daily Transaction",
                         style: TextStyle(
@@ -272,7 +304,9 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                           color: white,
                         ),
                       ),
-                      Icon(AntDesign.search1,color: white,)
+                      //  IconButton(onPressed:(){ 
+                      //   Navigator.pushNamed(context,AppRouteName.note);
+                      // }, icon:  Icon(AntDesign.book,color: white,)),
                     ],
                   ),
                   const SizedBox(
@@ -380,188 +414,210 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
             child:Column(
               children:[
                 const SizedBox(height: 20,),
-            Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            
-            child: Column(
-                children: List.generate(filteredIncomes.length, (index) {
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: (size.width - 40) * 0.7,
-                        child: Row(
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(filteredIncomes.length, (index) {
+                      final income = filteredIncomes[index];
+                      return ListTile(
+                        onTap: () {
+                          // Open edit popup
+                          // Call a method to handle the edit functionality
+                          editincomePopup(context, income); // Pass the selected item as an argument
+                        },
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: white),
-                                color: grey,
-                              ),
-                              child: Center(
-                                child: Image.network(
-                                  getCategoryIconUrl(
-                                      filteredIncomes[index].category_id,
-                                      categories),
-                                  color: black,
-                                  width: 30,
-                                  height: 30,
-                                ),
+                              width: (size.width - 40) * 0.7,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: white),
+                                      color: grey,
+                                    ),
+                                    child: Center(
+                                      child: Image.network(
+                                        getCategoryIconUrl(
+                                          income.category_id,
+                                          categories,
+                                        ),
+                                        color: black,
+                                        width: 30,
+                                        height: 30,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: (size.width - 90) * 0.5,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          income.category_name,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          income.note,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: black.withOpacity(0.5),
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
-                            SizedBox(width: 15),
                             Container(
-                              width: (size.width - 90) * 0.5,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              width: (size.width - 200) * 0.3,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    filteredIncomes[index].category_name,
+                                    income.amount.toStringAsFixed(0),
                                     style: TextStyle(
-                                        fontSize: 15,
-                                        color: black,
-                                        fontWeight: FontWeight.bold),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    filteredIncomes[index].note,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: black.withOpacity(0.5),
-                                        fontWeight: FontWeight.w400),
-                                    overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color: Color.fromARGB(255, 0, 106, 12),
+                                    ),
                                   ),
                                 ],
                               ),
                             )
                           ],
                         ),
-                      ),
-                      Container(
-                        width: (size.width - 40) * 0.3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              filteredIncomes[index].amount.toStringAsFixed(2),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Color.fromARGB(255, 0, 106, 12)),
-                            ),
-                          ],
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(left: 65, top: 8),
+                          child: Divider(
+                            thickness: 0.8,
+                            color: black,
+                          ),
                         ),
-                      )
-                    ],
+                      );
+                    }),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 65, top: 8),
-                    child: Divider(
-                      thickness: 0.8,
-                      color: black,
-                    ),
-                  )
-                ],
-              );
-            })),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            
-            child: Column(
-              
-                children: List.generate(FilteredExpenses.length, (index) {
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: (size.width - 40) * 0.7,
-                        child: Row(
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 15, right: 15),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: List.generate(FilteredExpenses.length, (index) {
+                      final expense = FilteredExpenses[index];
+                      return ListTile(
+                        onTap: () {
+                          // Open edit popup
+                          // Call a method to handle the edit functionality
+                          editexpensePopup(context, expense); // Pass the selected item as an argument
+                        },
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: grey,
-                              ),
-                              child: Center(
-                                child: Image.network(
-                                  getexpCategoryIconUrl(
-                                      FilteredExpenses[index].category_id,
-                                      expcategories),
-                                  color: black,
-                                  width: 30,
-                                  height: 30,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 15),
-                            Container(
-                              width: (size.width - 90) * 0.5,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              width: (size.width - 40) * 0.7,
+                              child: Row(
                                 children: [
-                                  Text(
-                                    FilteredExpenses[index].category_name,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        color: black,
-                                        fontWeight: FontWeight.bold),
-                                    overflow: TextOverflow.ellipsis,
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: white),
+                                      color: grey,
+                                    ),
+                                    child: Center(
+                                      child: getexpCategoryIconUrl(expense.category_id, expcategoy).isEmpty
+                                          ? Icon(Icons.error) // Display a default error icon for empty URLs
+                                          : Image.network(
+                                              getexpCategoryIconUrl(expense.category_id, expcategoy),
+                                              color: black,
+                                              width: 30,
+                                              height: 30,
+                                            ),
+                                    ),
                                   ),
-                                  SizedBox(height: 5),
-                                  Text(
-                                    FilteredExpenses[index].note,
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: black.withOpacity(0.5),
-                                        fontWeight: FontWeight.w400),
-                                    overflow: TextOverflow.ellipsis,
+
+                                  SizedBox(width: 15),
+                                  Container(
+                                    width: (size.width - 90) * 0.5,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          expense.category_name,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          expense.note,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: black.withOpacity(0.5),
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: (size.width - 40) * 0.3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              FilteredExpenses[index].amount.toStringAsFixed(2),
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
-                                  color: Colors.red),
+                            ),
+                            Container(
+                              width: (size.width - 200) * 0.3,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    expense.amount.toStringAsFixed(0),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      )
-                    ],
+                        subtitle: Padding(
+                          padding: const EdgeInsets.only(left: 65, top: 8),
+                          child: Divider(
+                            thickness: 0.8,
+                            color: black,
+                          ),
+                        ),
+                      );
+                    }),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 65, top: 8),
-                    child: Divider(
-                      thickness: 0.8,
-                      color: black,
-                    ),
-                  )
-                ],
-              );
-            })),
-          ),
+                ),
+              ),
+
+
           SizedBox(
             height: 15,
           ),
@@ -585,7 +641,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Text(
-                    "\$${calculateTotalAmount(filteredIncomes).toStringAsFixed(2)}",
+                    "\$${calculateTotalAmount(filteredIncomes,FilteredExpenses).toStringAsFixed(2)}",
                     style: TextStyle(
                         fontSize: 20,
                         color: black,
@@ -601,4 +657,247 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       ),
     );
   }
+Future<void> editincomePopup(BuildContext context, income selectedIncome) async {
+  final TextEditingController _amountController = TextEditingController(
+    text: selectedIncome.amount.toStringAsFixed(2),
+  );
+  double editedAmount = selectedIncome.amount;
+
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            title: Text(
+              selectedIncome.category_name,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Amount',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      editedAmount = double.tryParse(value) ?? 0.0;
+                    });
+                  },
+                ),
+                // Add more fields as needed to edit other properties of the income
+              ],
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
+                    onPressed: () {
+                      // Call the method to update the income with the edited values
+                      updateIncome(selectedIncome.id, editedAmount);
+                      Navigator.pop(context); // Close the popup
+                    },
+                    child: Text('Update'),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
+                    onPressed: () {
+                      // Call the method to delete the income
+                      deleteIncome(selectedIncome.id);
+                      Navigator.pop(context); // Close the popup
+                    },
+                    child: Text('Delete'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
 }
+
+// Helper methods for updating and deleting the income
+Future<void> updateIncome(int incomeId, double amount) async {
+ final url = Uri.parse('http://10.0.2.2:8000/income/income/$incomeId/');
+    final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${widget.accessToken}',
+    // Add any required headers
+  };
+  print(widget.accessToken);
+  final body = jsonEncode({
+    'amount': amount,
+  });
+
+  final response = await http.patch(url, headers: headers, body: body);
+
+  if (response.statusCode == 200) {
+    // Budget created successfully
+    // You can perform any additional actions here
+    print('Inocme updated successfully');
+     showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('SuccessFully Updated Income '),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: button),
+              onPressed: () {
+                fetchIncome(widget.accessToken);
+                Navigator.of(context).pop(); // Close the previous dialog
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+    // fetchdata(widget.accessToken);
+  } else {
+    // Failed to create budget
+    // Handle the error accordingly
+    print('Failed to update income. Status code: ${response.statusCode}');
+  }
+  }
+
+
+Future<void> deleteIncome(int incomeId) async {
+  // Implement the logic to delete the income with the given ID
+}
+
+
+Future<void> editexpensePopup(BuildContext context, expense selectedExpense) async {
+  final TextEditingController _amountController = TextEditingController(
+    text: selectedExpense.amount.toStringAsFixed(2),
+  );
+  double editedAmount = selectedExpense.amount;
+
+  await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return AlertDialog(
+            title: Text(
+              selectedExpense.category_name,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Amount',
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      editedAmount = double.tryParse(value) ?? 0.0;
+                    });
+                  },
+                ),
+                // Add more fields as needed to edit other properties of the expense
+              ],
+            ),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
+                    onPressed: () {
+                      // Call the method to update the expense with the edited values
+                      updateExpense(selectedExpense.id, editedAmount);
+                      Navigator.pop(context); // Close the popup
+                    },
+                    child: Text('Update'),
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
+                    onPressed: () {
+                      // Call the method to delete the expense
+                      deleteExpense(selectedExpense.id);
+                      Navigator.pop(context); // Close the popup
+                    },
+                    child: Text('Delete'),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    },
+  );
+}
+
+// Helper methods for updating and deleting the expense
+Future<void> updateExpense(int expenseId, double amount) async {
+   final url = Uri.parse('http://10.0.2.2:8000/expenses/expenses/$expenseId/');
+    final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${widget.accessToken}',
+    // Add any required headers
+  };
+  print(widget.accessToken);
+  final body = jsonEncode({
+    'amount': amount,
+  });
+
+  final response = await http.patch(url, headers: headers, body: body);
+
+  if (response.statusCode == 200) {
+    // Budget created successfully
+    // You can perform any additional actions here
+    print('Expense updated successfully');
+     showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('SuccessFully Updated Expense '),
+          actions: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: button),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the previous dialog
+                fetchExpense(widget.accessToken);
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+    // fetchdata(widget.accessToken);
+  } else {
+    // Failed to create budget
+    // Handle the error accordingly
+    print('Failed to update expense. Status code: ${response.statusCode}');
+  }
+  }
+  // Implement the logic to update the expense with the given ID and amount
+}
+
+Future<void> deleteExpense(int expenseId) async {
+  // Implement the logic to delete the expense with the given ID
+}
+
+
+

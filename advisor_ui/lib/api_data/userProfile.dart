@@ -58,7 +58,7 @@ class ExpCategory {
     return ExpCategory(
       id: json['id'],
       name: json['name'],
-      iconUrl: json['image_url'].toString(),
+      iconUrl: json['image_url'],
     );
   }
 }

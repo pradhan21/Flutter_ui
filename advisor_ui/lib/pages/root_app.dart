@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'package:advisor_ui/pages/budget_page.dart';
-// import 'package:advisor_ui/pages/chat_page.dart';
 import 'package:advisor_ui/pages/chat.dart';
 import 'package:advisor_ui/pages/create_budge_page.dart';
 import 'package:advisor_ui/pages/daily_page.dart';
-import 'package:advisor_ui/pages/stats_page.dart';
+import 'package:advisor_ui/pages/note.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -25,11 +24,14 @@ class RootApp extends StatefulWidget {
 class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
    bool isKeyboardVisible = false;
   dynamic responseData;
-  late Future<UserProfile> _profileFuture;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
  TextEditingController _amountController = TextEditingController();
   FocusNode amountFocusNode = FocusNode();
   List<ExpCategory> expcategories = [];
+  String fname='';
+  String lname='';
+  String email='';
+  List<UserProfile> profile = [];
   ExpCategory? selectedCategory;
   int pageIndex = 0;
   late List<Widget> pages;
@@ -45,12 +47,12 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
-    _profileFuture = _fetchProfileData(widget.accessToken);
+    _fetchProfileData(widget.accessToken);
     fetchexpCategories(widget.accessToken);
     // Initialize the pages list after accessing the widget.accessToken
     pages = [
       DailyPage(accessToken: widget.accessToken),
-      StatsPage(accessToken: widget.accessToken),
+      NotePage(accessToken: widget.accessToken),
       BudgetPage(accessToken:widget.accessToken ),
       ChatScreen(),
       CreatBudgetPage(accessToken: widget.accessToken),
@@ -104,27 +106,32 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
 //   }
 // }
   Future<UserProfile> _fetchProfileData(String accessToken) async {
-    final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
-    final headers = {'Authorization': 'Bearer $accessToken'};
+  final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
+  final headers = {'Authorization': 'Bearer $accessToken'};
 
-    var response = await http.get(url, headers: headers);
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
-      // print(responseData); // Debug print the response data
-
-      if (responseData is Map<String, dynamic>) {
-        // Check if the response data is of the expected type
-        final userProfile = UserProfile.fromJson(responseData);
-        // print(userProfile); // Debug print the parsed user profile object
-        return userProfile;
-      } else {
-        throw Exception('Invalid response data format');
-      }
-    } else {
-      throw Exception(
-          'Failed to fetch profile data. Status code: ${response.statusCode}');
-    }
+  var response = await http.get(url, headers: headers);
+  if (response.statusCode == 200) {
+    final responseData = jsonDecode(response.body);
+    // Access the user profile data directly from the responseData
+    final userProfile = UserProfile.fromJson(responseData);
+    
+    // Use the userProfile object as needed
+    fname=userProfile.fName;
+    lname=userProfile.lName;
+    email=userProfile.email;
+    print("email: ${userProfile.email}");
+    print("fname: ${userProfile.fName}");
+    print("lname: ${userProfile.lName}");
+    print(fname);
+    print(email);
+    print(lname);
+    return userProfile;
+  } else {
+    throw Exception(
+        'Failed to fetch profile data. Status code: ${response.statusCode}');
   }
+}
+
 
    Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
     final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
@@ -315,7 +322,7 @@ Future<Limits?> _fetchExistingBudget() async {
           padding: const EdgeInsets.all(0),
           children: [
             // Carries the details of User
-            const DrawerHeader(
+            DrawerHeader(
               padding: const EdgeInsets.only(top: 0),
               decoration: BoxDecoration(
                 color: black,
@@ -325,17 +332,14 @@ Future<Limits?> _fetchExistingBudget() async {
               child: UserAccountsDrawerHeader(
                 decoration: BoxDecoration(color: Colors.black87),
                 accountName: Text(
-                  "Aniraj Shahi",
+                  "${fname} ${lname}",
                   style: TextStyle(fontSize: 18),
                 ),
-                accountEmail: Text("anirajshahi@gmail.com"),
+                accountEmail: Text("${email}"),
                 currentAccountPictureSize: Size.square(60),
                 currentAccountPicture: CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: Text(
-                    "A",
-                    style: TextStyle(fontSize: 30.0, color: Colors.teal), 
-                  ),
+                  child: Icon(Icons.person),
                 ),
               ),
             ),
@@ -408,7 +412,7 @@ Future<Limits?> _fetchExistingBudget() async {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
+              leading: const Icon(Icons.supervised_user_circle_rounded),
               title: const Text('Customer Portal'),
               onTap: () {
                 Navigator.pop(context);
@@ -423,12 +427,11 @@ Future<Limits?> _fetchExistingBudget() async {
           },
         ),
             ListTile(
-              leading: const Icon(Icons.diamond_rounded),
-              title: const Text('Go Premium'),
+              leading: const Icon(AntDesign.book),
+              title: const Text('Note'),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, AppRouteName.premium,
-                arguments: {
+                Navigator.pushNamed(context, AppRouteName.note, arguments: {
                     'accessToken': widget.accessToken,
                   },
                 );
@@ -493,7 +496,8 @@ Widget getFloatingActionButton() {
         ),
       ],
     );
-  } else {
+  } 
+  else {
     return FloatingActionButton(
       onPressed: () {
         selectedTab(4);
@@ -551,6 +555,7 @@ void _showcustomPopup(BuildContext context) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
                     onPressed: () async {
                       final double amount = double.parse(_amountController.text);
                       final int categoryId = selectedCategory?.id ?? 0;
@@ -568,6 +573,7 @@ void _showcustomPopup(BuildContext context) {
                               content: Text('A limit for the selected category already exists.'),
                               actions: [
                                 ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: button),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop(); // Close the previous dialog
@@ -587,6 +593,7 @@ void _showcustomPopup(BuildContext context) {
                     child: Text('Create Budget'),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: button),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -621,6 +628,7 @@ void _showcustomPopup(BuildContext context) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:[
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: button),
               onPressed: () async{
                 final double amount = double.parse(_amountController.text);
                 final existingBudget  = await _fetchExistingBudget();
@@ -635,6 +643,7 @@ void _showcustomPopup(BuildContext context) {
                               content: Text('A limit for the overall budget already exists.'),
                               actions: [
                                 ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: button),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     Navigator.of(context).pop(); // Close the previous dialog
@@ -652,7 +661,9 @@ void _showcustomPopup(BuildContext context) {
               },
               child: Text('Create Budget'),
             ),
-            ElevatedButton(onPressed:(){
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: button),
+              onPressed:(){
              Navigator.of(context).pop();
             }, child: Text("Cancel"))
           ],)
@@ -672,7 +683,7 @@ void _showcustomPopup(BuildContext context) {
   Widget getFooter() {
     List<IconData> iconItems = [
       Ionicons.md_calendar,
-      Ionicons.md_star,
+      Ionicons.list_outline,
       Ionicons.md_wallet,
       Ionicons.chatbox_ellipses,
     ];

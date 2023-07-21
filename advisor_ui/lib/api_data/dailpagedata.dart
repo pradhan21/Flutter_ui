@@ -106,7 +106,35 @@ class ExpCategory {
     return ExpCategory(
       id: json['id'],
       name: json['name'],
-      iconUrl: json['image_url'].toString(),
+      iconUrl: json['image_url'],
+    );
+  }
+}
+
+class Profile {
+  final String email;
+  final String username;
+  final String fName;
+  final String lName;
+  final String dateOfBirth;
+  final String phone;
+
+  Profile({
+    required this.email,
+    required this.username,
+    required this.fName,
+    required this.lName,
+    required this.dateOfBirth,
+    required this.phone,
+  });
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    return Profile(
+      email: json['email'],
+      username: json['username'],
+      fName: json['fName'],
+      lName: json['lName'],
+      dateOfBirth: json['date_of_birth'],
+      phone: json['phone'],
     );
   }
 }

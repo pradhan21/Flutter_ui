@@ -53,6 +53,7 @@ dependencies:
   webview_flutter: ^3.0.1
   flutter_keyboard_visibility:
   flutter_speed_dial: ^7.0.0
+  flutter_local_notifications:
 
 dev_dependencies:
   flutter_test:

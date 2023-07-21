@@ -19,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isSigningUp = false; // track whether to login or signin.
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
-  final List<User> _users = [];
+  // final List<User> _users = [];
 
   /// input form controller
   FocusNode emailFocusNode = FocusNode();

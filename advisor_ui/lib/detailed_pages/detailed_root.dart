@@ -6,6 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
 import 'package:advisor_ui/detailed_data/dailyexpense.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class DetailedRoot extends StatefulWidget {
   final String accessToken;
@@ -97,6 +98,32 @@ class NestedTabBar extends StatefulWidget {
   @override
   _NestedTabBarState createState() => _NestedTabBarState();
 }
+// Define flutterLocalNotificationsPlugin as a global variable
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+Future<void> showBudgetNotification() async {
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+  'your_channel_id', // Replace with your channel ID
+  'Budget Channel', // Replace with your channel name
+  // Replace with your channel description
+  importance: Importance.max,
+  priority: Priority.high,
+  ticker: 'ticker',
+  playSound: true, // Example additional named argument (optional)
+);
+
+const NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
+
+  await flutterLocalNotificationsPlugin.show(
+    0,
+    'Budget Notification',
+    'Your budget is over the limit or reaching its limit.',
+    platformChannelSpecifics,
+  );
+}
+
 
 class _NestedTabBarState extends State<NestedTabBar> with TickerProviderStateMixin {
   late final TabController _tabController;
@@ -154,6 +181,8 @@ class _NestedTabBarState extends State<NestedTabBar> with TickerProviderStateMix
       1,
     );
   }
+
+  
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////Expenses Data retrival///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1048,6 +1077,8 @@ Widget buildIncomeReport(){
 
 }
 
+
+
 Widget buildBudgetReport() {
   double totalweekIncome = 0.0;
   double totalweekExpense = 0.0;
@@ -1079,7 +1110,10 @@ Widget buildBudgetReport() {
   if (yearexpenses.isNotEmpty) {
     totalyearExpense = yearexpenses.fold(0.0, (sum, expense) => sum + expense.amount);
   }
-  
+    // Check if the total expenses exceed the budget limit
+  bool isOverLimit = totalweekExpense >= totalweekIncome;
+
+
   return Scaffold(
     body: SingleChildScrollView(
       child: Card(
