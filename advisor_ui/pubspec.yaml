@@ -53,7 +53,12 @@ dependencies:
   webview_flutter: ^3.0.1
   flutter_keyboard_visibility:
   flutter_speed_dial: ^7.0.0
+  firebase_core: ^2.15.0
+  firebase_messaging: ^14.6.5
+  flutter_local_notifications: ^15.1.0+1
 
+# flutter_tawk: ^0.1.0
+# webview_flutter: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

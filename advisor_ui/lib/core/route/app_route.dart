@@ -7,6 +7,7 @@ import '../../pages/budget_page.dart';
 import '../../pages/create_budge_page.dart';
 import '../../pages/customer_portal.dart';
 import '../../pages/daily_page.dart';
+import '../../pages/notification_screen.dart';
 import '../../pages/profile_page.dart';
 import '../../pages/root_app.dart';
 import '../../pages/stats_page.dart';
@@ -14,111 +15,118 @@ import '/core/route/app_route_name.dart';
 import '../../pages/premium.dart';
 import '../../pages/payment.dart';
 
-
 class AppRoute {
   static Route<dynamic>? generate(RouteSettings settings) {
     switch (settings.name) {
       case AppRouteName.home:
         return MaterialPageRoute(
-          builder: (_) =>  HomeScreen(),
+          builder: (_) => HomeScreen(),
           settings: settings,
         );
-        
-        case AppRouteName.budget:
+
+      case AppRouteName.budget:
         final arguments = settings.arguments as Map<String, dynamic>;
-        final accessToken=arguments['accessToken'];
+        final accessToken = arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  BudgetPage(accessToken: accessToken),
+          builder: (_) => BudgetPage(accessToken: accessToken),
           settings: settings,
         );
 
-         case AppRouteName.payment:
-          
+      case AppRouteName.payment:
         return MaterialPageRoute(
-          builder: (_) =>  CardFromScreen(),
+          builder: (_) => CardFromScreen(),
           settings: settings,
         );
 
-
-         case AppRouteName.customer:
+      case AppRouteName.customer:
         return MaterialPageRoute(
-          builder: (_) =>  SubscriptionView(),
+          builder: (_) => SubscriptionView(),
           settings: settings,
         );
 
-
-        case AppRouteName.premium:
+      case AppRouteName.premium:
         final arguments = settings.arguments as Map<String, dynamic>;
-        final accessToken=arguments['accessToken'];
+        final accessToken = arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  PremiumPage(accessToken: accessToken),
+          builder: (_) => PremiumPage(accessToken: accessToken),
           settings: settings,
         );
-        case AppRouteName.settings:
+      case AppRouteName.settings:
         final arguments = settings.arguments as Map<String, dynamic>;
-        final accessToken=arguments['accessToken'];
+        final accessToken = arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  SettingsPage(accessToken:accessToken),
+          builder: (_) => SettingsPage(accessToken: accessToken),
           settings: settings,
         );
-        case AppRouteName.createbudget:
+      case AppRouteName.createbudget:
         final arguments = settings.arguments as Map<String, dynamic>;
-        final accessToken=arguments['accessToken'];
+        final accessToken = arguments['accessToken'];
 
         return MaterialPageRoute(
-          builder: (_) =>  CreatBudgetPage(accessToken:accessToken),
+          builder: (_) => CreatBudgetPage(accessToken: accessToken),
           settings: settings,
         );
 
-        case AppRouteName.daily:
+      case AppRouteName.daily:
         final arguments = settings.arguments as Map<String, dynamic>;
-          final accessToken = arguments['accessToken'];
+        final accessToken = arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  DailyPage(accessToken: accessToken),
+          builder: (_) => DailyPage(accessToken: accessToken),
           settings: settings,
         );
-        
-        case AppRouteName.profile:
-          final arguments = settings.arguments as Map<String, dynamic>;
-          final accessToken = arguments['accessToken'];
-          final responseData = arguments['responseData'];
 
-          return MaterialPageRoute(
-            builder: (_) => ProfilePage(accessToken: accessToken, responseData: responseData,),
-            settings: settings,
-          );
+      case AppRouteName.profile:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final accessToken = arguments['accessToken'];
+        final responseData = arguments['responseData'];
 
+        return MaterialPageRoute(
+          builder: (_) => ProfilePage(
+            accessToken: accessToken,
+            responseData: responseData,
+          ),
+          settings: settings,
+        );
 
-        // case AppRouteName.root:
-        // var arguments = settings.arguments;
-        // if (arguments != null && arguments is Map && arguments.containsKey('accessToken')) {
-        //   var accessToken = arguments['accessToken'];
-        //   return MaterialPageRoute(
-        //     builder: (_) => RootApp(accessToken: accessToken),
-        //     settings: settings,
-        //   );
-        // }
-        // // Handle the case when arguments are missing or not in the expected format
-        // return null;
-      case AppRouteName.root: 
+      // case AppRouteName.root:
+      // var arguments = settings.arguments;
+      // if (arguments != null && arguments is Map && arguments.containsKey('accessToken')) {
+      //   var accessToken = arguments['accessToken'];
+      //   return MaterialPageRoute(
+      //     builder: (_) => RootApp(accessToken: accessToken),
+      //     settings: settings,
+      //   );
+      // }
+      // // Handle the case when arguments are missing or not in the expected format
+      // return null;
+      case AppRouteName.root:
         (context) {
-        final accessToken = ModalRoute.of(context)!.settings.arguments as String;
-        return RootApp(accessToken: accessToken);
+          final accessToken =
+              ModalRoute.of(context)!.settings.arguments as String;
+          return RootApp(accessToken: accessToken);
         };
         return null;
-        
-          case AppRouteName.stats:
-          final arguments = settings.arguments as Map<String, dynamic>;
-          final accessToken = arguments['accessToken'];
+
+      case AppRouteName.stats:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final accessToken = arguments['accessToken'];
         return MaterialPageRoute(
-          builder: (_) =>  StatsPage(accessToken: accessToken),
+          builder: (_) => StatsPage(accessToken: accessToken),
           settings: settings,
         );
 
-        case AppRouteName.details:
-          final arguments = settings.arguments as Map<String, dynamic>;
-          final accessToken = arguments['accessToken'];
-          return MaterialPageRoute(builder: (_) => DetailedRoot(accessToken: accessToken));
+      case AppRouteName.details:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final accessToken = arguments['accessToken'];
+        return MaterialPageRoute(
+            builder: (_) => DetailedRoot(accessToken: accessToken));
+
+      // Notification center
+      case AppRouteName.notification:
+        return MaterialPageRoute(
+          builder: (_) => const NotificationScreen(),
+          settings: settings,
+        );
     }
 
     return null;
