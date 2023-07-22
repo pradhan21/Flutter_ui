@@ -13,4 +13,5 @@ class AppRouteName {
   static const String payment = "/payment ";
   static const String customer = "/customer ";
   static const String notification = "/notification";
+  static const String note = "/note ";
 }

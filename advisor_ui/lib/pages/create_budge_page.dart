@@ -13,12 +13,10 @@ import 'package:velocity_x/velocity_x.dart';
 import 'addCategory.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class CreatBudgetPage extends StatefulWidget {
   final String accessToken;
   CreatBudgetPage({required this.accessToken});
- 
+
   @override
   _BudgetAddPageState createState() => _BudgetAddPageState();
 }
@@ -40,7 +38,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
   String? selectedIcon;
   // Define a list to store the categories
   List<Category> categories = [];
-   List<ExpCategory> expcategories = [];
+  List<ExpCategory> expcategories = [];
   late String categoryName;
   late int categoryId;
   @override
@@ -56,8 +54,8 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
       print('Error fetching categories: $error');
       // Handle the error or display an error message here
     });
-  
-   // Call the fetchCategories function and store the result in the 'categories' list
+
+    // Call the fetchCategories function and store the result in the 'categories' list
     fetchexpCategories(widget.accessToken).then((fetchedCategories) {
       setState(() {
         expcategories = fetchedCategories;
@@ -165,7 +163,6 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
       for (var categoryData in categoriesData) {
         categories.add(Category.fromJson(categoryData));
-        
       }
 
       return categories;
@@ -192,7 +189,6 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
       for (var categoryData in categoriesData) {
         expcategories.add(ExpCategory.fromJson(categoryData));
-        
       }
 
       return expcategories;
@@ -204,60 +200,66 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////api to add new income/////////////////////////////////////////////////////////
-void createIncome(String budgetName, String budgetPrice, int category ) async {
-  final url = 'http://10.0.2.2:8000/income/income/'; // Update with the correct API endpoint
+  void createIncome(String budgetName, String budgetPrice, int category) async {
+    final url =
+        'http://10.0.2.2:8000/income/income/'; // Update with the correct API endpoint
 
-  // Replace 'accessToken' with your actual access token
-  final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
-  
-  final body = {
-    'note': budgetName,
-    'amount': budgetPrice,
-    'incCategory':category.toString(),
-  };
+    // Replace 'accessToken' with your actual access token
+    final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
 
-  final response = await http.post(Uri.parse(url), headers: headers, body: body);
+    final body = {
+      'note': budgetName,
+      'amount': budgetPrice,
+      'incCategory': category.toString(),
+    };
 
-  if (response.statusCode == 201) {
-    _budgetName..clear();
-    _budgetName..clear();
-    // Success: Handle the response as needed
-    print('Income created successfully');
-  } else {
-    // Error: Handle the error condition
-    print('Failed to create income. Status code: ${response.statusCode}');
+    final response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 201) {
+      _budgetName..clear();
+      _budgetName..clear();
+      // Success: Handle the response as needed
+      print('Income created successfully');
+    } else {
+      // Error: Handle the error condition
+      print('Failed to create income. Status code: ${response.statusCode}');
+    }
   }
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////api to add new expenses/////////////////////////////////////////////////////////
-void createexpenses(String expname, String expprice,String note , int category ) async {
-  final url = 'http://10.0.2.2:8000/expenses/expenses/'; // Update with the correct API endpoint
+  void createexpenses(
+      String expname, String expprice, String note, int category) async {
+    final url =
+        'http://10.0.2.2:8000/expenses/expenses/'; // Update with the correct API endpoint
 
-  // Replace 'accessToken' with your actual access token
-  final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
-  
-  final body = {
-    'name': expname,
-    'amount': expprice,
-    'note':note,
-    'exCategory':category.toString(),
-  };
+    // Replace 'accessToken' with your actual access token
+    final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
 
-  final response = await http.post(Uri.parse(url), headers: headers, body: body);
+    final body = {
+      'name': expname,
+      'amount': expprice,
+      'note': note,
+      'exCategory': category.toString(),
+    };
 
-  if (response.statusCode == 201) {
-    _budgetNameexp.clear();
-    _budgetPriceexp..clear();
-    _noteexp..clear();
-    // Success: Handle the response as needed
-    print('expenses created successfully');
-  } else {
-    // Error: Handle the error condition
-    print('Failed to create income. Status code: ${response.statusCode}');
+    final response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 201) {
+      _budgetNameexp.clear();
+      _budgetPriceexp..clear();
+      _noteexp..clear();
+      // Success: Handle the response as needed
+      print('expenses created successfully');
+    } else {
+      // Error: Handle the error condition
+      print('Failed to create income. Status code: ${response.statusCode}');
+    }
   }
-}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
   bool showwidget1 = true;
   bool showwidget2 = false;
@@ -279,86 +281,97 @@ void createexpenses(String expname, String expprice,String note , int category )
   }
 
   Widget getBody(BuildContext context) {
-   
-    print("BudgetPage__________:${widget.accessToken}");
+    // print("BudgetPage__________:${widget.accessToken}");
     var size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color:black,
+              color: black,
               child: Padding(
-            padding:
-                const EdgeInsets.only(top: 0),
-            child: Column(
-              children: [
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: const EdgeInsets.only(top: 0),
+                child: Column(
                   children: [
-                   Container(
-                     decoration: BoxDecoration(color: black,),
-                    //  width: 411,
-                    //  height: 160,
-                     child:Padding(
-                       padding:
-                const EdgeInsets.only(top: 55, right: 20, left: 20, bottom: 25), 
-                     child : Column(
-                      children:[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children:[
-                            const SizedBox(width: 80),
-                            Text(
-                              "Create Income/expenses",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold, 
-                                  color: white),
-                            ),]
+                    Row(
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            color: black,
+                          ),
+                          //  width: 411,
+                          //  height: 160,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 55, right: 20, left: 20, bottom: 25),
+                            child: Column(children: [
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    const SizedBox(width: 80),
+                                    Text(
+                                      "Create Income/expenses",
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: white),
+                                    ),
+                                  ]),
+                              const SizedBox(height: 30),
+                              Row(
+                                children: [
+                                  const SizedBox(width: 50),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showwidget1 = true;
+                                        showwidget2 = false;
+                                        _budgetName.clear();
+                                        _budgetPrice.clear();
+                                      });
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              button),
+                                    ),
+                                    child: Text(
+                                      'Income',
+                                      style:
+                                          TextStyle(color: white, fontSize: 18),
+                                    ),
+                                  ),
+                                  SizedBox(width: 20),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showwidget1 = false;
+                                        showwidget2 = true;
+                                        _budgetName.clear();
+                                        _budgetPrice.clear();
+                                      });
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all<Color>(
+                                              button),
+                                    ),
+                                    child: Text('Expenses',
+                                        style: TextStyle(
+                                            color: white, fontSize: 18)),
+                                  ),
+                                ],
+                              )
+                            ]),
+                          ),
                         ),
-                        const SizedBox(height: 30),
-                        Row(
-                      children:[
-                     const SizedBox(width: 50),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          showwidget1 = true;
-                          showwidget2 = false;
-                          _budgetName.clear();
-                          _budgetPrice.clear();
-                        });
-                      },
-                      style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
-                      child: Text('Income', style: TextStyle(color:white , fontSize: 18),),
+                      ],
                     ),
-                    SizedBox(width: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          showwidget1 = false;
-                          showwidget2 = true;
-                          _budgetName.clear();
-                          _budgetPrice.clear();
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
-                      child: Text('Expenses',style: TextStyle(color:white,fontSize: 18)),
-                    ),],)]
-                   ),),
-                ),],
+                  ],
                 ),
-              ],
-            ),
-          )),
+              )),
           //////////////category integration////////////////
           if (showwidget1) ...[
             Container(
@@ -416,11 +429,10 @@ void createexpenses(String expname, String expprice,String note , int category )
                             });
                             // _showPopup(context);
                           },
-                           style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(button),
+                          ),
                           child: Text('Add Category'))
                     ],
                   ),
@@ -448,7 +460,7 @@ void createexpenses(String expname, String expprice,String note , int category )
                       categoryName = categories[index].name;
                       categoryId = categories[index].id;
                       // print(categoryName);
-                      },
+                    },
                     child: Padding(
                       padding: const EdgeInsets.only(left: 10),
                       child: Container(
@@ -486,17 +498,17 @@ void createexpenses(String expname, String expprice,String note , int category )
                                   shape: BoxShape.circle,
                                   color: grey.withOpacity(0.15),
                                 ),
-                             child: Center(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.network(
-                                  categories[index].iconUrl,
-                                  width: 30,
-                                  height: 30,
-                                  fit: BoxFit.cover,
+                                child: Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(
+                                      categories[index].iconUrl,
+                                      width: 30,
+                                      height: 30,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                               ),
                               Text(
                                 categories[index].name,
@@ -520,95 +532,93 @@ void createexpenses(String expname, String expprice,String note , int category )
             Padding(
               padding: const EdgeInsets.only(left: 20, right: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  Text(
-                    "Budget name",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 17,
-                      color: Color.fromARGB(255, 0, 0, 0),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Budget name",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 17,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
                     ),
-                  ),
-                  TextField(
-                    controller: _budgetName,
-                    cursorColor: black,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w400,
-                      color: black,
+                    TextField(
+                      controller: _budgetName,
+                      cursorColor: black,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        color: black,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: "Enter Budget Name",
+                        border: InputBorder.none,
+                      ),
                     ),
-                    decoration: InputDecoration(
-                      hintText: "Enter Budget Name",
-                      border: InputBorder.none,
+                    SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        width: (size.width - 140),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Enter budget",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 17,
-                                color: Color(0xff67727d),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: (size.width - 140),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Enter budget",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 17,
+                                  color: Color(0xff67727d),
+                                ),
                               ),
+                              TextField(
+                                controller: _budgetPrice,
+                                cursorColor: black,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  color: black,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: "Enter Budget",
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: button,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: IconButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all<Color>(button),
                             ),
-                            TextField(
-                              controller: _budgetPrice,
-                              cursorColor: black,
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                color: black,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: "Enter Budget",
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ],
+                            icon: const Icon(AntDesign.arrowright),
+                            onPressed: () {
+                              // Call the createIncome function with the input values
+                              // print(_budgetName.text);
+                              // print(_budgetPrice.text);
+                              createIncome(_budgetName.text, _budgetPrice.text,
+                                  categoryId);
+                            },
+                            color: white,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: button,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: IconButton(
-                          
-                           style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>( 
-                            button),
-                      ),
-                          icon: const Icon(AntDesign.arrowright),
-                          onPressed: () {
-                            // Call the createIncome function with the input values
-                            // print(_budgetName.text);
-                            // print(_budgetPrice.text);
-                            createIncome(_budgetName.text, _budgetPrice.text,categoryId);
-                          },
-                          color: white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ]
-              ),
+                      ],
+                    ),
+                  ]),
             ),
           ],
           if (showwidget2) ...[
@@ -665,11 +675,10 @@ void createexpenses(String expname, String expprice,String note , int category )
                               showaddcategory1 = true;
                             });
                           },
-                           style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(button),
+                          ),
                           child: Text('Add Category'))
                       // IconButton(
                       //   icon: Icon(Icons.add),
@@ -739,17 +748,17 @@ void createexpenses(String expname, String expprice,String note , int category )
                                   shape: BoxShape.circle,
                                   color: grey.withOpacity(0.15),
                                 ),
-                               child: Center(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Image.network(
-                                    expcategories[index].iconUrl,
-                                    width: 30,
-                                    height: 30,
-                                    fit: BoxFit.cover,
+                                child: Center(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(
+                                      expcategories[index].iconUrl,
+                                      width: 30,
+                                      height: 30,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
                               ),
                               Text(
                                 expcategories[index].name,
@@ -796,7 +805,7 @@ void createexpenses(String expname, String expprice,String note , int category )
                   SizedBox(
                     height: 20,
                   ),
-                   Text(
+                  Text(
                     "Note",
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
@@ -856,17 +865,20 @@ void createexpenses(String expname, String expprice,String note , int category )
                             color: button,
                             borderRadius: BorderRadius.circular(15)),
                         child: IconButton(
-                           style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(button),
+                          ),
                           icon: const Icon(AntDesign.arrowright),
                           onPressed: () {
                             // print(_budgetNameexp.text);
                             // print(_budgetPriceexp.text);
                             // print(_noteexp.text);
-                            createexpenses(_budgetNameexp.text, _budgetPriceexp.text,_noteexp.text, categoryId);
+                            createexpenses(
+                                _budgetNameexp.text,
+                                _budgetPriceexp.text,
+                                _noteexp.text,
+                                categoryId);
                           },
                           color: white,
                         ),
@@ -915,11 +927,9 @@ void createexpenses(String expname, String expprice,String note , int category )
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                   style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(button),
+                  ),
                   onPressed: () {
                     Navigator.pop(context);
                     // Retrieve the category name and selected icon
@@ -951,11 +961,9 @@ void createexpenses(String expname, String expprice,String note , int category )
                   child: Text('Save Category'),
                 ),
                 ElevatedButton(
-                   style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(button),
+                    ),
                     onPressed: () {
                       setState(() {
                         showaddcategory = false;
@@ -1017,11 +1025,9 @@ void createexpenses(String expname, String expprice,String note , int category )
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
-                   style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(button),
+                  ),
                   onPressed: () {
                     // Retrieve the category name and selected icon
                     String categoryName = _nameController.text;
@@ -1038,11 +1044,9 @@ void createexpenses(String expname, String expprice,String note , int category )
                   child: Text('Save Category'),
                 ),
                 ElevatedButton(
-                  style: ButtonStyle(
-                        
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            button),
-                      ),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(button),
+                    ),
                     onPressed: () {
                       setState(() {
                         showaddcategory1 = false;
@@ -1114,7 +1118,6 @@ void createexpenses(String expname, String expprice,String note , int category )
 //           }
 //           );
 }
-
 
 class category {
   final String name;

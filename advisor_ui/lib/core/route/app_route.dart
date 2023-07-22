@@ -7,7 +7,11 @@ import '../../pages/budget_page.dart';
 import '../../pages/create_budge_page.dart';
 import '../../pages/customer_portal.dart';
 import '../../pages/daily_page.dart';
+
 import '../../pages/notification_screen.dart';
+
+import '../../pages/note.dart';
+
 import '../../pages/profile_page.dart';
 import '../../pages/root_app.dart';
 import '../../pages/stats_page.dart';
@@ -38,6 +42,13 @@ class AppRoute {
           settings: settings,
         );
 
+      case AppRouteName.note:
+        final arguments = settings.arguments as Map<String, dynamic>;
+        final accessToken = arguments['accessToken'];
+        return MaterialPageRoute(
+          builder: (_) => NotePage(accessToken: accessToken),
+          settings: settings,
+        );
       case AppRouteName.customer:
         return MaterialPageRoute(
           builder: (_) => SubscriptionView(),

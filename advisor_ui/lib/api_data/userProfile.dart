@@ -31,10 +31,7 @@ class Category {
   final String name;
   final String iconUrl;
 
-  Category({
-    required this.id, 
-    required this.name, 
-    required this.iconUrl});
+  Category({required this.id, required this.name, required this.iconUrl});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
@@ -44,25 +41,22 @@ class Category {
     );
   }
 }
+
 class ExpCategory {
   final int id;
   final String name;
   final String iconUrl;
 
-  ExpCategory({
-    required this.id, 
-    required this.name, 
-    required this.iconUrl});
+  ExpCategory({required this.id, required this.name, required this.iconUrl});
 
   factory ExpCategory.fromJson(Map<String, dynamic> json) {
     return ExpCategory(
       id: json['id'],
       name: json['name'],
-      iconUrl: json['image_url'].toString(),
+      iconUrl: json['image_url'],
     );
   }
 }
-
 
 class income {
   final int id;
@@ -75,25 +69,25 @@ class income {
   // final String iconUrl;
 
   income({
-    required this.id, 
+    required this.id,
     required this.user_id,
     required this.category_id,
     required this.category_name,
     required this.date,
     required this.amount,
-    required this.note, 
+    required this.note,
     // required this.iconUrl
-    });
+  });
 
   factory income.fromJson(Map<String, dynamic> json) {
     return income(
       id: json['id'],
-      user_id:json['user'],
-      category_id:json['incCategory'],
+      user_id: json['user'],
+      category_id: json['incCategory'],
       category_name: json['incCategory_name'],
-      date:json['created_Date'].toString(),
-      amount:json['amount'],
-      note:json["note"],
+      date: json['created_Date'].toString(),
+      amount: json['amount'],
+      note: json["note"],
     );
   }
 }
@@ -108,36 +102,36 @@ class expense {
   final int categoryid;
   final String categoryname;
   //"id": 4,
-        // "user": 9,
-        // "name": "asdasa",
-        // "note": "sdasd",
-        // "amount": 15000.0,
-        // "created_date": "2023-07-07",
-        // "exCategory": 32,
-        // "exCategory_name": "Clothing"
+  // "user": 9,
+  // "name": "asdasa",
+  // "note": "sdasd",
+  // "amount": 15000.0,
+  // "created_date": "2023-07-07",
+  // "exCategory": 32,
+  // "exCategory_name": "Clothing"
   expense({
     required this.id,
-  required this.user_id,
-  required this.name,
-  required this.note,
-  required this.amount,
-  required this.date,
-  required this.categoryid,
-  required this.categoryname,
-    });
+    required this.user_id,
+    required this.name,
+    required this.note,
+    required this.amount,
+    required this.date,
+    required this.categoryid,
+    required this.categoryname,
+  });
 
   factory expense.fromJson(Map<String, dynamic> json) {
-  return expense(
-    id: json['id'],
-    user_id: json['user'],
-    name: json['name'],
-    note: json["note"],
-    amount: json['amount'],
-    date: json['created_date'].toString(),
-    categoryid: json['exCategory'],
-    categoryname: json['exCategory_name'],
-  );
-}
+    return expense(
+      id: json['id'],
+      user_id: json['user'],
+      name: json['name'],
+      note: json["note"],
+      amount: json['amount'],
+      date: json['created_date'].toString(),
+      categoryid: json['exCategory'],
+      categoryname: json['exCategory_name'],
+    );
+  }
 }
 
 class Limit {
@@ -160,15 +154,12 @@ class Limits {
   final int id;
   final double amount;
 
-
   Limits({required this.id, required this.amount});
 
   factory Limits.fromJson(Map<String, dynamic> json) {
     return Limits(
       id: json['id'],
       amount: json['overall_limit'],
-  
     );
   }
 }
-

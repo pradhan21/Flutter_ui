@@ -17,27 +17,26 @@ class expense {
 //  "exCategory": null
   expense({
     required this.id,
-  required this.user,
-  required this.name,
-  required this.note,
-  required this.amount,
-  required this.date,
-  required this.category_id,
-  required this.category_name,
-    });
+    required this.user,
+    required this.name,
+    required this.note,
+    required this.amount,
+    required this.date,
+    required this.category_id,
+    required this.category_name,
+  });
 
   factory expense.fromJson(Map<String, dynamic> json) {
     return expense(
-      id: json['id'],
-      user:json['user'],
-      name: json['name'],
-       note:json["note"],
-      amount:json['amount'],
-       date: json['created_date'] != null ? json['created_date'].toString() : '',
-      category_id:json['exCategory'],
-      category_name:json['exCategory_name']
-     
-    );
+        id: json['id'],
+        user: json['user'],
+        name: json['name'],
+        note: json["note"],
+        amount: json['amount'],
+        date:
+            json['created_date'] != null ? json['created_date'].toString() : '',
+        category_id: json['exCategory'],
+        category_name: json['exCategory_name']);
   }
 }
 
@@ -52,37 +51,35 @@ class income {
   // final String iconUrl;
 
   income({
-    required this.id, 
+    required this.id,
     required this.user_id,
     required this.category_id,
     required this.category_name,
     required this.date,
     required this.amount,
-    required this.note, 
+    required this.note,
     // required this.iconUrl
-    });
+  });
 
   factory income.fromJson(Map<String, dynamic> json) {
     return income(
       id: json['id'],
-      user_id:json['user'],
-      category_id:json['incCategory'],
+      user_id: json['user'],
+      category_id: json['incCategory'],
       category_name: json['incCategory_name'],
-      date:json['created_Date'].toString(),
-      amount:json['amount'],
-      note:json["note"],
+      date: json['created_Date'].toString(),
+      amount: json['amount'],
+      note: json["note"],
     );
   }
 }
+
 class Category {
   final int id;
   final String name;
   final String iconUrl;
 
-  Category({
-    required this.id, 
-    required this.name, 
-    required this.iconUrl});
+  Category({required this.id, required this.name, required this.iconUrl});
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
@@ -92,21 +89,47 @@ class Category {
     );
   }
 }
+
 class ExpCategory {
   final int id;
   final String name;
   final String iconUrl;
 
-  ExpCategory({
-    required this.id, 
-    required this.name, 
-    required this.iconUrl});
+  ExpCategory({required this.id, required this.name, required this.iconUrl});
 
   factory ExpCategory.fromJson(Map<String, dynamic> json) {
     return ExpCategory(
       id: json['id'],
       name: json['name'],
-      iconUrl: json['image_url'].toString(),
+      iconUrl: json['image_url'],
+    );
+  }
+}
+
+class Profile {
+  final String email;
+  final String username;
+  final String fName;
+  final String lName;
+  final String dateOfBirth;
+  final String phone;
+
+  Profile({
+    required this.email,
+    required this.username,
+    required this.fName,
+    required this.lName,
+    required this.dateOfBirth,
+    required this.phone,
+  });
+  factory Profile.fromJson(Map<String, dynamic> json) {
+    return Profile(
+      email: json['email'],
+      username: json['username'],
+      fName: json['fName'],
+      lName: json['lName'],
+      dateOfBirth: json['date_of_birth'],
+      phone: json['phone'],
     );
   }
 }
