@@ -59,7 +59,7 @@ late double totalreceivable = 0;
 
   final response = await http.post(url, headers: headers, body: body);
 
-  if (response.statusCode == 201) {
+  if (response.statusCode == 200)  {
     // Budget created successfully
     // You can perform any additional actions here
     print('NOte created successfully');
@@ -67,13 +67,13 @@ late double totalreceivable = 0;
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
+        return AlertDialog (
           title: Text('SuccessFully created Note '),
           actions: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: button),
               onPressed: () {
-                Navigator.of(context).pop();
+                
                 Navigator.of(context).pop(); // Close the previous dialog
               },
               child: Text('OK'),
@@ -82,7 +82,8 @@ late double totalreceivable = 0;
         );
       },
     );
-    fetchdata(widget.accessToken);
+    await fetchamount(widget.accessToken);
+    await fetchdata(widget.accessToken);
   } else {
     // Failed to create budget
     // Handle the error accordingly
@@ -131,7 +132,8 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
         );
       },
     );
-   await fetchdata(widget.accessToken);
+    await fetchamount(widget.accessToken);
+    await fetchdata(widget.accessToken);
   } else {
     // Failed to create budget
     // Handle the error accordingly
@@ -182,11 +184,10 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
       for (var categoryData in categoriesData) {
         notesamount.add(noteamount.fromJson(categoryData));
       }
-      double totalPayable = 0;
+      
         for (var item in notesamount) {
           totalPayable = item.pamount;
         }
-        double totalreceivable = 0;
         for (var item in notesamount) {
           totalreceivable = item.ramount;
         }
@@ -195,6 +196,7 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
       setState(() {
         this.notesamount = notesamount;
       });
+    await fetchdata(widget.accessToken);
       return notesamount;
     } else {
       throw Exception(
@@ -222,6 +224,7 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
      setState(() {
     notesdata.removeWhere((item) => item.note_id == note_id);
   });
+  await fetchamount(widget.accessToken);
   await fetchdata(widget.accessToken);
   Navigator.pushNamed(context, AppRouteName.root, arguments: { 'accessToken': widget.accessToken,});
   } else {
@@ -236,13 +239,15 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
   Color getTileColor(String type) {
     switch (type) {
       case 'receivable':
-        return Colors.blue[700]!;
+        return Colors.blue.shade400;
       case 'payable':
-        return Colors.red;
+        return Colors.red.shade400;
       default:
         return Colors.grey; // Set a default color when the type is not recognizable
     }
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -253,15 +258,15 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
         children:[
           Container(
             color:black,
-            height: 150,
+            height: 170,
             child:Padding(
-            padding: EdgeInsets.only(top: 45, left: 15, right: 15),
+            padding: EdgeInsets.only(top: 55, left: 15, right: 15),
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const SizedBox(width:50),
+                      // const SizedBox(width:50),
                       Text(
                         "Notes",
                         style: TextStyle(
@@ -270,31 +275,56 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
                           color: Colors.white,
                         ),
                       ),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.search,color: white,) ),                    
+                      // IconButton(onPressed: (){}, icon: Icon(Icons.search,color: white,) ),                    
+                    ],
+                  ),const SizedBox(height:20),
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width:50),
+                      Text(
+                        "All Available Notes ",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      IconButton(onPressed: () {
+              // method to show the search bar
+                      showSearch(
+                        context: context,
+                        // delegate to customize the search bar
+                        delegate:   CustomSearchDelegate(notesdata),
+                      );
+                      },icon: Icon(Icons.search,color: white,) ),                    
                     ],
                   ),
+                  
                 ],
               )
             )
           ),
           Container(
-            color:grey,
+            color:Color.fromARGB(255, 46, 45, 45),
             height: 80,
             child:Padding(
-                padding:EdgeInsets.only(top: 20),
+                padding:EdgeInsets.only(top: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children:[
                     Column(
                       children: [
-                        Text("Total Payable", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text("RS ${totalPayable}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                        Text("Total Payable", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color:white)),
+                        const SizedBox(height:8),
+                        Text("RS ${totalPayable}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal,color:red)),
                       ],
                     ),
                     Column(
                       children: [
-                        Text("Total Receivable", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text("RS ${totalreceivable}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal)),
+                        Text("Total Receivable", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color:white)),
+                        const SizedBox(height:8),
+                        Text("RS ${totalreceivable}", style: TextStyle(fontSize: 16, fontWeight: FontWeight.normal,color:const Color.fromARGB(255, 0, 140, 255))),
                       ],
                     )
                   ]
@@ -303,7 +333,7 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
           ),
           Container(
           child:Padding(
-          padding: EdgeInsets.only( left: 15, right: 15, bottom:10),
+          padding: EdgeInsets.only( top:10, bottom:10),
           child: Column(
             children: [
             // Add some spacing between the title and the list
@@ -312,7 +342,7 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
                     child: Text('No data found.'),
                   )
                 : Padding(
-  padding: EdgeInsets.symmetric(horizontal: 15),
+  padding: EdgeInsets.symmetric(horizontal: 4), //
   child: ListView.builder(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
@@ -325,17 +355,30 @@ Future<void> _updatenote(int id, title, int amount, String desc, String type, St
         padding: EdgeInsets.symmetric(vertical: 8), // Set the vertical spacing
         child: Material(
           clipBehavior: Clip.antiAlias,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
+            height: 100,
             child: ListTile(
-              title:Row(
+              title:Column(
+                children:[
+                  const SizedBox(height:20),
+                  Row(
+                
                 mainAxisAlignment:MainAxisAlignment.spaceBetween, 
                   children:[
                     Text(note.title, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                      Text(note.amount.toStringAsFixed(2), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   ]
               ),
-              subtitle: Text(note.discription,style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal)),
+              const SizedBox(height:10),
+                Row(
+                
+                mainAxisAlignment:MainAxisAlignment.spaceBetween, 
+                  children:[
+                    Text(note.discription,style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal)),
+                     Text(note.date, style: TextStyle(fontSize: 18, fontWeight: FontWeight.normal)),
+                  ]
+              ),]),
               tileColor: tileColor,
               onTap: () {
                 // Custom page transition when tapping on the ListTile
@@ -683,4 +726,139 @@ void _showeditPopup(BuildContext context, notedata note ) {
   );
 }
 
+}
+class CustomSearchDelegate extends SearchDelegate {
+// Demo list to show querying
+ List<notedata> notesdata = []; // Add the notesdata list as a class member
+
+  CustomSearchDelegate(List<notedata> notesdata) {
+    this.notesdata = notesdata; // Initialize the notesdata list
+  }
+List<String> searchTerms = [
+	"Apple",
+	"Banana",
+	"Mango",
+	"Pear",
+	"Watermelons",
+	"Blueberries",
+	"Pineapples",
+	"Strawberries"
+];
+	
+// first overwrite to
+// clear the search text
+@override
+List<Widget>? buildActions(BuildContext context) {
+	return [
+	IconButton(
+		onPressed: () {
+		query = '';
+		},
+		icon: Icon(Icons.clear),
+	),
+	];
+}
+
+// second overwrite to pop out of search menu
+@override
+Widget? buildLeading(BuildContext context) {
+	return IconButton(
+	onPressed: () {
+		close(context, null);
+	},
+	icon: Icon(Icons.arrow_back),
+	);
+}
+
+// third overwrite to show query result
+@override
+Widget buildResults(BuildContext context) {
+	List<String> matchQuery = [];
+	for (var fruit in searchTerms) {
+	if (fruit.toLowerCase().contains(query.toLowerCase())) {
+		matchQuery.add(fruit);
+	}
+	}
+	return ListView.builder(
+	itemCount: matchQuery.length,
+	itemBuilder: (context, index) {
+		var result = matchQuery[index];
+		return ListTile(
+		title: Text(result),
+		);
+	},
+	);
+}
+
+// last overwrite to show the
+// querying process at the runtime
+
+ @override
+Widget buildSuggestions(BuildContext context) {
+  // Filter the notesdata list based on the search query
+  List<notedata> matchQuery = notesdata
+      .where((note) =>
+          note.title.toLowerCase().contains(query.toLowerCase()))
+      .toList();
+
+  return Container(
+    color:  Color.fromARGB(255, 233, 227, 227), // Set the background color of the suggestions list here
+    child: ListView.builder(
+      itemCount: matchQuery.length,
+      itemBuilder: (context, index) {
+        var result = matchQuery[index];
+        return ListTile(
+          title: Text(result.title),
+          subtitle: Text(result.discription),
+          onTap: () {
+            // Navigate to the details page when the user taps on the ListTile
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) {
+                  // This is your details page
+                  return Scaffold(
+                    backgroundColor: Color.fromARGB(255, 233, 227, 227),
+                    appBar: AppBar(
+                      title: Text(result.title),
+                      backgroundColor: Colors.black,
+                    ),
+                    body: Padding(
+                      padding: EdgeInsets.only(top: 20, right: 10, left: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Amount:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                          Text(" ${result.amount.toStringAsFixed(2)}",style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal)),
+                          const SizedBox(height: 20,),
+                          Text("Description:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                          Text("${result.discription}",style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal)),
+                          const SizedBox(height: 20,),
+                          Text("Due Date:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                          Text(" ${result.date}",style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal)),
+                          const SizedBox(height: 20,),
+                          Text("Created Date:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                          Text(" ${result.created_date}",style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal)),
+                          const SizedBox(height: 20,),
+                          Text("Type:", style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),),
+                          Text("Type: ${result.type}",style: TextStyle(fontSize: 25, fontWeight: FontWeight.normal)),
+                          const SizedBox(height: 50,),
+                          // Add other details you want to display...
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  // Custom transition animation
+                  return FadeTransition(opacity: animation, child: child);
+                },
+              ),
+            );
+          },
+        );
+      },
+    ),
+  );
+}
 }

@@ -54,7 +54,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
       DailyPage(accessToken: widget.accessToken),
       NotePage(accessToken: widget.accessToken),
       BudgetPage(accessToken:widget.accessToken ),
-      ChatScreen(),
+      ChatScreen(accessToken:widget.accessToken),
       CreatBudgetPage(accessToken: widget.accessToken),
     ];
      amountFocusNode.addListener;
@@ -119,12 +119,12 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     fname=userProfile.fName;
     lname=userProfile.lName;
     email=userProfile.email;
-    print("email: ${userProfile.email}");
-    print("fname: ${userProfile.fName}");
-    print("lname: ${userProfile.lName}");
-    print(fname);
-    print(email);
-    print(lname);
+    // print("email: ${userProfile.email}");
+    // print("fname: ${userProfile.fName}");
+    // print("lname: ${userProfile.lName}");
+    // print(fname);
+    // print(email);
+    // print(lname);
     return userProfile;
   } else {
     throw Exception(
