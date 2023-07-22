@@ -349,11 +349,7 @@ packages:
       sha256: "2118df84ef0c3ca93f96123a616ae8540879991b8b57af2f81b76a7ada49b2a4"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "2.0.2"
-=======
-    version: "2.0.1"
->>>>>>> Test_dependency_back
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -771,11 +767,7 @@ packages:
       sha256: cc074aace208760f1eee6aa4fae766b45d947df85bc831cde77009cdb4720098
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "0.1.3"
-=======
-    version: "0.1.2"
->>>>>>> Test_dependency_back
   petitparser:
     dependency: transitive
     description:
@@ -1052,11 +1044,7 @@ packages:
       sha256: e0b1147eec179d3911f1f19b59206448f78195ca1d20514134e10641b7d7fbff
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "1.0.1"
-=======
-    version: "1.0.0"
->>>>>>> Test_dependency_back
   xml:
     dependency: transitive
     description:
