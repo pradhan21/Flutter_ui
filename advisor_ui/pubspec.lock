@@ -792,6 +792,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.5"
+  progress_indicator:
+    dependency: "direct main"
+    description:
+      name: progress_indicator
+      sha256: "7c4dbfb1e28e1390c250ed0a2d668e93a58ae2ea5ee54cdd6b0a2a6844467fd2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   quiver:
     dependency: transitive
     description:

@@ -14,4 +14,5 @@ class AppRouteName {
   static const String customer = "/customer ";
   static const String notification = "/notification";
   static const String note = "/note ";
+  static const String reset = "/reset ";
 }

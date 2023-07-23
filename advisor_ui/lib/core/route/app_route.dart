@@ -1,3 +1,4 @@
+import 'package:advisor_ui/module/reset_pasword.dart';
 import 'package:advisor_ui/pages/setting_page.dart';
 import 'package:flutter/material.dart';
 import 'package:advisor_ui/module/home/presentation/home_screen.dart';
@@ -39,6 +40,12 @@ class AppRoute {
       case AppRouteName.payment:
         return MaterialPageRoute(
           builder: (_) => CardFromScreen(),
+          settings: settings,
+        );
+
+      case AppRouteName.reset:
+        return MaterialPageRoute(
+          builder: (_) => resetpasswordPage(),
           settings: settings,
         );
 

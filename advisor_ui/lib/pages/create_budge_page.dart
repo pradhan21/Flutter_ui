@@ -897,8 +897,21 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
   Future<http.Response> _createCategory(
       BudgetCategory category, String accessToken) async {
-    final url = Uri.parse('http://127.0.0.1:8000/incomeCat/incomecategory/');
-    final headers = {'Authorization': 'Bearer $accessToken'};
+    final url = Uri.parse('http://10.0.2.2:8000/expensesCat/excategory/');
+    final headers = {'Authorization': 'Bearer $accessToken','Content-type': 'application/json','Accept': 'application/json'};
+    final body = {
+      'name': category.name,
+      'image': category.icon,
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(body));
+    // print(response);
+    return response;
+  }
+   Future<http.Response> _createIncome(
+      BudgetCategory category, String accessToken) async {
+    final url = Uri.parse('http://10.0.2.2:8000/incomeCat/incomecategory/');
+    final headers = {'Authorization': 'Bearer $accessToken','Content-type': 'application/json','Accept': 'application/json'};
     final body = {
       'name': category.name,
       'image': category.icon,
@@ -955,9 +968,9 @@ void _showPopup1(BuildContext context) {
                       name: categoryName,
                       icon: selectedIcon!,
                     );
+                    _createIncome(newCategory, widget.accessToken);
 
                     // Pass the new category back to the previous page
-                    Navigator.pop(context, newCategory);
                   },
                   child: Text('Save Category'),
                 ),
@@ -967,8 +980,9 @@ void _showPopup1(BuildContext context) {
                     ),
                     onPressed: () {
                       setState(() {
-                        showaddcategory1 = false;
+                        _nameController.clear();
                       });
+                     Navigator.pop(context);
                     },
                     child: Text("Cancel"))
               ],
@@ -1038,8 +1052,9 @@ void _showPopup2(BuildContext context) {
                     ),
                     onPressed: () {
                       setState(() {
-                        showaddcategory = false;
+                        _nameController.clear();
                       });
+                      Navigator.pop(context);
                     },
                     child: Text("Cancel")),
               ],

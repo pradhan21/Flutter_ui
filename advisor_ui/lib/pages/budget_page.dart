@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
-
+import 'package:progress_indicator/progress_indicator.dart';
 import '../api_data/limitdata.dart';
 
 class BudgetPage extends StatefulWidget {
@@ -38,7 +38,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
     amountFocusNode.addListener;
     fetchdata(widget.accessToken);
     fertchoveralldata(widget.accessToken);
-     fertchcategorydata(widget.accessToken);
+    fertchcategorydata(widget.accessToken);
     _maintabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
@@ -112,7 +112,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
     }
   }
 
-Future<List<categorydata>> fertchcategorydata(String accessToken) async {
+  Future<List<categorydata>> fertchcategorydata(String accessToken) async {
     final url = 'http://10.0.2.2:8000/limit/categoryLimitView/';
 
     final response = await http.get(Uri.parse(url), headers: {
@@ -122,12 +122,18 @@ Future<List<categorydata>> fertchcategorydata(String accessToken) async {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       print(jsonData);
-      if (jsonData is Map<String, dynamic>) {
-        // Convert the JSON object to a list containing a single element
-        final categoriesData = [jsonData];
-        List<categorydata> categorydatas = [];
-        for (var data in categoriesData) {
+      if (jsonData is List<dynamic>) {
+        // Check if the response is a list
+
+        for (var data in jsonData) {
+          // Iterate through the list of objects
           categorydatas.add(categorydata.fromJson(data));
+        }
+        for (var data in categorydatas) {
+          print('Category Name: ${data.category_name}');
+          print('Category Limit: ${data.category_limit}');
+          print('Category Total: ${data.category_expenses_total}');
+          print('------------------------');
         }
         return categorydatas;
       } else {
@@ -138,8 +144,6 @@ Future<List<categorydata>> fertchcategorydata(String accessToken) async {
           'Failed to fetch categories data. Status code: ${response.statusCode}');
     }
   }
-
-
 
   Future<List<dynamic>> fetchdata(String accessToken) async {
     final url = 'http://10.0.2.2:8000/limit/limit/';
@@ -167,6 +171,7 @@ Future<List<categorydata>> fertchcategorydata(String accessToken) async {
         if (overallLimit == 0 && expensesCategory != null) {
           categorylimits.add(categorylimit.fromJson(categoryData));
         }
+
         //else {
         //   categoriesdata.add(categorydata.fromJson(categoryData));
         // }
@@ -768,50 +773,85 @@ Future<List<categorydata>> fertchcategorydata(String accessToken) async {
                                 ],
                               ),
                             )),
-                        const SizedBox(height: 70),
-                        Container(
-                          child: Padding(
-                            padding: EdgeInsets.only(left: 20, right: 20, bottom:20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: categorydatas.map((category) {
-                                return Container(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // const SizedBox(height: 50),
+                        Expanded(
+                          // Use Expanded here
+                          child: Container(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: 20, right: 20, bottom: 20),
+                              child: ListView.builder(
+                                itemCount: categorydatas.length,
+                                itemBuilder: (context, index) {
+                                  print("Building item at index $index");
+                                  return Column(
                                     children: [
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(category.category_name,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 18,
-                                                  ),),
-                                          Text(category.category_limit
-                                              .toStringAsFixed(2),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 18,
-                                                  ),),
+                                          Text(
+                                            categorydatas[index].category_name,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          // Text(
+                                          //   categorydatas[index]
+                                          //       .category_limit_used
+                                          //       .toStringAsFixed(2),
+                                          //   style: TextStyle(
+                                          //     fontWeight: FontWeight.w500,
+                                          //     fontSize: 18,
+                                          //   ),
+                                          // ),
+                                          Text(
+                                            categorydatas[index]
+                                                .category_limit
+                                                .toStringAsFixed(2),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                       SizedBox(height: 10),
-                                      LinearProgressIndicator(
-                                        backgroundColor: green,
-                                        valueColor:
-                                            new AlwaysStoppedAnimation<Color>(
-                                                Colors.red),
-                                        value: category.category_limit_used_percent,// Replace 20000 with the appropriate maximum limit
+                                      SizedBox(height: 10),
+                                      // Tooltip(
+                                      //   message:
+                                      //       '${(categorydatas[index].category_limit_used_percent).toStringAsFixed(2)}%',
+                                      //   child: LinearProgressIndicator(
+                                      //     backgroundColor: green,
+                                      //     valueColor:
+                                      //         new AlwaysStoppedAnimation<Color>(
+                                      //             Colors.red),
+                                      //     value: categorydatas[index]
+                                      //             .category_limit_used_percent /
+                                      //         100,
+                                      //   ),
+                                      // ),
+                                      BarProgress(
+                                        percentage: categorydatas[index].category_limit_used_percent ,
+                                        backColor: Colors.grey,
+                                        gradient: LinearGradient(
+                                            colors: [Colors.blue, Colors.red]),
+                                        showPercentage: true,
+                                        textStyle: TextStyle(
+                                            color: const Color.fromARGB(255, 0, 0, 0), fontSize: 20),
+                                        stroke: 10,
+                                        round: true,
                                       ),
-                                      SizedBox(height:40),
+                                      SizedBox(height: 40),
+                                    
                                     ],
-                                  ),
-                                );
-                              }).toList(),
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
+                        )
                       ]))
                 ],
               ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:advisor_ui/core/route/app_route_name.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:advisor_ui/pages/root_app.dart';
@@ -759,7 +760,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 200,
                       height: 64,
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.restorablePushNamed(context, AppRouteName.reset);
+                        },
                         child: Text("Recover Password"),
                       ),
                     ),
