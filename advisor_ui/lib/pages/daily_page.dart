@@ -173,7 +173,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   }
 
   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
-    print("hello ");
+    // print("hello ");
     final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
@@ -183,18 +183,18 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final categoriesData = jsonData['filtered'];
-      print("URI Expenses Categories:__________$jsonData" );
+      // print("URI Expenses Categories:__________$jsonData" );
       List<ExpCategory> expcategories = [];
       for (var categoryData in categoriesData) {
         expcategories.add(ExpCategory.fromJson(categoryData));
        
       }
-      for (var data in expcategories) {
-      print('Category Name: ${data.id}');
-      print('Category Limit: ${data.name}');
-      print('Category Total: ${data.iconUrl}');
-      print('------------------------');
-    }
+    //   for (var data in expcategories) {
+    //   print('Category Name: ${data.id}');
+    //   print('Category Limit: ${data.name}');
+    //   print('Category Total: ${data.iconUrl}');
+    //   print('------------------------');
+    // }
       return expcategories;
     } else {
       throw Exception(
@@ -240,7 +240,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
         return false; // Exclude the expense if the date parsing fails
       }
     }).toList();
-    print(FilteredExpenses);
+    // print(FilteredExpenses);
 
     double calculateTotalAmount(List<income> filteredIncomes,List<expense> filteredExpenses) {
       double itotal = 0;
@@ -265,13 +265,13 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
 
     String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
       int cid=categoryId;
-      print(cid);
-      print(expcategories);
+      // print(cid);
+      // print(expcategories);
       final category = expcategories.firstWhere(
         (c) => c.id == categoryId,
         orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''), // Provide default values when not found
       );
-      print(category.iconUrl);
+      // print(category.iconUrl);
       return category.iconUrl;
     }
 
@@ -280,12 +280,12 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
         children: [
           Container(
             decoration: BoxDecoration(color: black, boxShadow: [
-              BoxShadow(
-                color: const Color.fromARGB(255, 47, 47, 47),
-                spreadRadius: 10,
-                blurRadius: 3,
-                // changes position of shadow
-              ),
+              // BoxShadow(
+              //   color: const Color.fromARGB(255, 47, 47, 47),
+              //   spreadRadius: 10,
+              //   blurRadius: 3,
+              //   // changes position of shadow
+              // ),
             ]),
             child: Padding(
               padding: const EdgeInsets.only(
@@ -355,7 +355,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                           setState(() {
                             String currentDate =
                                 DateFormat('y-M-d').format(date);
-                            print(currentDate);
+                            // print(currentDate);
                             activeDay = index;
                           });
                         },
@@ -374,7 +374,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                 height: 30,
                                 decoration: BoxDecoration(
                                   color: isCurrentDate
-                                      ? Colors.red
+                                      ? button
                                       : white, // Highlight current date in red color
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -564,7 +564,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                         Text(
                                           expense.category_name,
                                           style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 18,
                                             color: black,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -574,8 +574,8 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                         Text(
                                           expense.note,
                                           style: TextStyle(
-                                            fontSize: 12,
-                                            color: black.withOpacity(0.5),
+                                            fontSize: 18,
+                                            color: black.withOpacity(0.9),
                                             fontWeight: FontWeight.w400,
                                           ),
                                           overflow: TextOverflow.ellipsis,
@@ -595,8 +595,8 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                     expense.amount.toStringAsFixed(0),
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                      color: Colors.red,
+                                      fontSize: 20,
+                                      color: black,
                                     ),
                                   ),
                                 ],
@@ -641,7 +641,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(top: 5),
                   child: Text(
-                    "\$${calculateTotalAmount(filteredIncomes,FilteredExpenses).toStringAsFixed(2)}",
+                    "\Rs   ${calculateTotalAmount(filteredIncomes,FilteredExpenses).toStringAsFixed(2)}",
                     style: TextStyle(
                         fontSize: 20,
                         color: black,
@@ -734,7 +734,7 @@ Future<void> updateIncome(int incomeId, double amount) async {
     'Authorization': 'Bearer ${widget.accessToken}',
     // Add any required headers
   };
-  print(widget.accessToken);
+  // print(widget.accessToken);
   final body = jsonEncode({
     'amount': amount,
   });
@@ -775,6 +775,35 @@ Future<void> updateIncome(int incomeId, double amount) async {
 
 Future<void> deleteIncome(int incomeId) async {
   // Implement the logic to delete the income with the given ID
+  final url = 'http://10.0.2.2:8000/income/income/$incomeId/';
+
+  // Remove the deleted item from the local list
+ 
+
+  final response = await http.delete(
+    Uri.parse(url),
+    headers: {
+      'Authorization': 'Bearer ${widget.accessToken} ',
+      'Content-Type': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // Category data deleted successfully
+    print('income data deleted');
+  //    setState(() {
+  //   fetchedIncomes.removeWhere((item) => item.note_id == incomeId);
+  // });
+  await fetchIncome(widget.accessToken);
+  await fetchCategories(widget.accessToken);
+  Navigator.pushNamed(context, AppRouteName.root, arguments: { 'accessToken': widget.accessToken,});
+  } else {
+    // Error deleting category data
+    print('Failed to delete income data. Status code: ${response.statusCode}');
+
+    // If deletion fails, add the item back to the local list
+   
+  }
 }
 
 
@@ -855,7 +884,7 @@ Future<void> updateExpense(int expenseId, double amount) async {
     'Authorization': 'Bearer ${widget.accessToken}',
     // Add any required headers
   };
-  print(widget.accessToken);
+  // print(widget.accessToken);
   final body = jsonEncode({
     'amount': amount,
   });
@@ -893,11 +922,38 @@ Future<void> updateExpense(int expenseId, double amount) async {
   }
   }
   // Implement the logic to update the expense with the given ID and amount
-}
-
 Future<void> deleteExpense(int expenseId) async {
   // Implement the logic to delete the expense with the given ID
+  final url = 'http://10.0.2.2:8000/expenses/expenses/$expenseId/';
+
+  // Remove the deleted item from the local list
+  final response = await http.delete(
+    Uri.parse(url),
+    headers: {
+      'Authorization': 'Bearer ${widget.accessToken} ',
+      'Content-Type': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // Category data deleted successfully
+    print('Expenses data deleted');
+  //    setState(() {
+  //   fetchedIncomes.removeWhere((item) => item.note_id == incomeId);
+  // });
+  await fetchExpense(widget.accessToken);
+  await fetchexpCategories(widget.accessToken);
+  Navigator.pushNamed(context, AppRouteName.root, arguments: { 'accessToken': widget.accessToken,});
+  } else {
+    // Error deleting category data
+    print('Failed to delete expense data. Status code: ${response.statusCode}');
+
+    // If deletion fails, add the item back to the local list
+   
+  }
 }
+}
+
 
 
 

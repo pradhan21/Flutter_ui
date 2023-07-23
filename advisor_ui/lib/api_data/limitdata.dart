@@ -1,29 +1,4 @@
-class categorydata {
-  final String month;
-  final String category_name;
-  final double category_limit;
-  final double category_total;
-  final double limit_diff;
-  final String budget_status;
-  final double percent;
 
-
-  categorydata({required this.month, required this.category_limit, required this.category_total,required this.category_name, required this.budget_status, required this.limit_diff, required this.percent});
-
-  factory categorydata.fromJson(Map<String, dynamic> json) {
-    return categorydata(
-      month: json['Month'],
-      category_name: json['category_name'],
-      category_limit: json['category_limit'],
-      category_total: json['expenses_total'],
-      limit_diff: json['limit_diff'],
-      budget_status: json['budget_status'],
-      percent: json['limit_exceeded_percent'],
-      
-  
-    );
-  }
-}
 // // "Month": "July",
 //     "overall_limit": 20000.0,
 //     "expenses_total": 18170.0,
@@ -35,26 +10,85 @@ class overalldata {
   final String month;
   final double overall_limit;
   final double overall_total;
-  final double limit_diff;
-   final double percent;
+  final double limit_left;
+  final double limit_used;
+  final double percent;
+  final double limit_exceeded_by;
+  final double limit_exceeded_percent;
   final String budget_status;
  
-  overalldata({required this.month, required this.overall_limit, required this.overall_total, required this.budget_status, required this.limit_diff, required this.percent});
+  overalldata({
+    required this.month,
+    required this.overall_limit,
+    required this.overall_total,
+    required this.budget_status,
+    required this.limit_left,
+    required this.percent,
+    required this.limit_used,
+    required this.limit_exceeded_by,
+    required this.limit_exceeded_percent,
+  });
 
   factory overalldata.fromJson(Map<String, dynamic> json) {
-    return overalldata(
-      month: json['Month'],
-      overall_limit: json['overall_limit'],
-      overall_total: json['expenses_total'],
-      limit_diff: json['limit_diff'],
-       percent: json['limit_exceeded_percent'],
-      budget_status: json['budget_status'],
-     
-      
-  
-    );
-  }
+  return overalldata(
+    month: json['Month'],
+    overall_limit: (json['overall_limit'] as num?)?.toDouble() ?? 0.0,
+    overall_total: (json['expenses_total'] as num?)?.toDouble() ?? 0.0,
+    limit_left: (json['limit_left'] as num?)?.toDouble() ?? 0.0,
+    limit_used: (json['limit_used'] as num?)?.toDouble() ?? 0.0,
+    percent: (json['limit_used_percent'] as num?)?.toDouble() ?? 0.0,
+    limit_exceeded_by: (json['limit_exceeded_by'] as num?)?.toDouble() ?? 0.0,
+    limit_exceeded_percent: (json['limit_exceeded_percent'] as num?)?.toDouble() ?? 0.0,
+    budget_status: json['budget_status'],
+  );
 }
+
+}
+
+
+class categorydata {
+  final String month;
+  final String category_name;
+  final double category_limit;
+  final double category_expenses_total;
+  final double category_limit_Left;
+  final double category_limit_used;
+  final double category_limit_used_percent;
+  final double category_limit_Exceeded;
+  final double category_limit_exceeded_percent;
+  final String budget_status;
+ 
+  categorydata({
+    required this.month,
+    required this.category_name,
+    required this.category_limit,
+    required this.category_expenses_total,
+    required this.category_limit_Left,
+    required this.category_limit_used,
+    required this.category_limit_used_percent,
+    required this.category_limit_Exceeded,
+    required this.category_limit_exceeded_percent,
+    required this.budget_status,
+
+  });
+
+  factory categorydata.fromJson(Map<String, dynamic> json) {
+  return categorydata(
+    month: json['Month'],
+    category_name: json['category_name'] ,
+    category_limit: (json['category_limit'] as num?)?.toDouble() ?? 0.0,
+    category_expenses_total: (json['category_expenses_total'] as num?)?.toDouble() ?? 0.0,
+    category_limit_Left: (json['category_limit_Left'] as num?)?.toDouble() ?? 0.0,
+    category_limit_used: (json['category_limit_used'] as num?)?.toDouble() ?? 0.0,
+    category_limit_used_percent: (json['category_limit_used_percent'] as num?)?.toDouble() ?? 0.0,
+    category_limit_Exceeded: (json['category_limit_Exceeded'] as num?)?.toDouble() ?? 0.0,
+    category_limit_exceeded_percent: (json['category_limit_exceeded_percent'] as num?)?.toDouble() ?? 0.0,
+    budget_status: json['budget_status'],
+  );
+}
+
+}
+
 
 class categorylimit {
   final int cat_id;

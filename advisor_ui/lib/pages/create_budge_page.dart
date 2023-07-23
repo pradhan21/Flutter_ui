@@ -424,10 +424,10 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              showaddcategory = true;
-                            });
-                            // _showPopup(context);
+                            // setState(() {
+                            //   showaddcategory = true;
+                            // });
+                            _showPopup1(context);
                           },
                           style: ButtonStyle(
                             backgroundColor:
@@ -439,12 +439,12 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                 ],
               ),
             ),
-            Container(
-              child: Visibility(
-                visible: showaddcategory,
-                child: SizedBox(child: addcategory(context)),
-              ),
-            ),
+            // Container(
+            //   child: Visibility(
+            //     visible: showaddcategory,
+            //     child: SizedBox(child: addcategory(context)),
+            //   ),
+            // ),
             SizedBox(
               height: 20,
             ),
@@ -671,9 +671,10 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                       ),
                       ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              showaddcategory1 = true;
-                            });
+                            // setState(() {
+                            //   showaddcategory1 = true;
+                            // });
+                            _showPopup2(context);
                           },
                           style: ButtonStyle(
                             backgroundColor:
@@ -689,12 +690,12 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                 ],
               ),
             ),
-            Container(
-              child: Visibility(
-                visible: showaddcategory1,
-                child: SizedBox(child: addcategory1(context)),
-              ),
-            ),
+            // Container(
+            //   child: Visibility(
+            //     visible: showaddcategory1,
+            //     child: SizedBox(child: addcategory1(context)),
+            //   ),
+            // ),
             SizedBox(
               height: 20,
             ),
@@ -894,90 +895,6 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     );
   }
 
-  Widget addcategory(BuildContext context) {
-    // var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              focusNode: nameFocusNode,
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Category Name'),
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<String>(
-              value: selectedIcon,
-              items: iconOptions.map((icon) {
-                return DropdownMenuItem<String>(
-                  value: icon,
-                  child: ImageIcon(AssetImage(icon)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedIcon = value;
-                });
-              },
-              decoration: InputDecoration(labelText: 'Select Icon'),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(button),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    // Retrieve the category name and selected icon
-                    String categoryName = _nameController.text;
-
-                    // Create a new Category object
-                    BudgetCategory newCategory = BudgetCategory(
-                      name: categoryName,
-                      icon: selectedIcon!,
-                    );
-
-                    // Send the category data to the API
-                    _createCategory(newCategory, widget.accessToken)
-                        .then((response) {
-                      if (response.statusCode == 201) {
-                        print("catrgory added Successfully");
-                        // You can handle the response or perform any additional actions here
-                      } else {
-                        // print(response);
-                        throw Exception(
-                            'Failed to create new category. Status code: ${response.statusCode}');
-                        // You can handle the error or display an error message here
-                      }
-                    });
-
-                    // Close the add category screen
-                    Navigator.pop(context, newCategory);
-                  },
-                  child: Text('Save Category'),
-                ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(button),
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        showaddcategory = false;
-                      });
-                    },
-                    child: Text("Cancel")),
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<http.Response> _createCategory(
       BudgetCategory category, String accessToken) async {
     final url = Uri.parse('http://127.0.0.1:8000/incomeCat/incomecategory/');
@@ -992,13 +909,14 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     return response;
   }
 
-  Widget addcategory1(BuildContext context) {
-    // var size = MediaQuery.of(context).size;
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          children: [
+void _showPopup1(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Popup Title'),
+        content: Text('Popup Content'),
+          actions: [
             TextField(
               focusNode: nameFocusNode,
               controller: _nameController,
@@ -1055,70 +973,83 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                     child: Text("Cancel"))
               ],
             )
-          ],
-        ),
-      ),
-    );
-  }
-// void _showPopup(BuildContext context) {
-//   showDialog(
-//     context: context,
-//     builder: (BuildContext context) {
-//       return AlertDialog(
-//         title: Text('Popup Title'),
-//         content: Text('Popup Content'),
-//           actions: [
-//             TextField(
-//               focusNode: nameFocusNode,
-//               controller: _nameController,
-//               decoration: InputDecoration(labelText: 'Category Name'),
-//             ),
-//             SizedBox(height: 20),
-//             DropdownButtonFormField<String>(
-//               value: selectedIcon,
-//               items: iconOptions.map((icon) {
-//                 return DropdownMenuItem<String>(
-//                   value: icon,
-//                   child: ImageIcon(AssetImage(icon)),
-//                 );
-//               }).toList(),
-//               onChanged: (value) {
-//                 setState(() {
-//                   selectedIcon = value;
-//                 });
-//               },
-//               decoration: InputDecoration(labelText: 'Select Icon'),
-//             ),
-//             SizedBox(height: 20),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children:[
-//             ElevatedButton(
-//               onPressed: () {
-//                 // Retrieve the category name and selected icon
-//                 String categoryName = _nameController.text;
-
-//                 // Create a new Category object
-//                 BudgetCategory newCategory = BudgetCategory(
-//                   name: categoryName,
-//                   icon: selectedIcon!,
-//                 );
-
-//                 // Pass the new category back to the previous page
-//                 Navigator.pop(context, newCategory);
-//               },
-//               child: Text('Save Category'),
-//             ),
-//             ElevatedButton(onPressed:(){
-//              Navigator.of(context).pop();
-//             }, child: Text("Cancel"))
-//           ],)
-//           ]
-//           );
-//           }
-//           );
+          ]
+          );
+          }
+          );
 }
+void _showPopup2(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Popup Title'),
+        content: Text('Popup Content'),
+          actions: [
+            TextField(
+              focusNode: nameFocusNode,
+              controller: _nameController,
+              decoration: InputDecoration(labelText: 'Category Name'),
+            ),
+            SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              value: selectedIcon,
+              items: iconOptions.map((icon) {
+                return DropdownMenuItem<String>(
+                  value: icon,
+                  child: ImageIcon(AssetImage(icon)),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedIcon = value;
+                });
+              },
+              decoration: InputDecoration(labelText: 'Select Icon'),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(button),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    // Retrieve the category name and selected icon
+                    String categoryName = _nameController.text;
 
+                    // Create a new Category object
+                    BudgetCategory newCategory = BudgetCategory(
+                      name: categoryName,
+                      icon: selectedIcon!,
+                    );
+
+                    // Send the category data to the API
+                    _createCategory(newCategory, widget.accessToken);
+
+                  },
+                  child: Text('Save Category'),
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(button),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        showaddcategory = false;
+                      });
+                    },
+                    child: Text("Cancel")),
+              ],
+            )
+          ]
+          );
+          }
+          );
+}
+}
 class category {
   final String name;
   final String icon;

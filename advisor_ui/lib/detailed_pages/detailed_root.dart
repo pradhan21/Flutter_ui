@@ -353,6 +353,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       PieChartData(
                         sections: weekexpensessection,
                         centerSpaceRadius: 60,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                   ),
@@ -373,6 +374,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       PieChartData(
                         sections: sections,
                         centerSpaceRadius: 60,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                   ),
@@ -393,6 +395,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       PieChartData(
                         sections: yearexpensessection,
                         centerSpaceRadius: 60,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                   ),
@@ -617,6 +620,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       PieChartData(
                         sections: weekincomesection,
                         centerSpaceRadius: 60,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                   ),
@@ -637,6 +641,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       PieChartData(
                         sections: incomesections,
                         centerSpaceRadius: 60,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                   ),
@@ -657,6 +662,7 @@ class _NestedTabBarState extends State<NestedTabBar>
                       PieChartData(
                         sections: yearincomesection,
                         centerSpaceRadius: 60,
+                        borderData: FlBorderData(show: false),
                       ),
                     ),
                   ),
@@ -1043,6 +1049,8 @@ class _NestedTabBarState extends State<NestedTabBar>
       ),
     );
   }
+
+ 
 
   Widget buildBudgetReport() {
     double totalweekIncome = 0.0;

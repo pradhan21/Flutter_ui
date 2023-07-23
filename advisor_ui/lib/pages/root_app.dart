@@ -9,8 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:http/http.dart' as http;
+import '../api_data/limitdata.dart';
 import '../api_data/userProfile.dart';
 import '../core/route/app_route_name.dart';
+import '../logout/logout.dart';
 import '../module/home/presentation/home_screen.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
@@ -33,6 +35,10 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
   String email = '';
   List<UserProfile> profile = [];
   ExpCategory? selectedCategory;
+  List<categorydata> categoriesdata = [];
+  List<overalldata> overalldatas = [];
+  List<categorylimit> categorylimits = [];
+  List<overalllimit> overalllimits = [];
   int pageIndex = 0;
   late List<Widget> pages;
   // List<Widget> pages = [
@@ -58,6 +64,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
       CreatBudgetPage(accessToken: widget.accessToken),
     ];
     amountFocusNode.addListener;
+    // fetchdata(widget.accessToken);
   }
 
   @override
@@ -92,20 +99,63 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     }
   }
 
-//   Future<UserProfile> _fetchProfileData(String accessToken) async {
-//   final url = Uri.parse('http://127.0.0.1:8000/api/user/profile/');
-//   final headers = {'Authorization': 'Bearer $accessToken'};
+//  Future<List<dynamic>> fetchdata(String accessToken) async {
+//     final url = 'http://10.0.2.2:8000/limit/limit/';
 
-//   var response = await http.get(url, headers: headers);
-//   if (response.statusCode == 200) {
-//     final responseData = jsonDecode(response.body);
-//     _responseData = responseData;
-//     print("user data :=------=-"+_responseData);
-//     return UserProfile.fromJson(responseData);
-//   } else {
-//     throw Exception('Failed to fetch profile data');
+//     final response = await http.get(Uri.parse(url), headers: {
+//       'Authorization': 'Bearer $accessToken',
+//     });
+
+//     if (response.statusCode == 200) {
+//       final jsonData = json.decode(response.body);
+//       final categoriesData = jsonData;
+//       // print("root data limit: $categoriesData");
+//       List<categorydata> categoriesdata = [];
+//       List<categorylimit> categorylimits = [];
+//       List<overalllimit> overalllimits = [];
+
+//       for (var categoryData in categoriesData) {
+//         final overallLimit = categoryData['overall_limit']?.toDouble() ?? 0.0;
+//         final expensesCategory = categoryData['expenses_Category'];
+//         final categoryLimit = categoryData['category_limit']?.toDouble() ?? 0.0;
+
+//         if (overallLimit != 0 && expensesCategory == null) {
+//           overalllimits.add(overalllimit.fromJson(categoryData));
+//         } else if (overallLimit == 0 && expensesCategory != null) {
+//           categorylimits.add(categorylimit.fromJson(categoryData));
+//         } else {
+//           categoriesdata.add(categorydata.fromJson(categoryData));
+//         }
+//       }
+
+//       // // Print the categories data
+//       // for (var data in categoriesdata) {
+//       //   print('Category Name: ${data.category_name}');
+//       //   print('Category Limit: ${data.category_limit}');
+//       //   print('Category Total: ${data.category_total}');
+//       //   print('------------------------');
+//       // }
+
+//       // // Print the category limits data
+//       // for (var data in categorylimits) {
+//       //   print('Category Name: ${data.category_name}');
+//       //   print('Category Limit: ${data.category_limit}');
+//       //   print('------------------------');
+//       // }
+
+//       // // Print the overall limits data
+//       // for (var data in overalllimits) {
+//       //   print('Overall Limit: ${data.overall_limit}');
+//       //   print('------------------------');
+//       // }
+
+//       return [categoriesdata, categorylimits, overalllimits];
+//     } else {
+//       throw Exception(
+//           'Failed to fetch categories data. Status code: ${response.statusCode}');
+//     }
 //   }
-// }
+
   Future<UserProfile> _fetchProfileData(String accessToken) async {
     final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
     final headers = {'Authorization': 'Bearer $accessToken'};
@@ -157,99 +207,60 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> _createcustomBudget(double amount, int category) async {
-    // Check if a limit already exists for the category and user
-    final existingLimit = await _fetchExistingLimit(category);
-
-    if (existingLimit != null) {
-      // Limit already exists, show an error message or handle accordingly
-      print('Limit already exists for the category');
-      return;
-    }
-
-    // Continue with creating the new limit
-    final url = Uri.parse(
-        'http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
-
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${widget.accessToken}',
-      // Add any required headers
-    };
-
-    final body = jsonEncode({
-      'category_limit': amount,
-      'expenses_Category': category,
-    });
-
-    final response = await http.post(url, headers: headers, body: body);
-
-    if (response.statusCode == 201) {
-      // Budget created successfully
-      // You can perform any additional actions here
-      print('Budget created successfully');
-    } else {
-      // Failed to create budget
-      // Handle the error accordingly
-      print('Failed to create budget. Status code: ${response.statusCode}');
-    }
+Future<void> _createcustomBudget(double amount, int category) async {
+  // Check if a limit already exists for the category and user
+  if (checkLimitExists(category)) {
+    // Limit already exists, show an error message or handle accordingly
+    print('Limit already exists for the category');
+    return;
   }
 
-  Future<Limit?> _fetchExistingLimit(int categoryId) async {
-    final url = Uri.parse(
-        'http://10.0.2.2:8000/limit/limit/?expenses_Category=$categoryId'); // Replace with your API URL
+  // Continue with creating the new limit
+  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${widget.accessToken}',
-      // Add any required headers
-    };
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer ${widget.accessToken}',
+    // Add any required headers
+  };
 
-    final response = await http.get(url, headers: headers);
+  final body = jsonEncode({
+    'category_limit': amount,
+    'expenses_Category': category,
+  });
 
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
+  final response = await http.post(url, headers: headers, body: body);
 
-      if (jsonData is List && jsonData.isNotEmpty) {
-        // Limit already exists for the category
-        // Return the existing limit object
-        return Limit.fromJson(jsonData[0]);
-      }
-    }
-
-    return null; // No limit found for the category
+  if (response.statusCode == 201) {
+    // Budget created successfully
+    // You can perform any additional actions here
+    print('Budget created successfully');
+  } else {
+    // Failed to create budget
+    // Handle the error accordingly
+    print('Failed to create budget. Status code: ${response.statusCode}');
   }
+}
 
-  Future<bool> checkLimitExists(int categoryId) async {
-    final url = Uri.parse(
-        'http://10.0.2.2:8000/limit/limit/?expenses_Category=$categoryId');
-    final headers = {
-      'Authorization': 'Bearer ${widget.accessToken}',
-      'Content-Type': 'application/json',
-    };
 
-    final response = await http.get(url, headers: headers);
-
-    if (response.statusCode == 200) {
-      final jsonData = jsonDecode(response.body);
-      if (jsonData is List && jsonData.isNotEmpty) {
-        // Limit already exists for the category
-        return true;
-      }
+bool checkLimitExists(int categoryId) {
+  for (var limit in categorylimits) {
+    if (limit.category_id == categoryId) {
+      return true;
     }
-
-    return false; // Limit does not exist for the category
   }
+  return false;
+}
 
   Future<void> _createBudget(double amount) async {
     // Check if an overall budget already exists
-    final existingBudget = await _fetchExistingBudget();
+    // final existingBudget = await _fetchExistingBudget();
 
-    if (existingBudget != null) {
-      // Overall budget already exists, show an error message or handle accordingly
-      print('Overall budget already exists');
-      return;
-    }
+    // if (existingBudget != null) {
+    //   // Overall budget already exists, show an error message or handle accordingly
+    //   print('Overall budget already exists');
+    //   return;
+    // }
 
     // Continue with creating the new budget
     final url = Uri.parse(
@@ -261,7 +272,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     };
 
     final body = jsonEncode({
-      'category_limit': amount,
+      'overall_limit': amount,
     });
 
     final response = await http.post(url, headers: headers, body: body);
@@ -311,6 +322,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor:Color.fromARGB(255, 233, 227, 227),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -428,24 +440,25 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
                 });
               },
             ),
-            ListTile(
-              leading: const Icon(AntDesign.book),
-              title: const Text('Note'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(
-                  context,
-                  AppRouteName.note,
-                  arguments: {
-                    'accessToken': widget.accessToken,
-                  },
-                );
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(AntDesign.book),
+            //   title: const Text('Note'),
+            //   onTap: () {
+            //     Navigator.pop(context);
+            //     Navigator.pushNamed(
+            //       context,
+            //       AppRouteName.note,
+            //       arguments: {
+            //         'accessToken': widget.accessToken,
+            //       },
+            //     );
+            //   },
+            // ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('LogOut'),
               onTap: () {
+                AuthService.logout();
                 Navigator.pop(context);
                 Navigator.push(
                   context,
@@ -582,6 +595,9 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: button),
                                     onPressed: () {
+                                      setState(){
+                                         _amountController.clear();
+                                      };
                                       Navigator.of(context).pop();
                                       Navigator.of(context)
                                           .pop(); // Close the previous dialog
@@ -644,36 +660,36 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
                   style: ElevatedButton.styleFrom(backgroundColor: button),
                   onPressed: () async {
                     final double amount = double.parse(_amountController.text);
-                    final existingBudget = await _fetchExistingBudget();
+                    // final existingBudget = await _fetchExistingBudget();
 
-                    if (existingBudget != null) {
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Limit Already Exists'),
-                            content: Text(
-                                'A limit for the overall budget already exists.'),
-                            actions: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: button),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                  Navigator.of(context)
-                                      .pop(); // Close the previous dialog
-                                },
-                                child: Text('OK'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else {
+                    // if (existingBudget != null) {
+                    //   showDialog(
+                    //     context: context,
+                    //     barrierDismissible: false,
+                    //     builder: (BuildContext context) {
+                    //       return AlertDialog(
+                    //         title: Text('Limit Already Exists'),
+                    //         content: Text(
+                    //             'A limit for the overall budget already exists.'),
+                    //         actions: [
+                    //           ElevatedButton(
+                    //             style: ElevatedButton.styleFrom(
+                    //                 backgroundColor: button),
+                    //             onPressed: () {
+                    //               Navigator.of(context).pop();
+                    //               Navigator.of(context)
+                    //                   .pop(); // Close the previous dialog
+                    //             },
+                    //             child: Text('OK'),
+                    //           ),
+                    //         ],
+                    //       );
+                    //     },
+                    //   );
+                    // } else {
                       _createBudget(amount);
                       Navigator.of(context).pop();
-                    }
+                    // }
                   },
                   child: Text('Create Budget'),
                 ),

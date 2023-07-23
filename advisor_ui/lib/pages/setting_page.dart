@@ -40,58 +40,14 @@ onChangeFunction1(bool newValue1) {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: grey.withOpacity(0.05),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: const Text('Settings'),),
       body: Container(
         color: Colors.white,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                color: white,
-                boxShadow: [
-                  BoxShadow(
-                    color: grey.withOpacity(0.01),
-                    spreadRadius: 10,
-                    blurRadius: 3,
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  right: 20,
-                  left: 20,
-                  bottom: 25,
-                ),
-                child: Column(
-                  children: [
-                    Row( 
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Settings",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: black,
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(AntDesign.arrowleft),
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRouteName.root,
-                            arguments: {
-                              'accessToken': widget.accessToken,
-
-                            },);
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(10),

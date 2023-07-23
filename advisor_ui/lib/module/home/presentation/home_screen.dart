@@ -304,7 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     showLoadingDialog(context);
     await Future.delayed(
-      const Duration(milliseconds: 2000),
+      const Duration(milliseconds: 100),
     );
     if (mounted) Navigator.pop(context);
     try {
@@ -376,7 +376,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     print("Build Called Again");
     return Scaffold(
-      backgroundColor: const Color(0xFFD6E2EA),
+      backgroundColor: Color.fromARGB(255, 233, 227, 227),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -397,15 +397,16 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 32),
             Text(
-              "Budget Manager",
+              "Wallet Wizard",
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
+            SizedBox(height:30),
             SizedBox(
-              height: 250,
-              width: 250,
+              height: 200,
+              width: 350,
               child: RiveAnimation.asset(
-                "assets/login-teddy.riv",
+                "assets/3645-7621-remix-of-login-machine.riv",
                 fit: BoxFit.fitHeight,
                 stateMachines: const ["Login Machine"],
                 onInit: (artboard) {
@@ -742,8 +743,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ElevatedButton(
                       onPressed: _isSigningUp ? Signup : login,
                       style: ElevatedButton.styleFrom(
+                        backgroundColor: button,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
+                          
                         ),
                       ),
                       child: Text(_isSigningUp ? 'Signup' : 'Login'),

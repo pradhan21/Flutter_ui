@@ -5,6 +5,7 @@ import 'package:advisor_ui/json/day_month.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../api_data/limitdata.dart';
@@ -21,17 +22,23 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   int activeDay = 3;
   TextEditingController _amountController = TextEditingController();
   FocusNode amountFocusNode = FocusNode();
-  List<categorydata> categoriesdata = [];
+  List<categorydata> categorydatas = [];
   List<overalldata> overalldatas = [];
   List<categorylimit> categorylimits = [];
   List<overalllimit> overalllimits = [];
+
+  late double overallpercent = 0;
+  late double overall_limits = 0;
+  late double expense_total = 0;
+  late double limit_left = 0;
 
   @override
   void initState() {
     super.initState();
     amountFocusNode.addListener;
     fetchdata(widget.accessToken);
-
+    fertchoveralldata(widget.accessToken);
+     fertchcategorydata(widget.accessToken);
     _maintabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
@@ -40,6 +47,99 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
     _maintabController.dispose();
     super.dispose();
   }
+
+// Future<List<overalldata>> fertchoveralldata(String accessToken) async{
+//   final url = 'http://10.0.2.2:8000/limit/OverallLimitView/';
+
+//     final response = await http.get(Uri.parse(url), headers: {
+//       'Authorization': 'Bearer $accessToken',
+//     });
+
+//     if (response.statusCode == 200) {
+//       final jsonData = json.decode(response.body);
+//       final categoriesData = jsonData;
+//       print("overall data : $categoriesData");
+//       List<overalldata> overalldatas = [];
+//       for(var data in categoriesData){
+//         overalldatas.add(overalldata.fromJson(data));
+//       }
+
+//       for(var data in overalldatas){
+//           print('Category Name: ${data.month}');
+//         print('Category Limit: ${data.overall_total}');
+
+//       }
+//       return overalldatas;
+//     }
+//     else{
+//       throw Exception(
+//           'Failed to fetch categories data. Status code: ${response.statusCode}');
+//     }
+// }
+  Future<List<overalldata>> fertchoveralldata(String accessToken) async {
+    final url = 'http://10.0.2.2:8000/limit/OverallLimitView/';
+
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization': 'Bearer $accessToken',
+    });
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      if (jsonData is Map<String, dynamic>) {
+        // Convert the JSON object to a list containing a single element
+        final categoriesData = [jsonData];
+        List<overalldata> overalldatas = [];
+        for (var data in categoriesData) {
+          overalldatas.add(overalldata.fromJson(data));
+        }
+
+        for (var data in overalldatas) {
+          print('Category Name: ${data.month}');
+          print('Category Limit: ${data.overall_total}');
+          overallpercent = data.percent;
+          overall_limits = data.overall_limit;
+          expense_total = data.overall_total;
+          limit_left = data.limit_left;
+        }
+        return overalldatas;
+      } else {
+        throw Exception('Invalid API response format');
+      }
+    } else {
+      throw Exception(
+          'Failed to fetch categories data. Status code: ${response.statusCode}');
+    }
+  }
+
+Future<List<categorydata>> fertchcategorydata(String accessToken) async {
+    final url = 'http://10.0.2.2:8000/limit/categoryLimitView/';
+
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization': 'Bearer $accessToken',
+    });
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      if (jsonData is Map<String, dynamic>) {
+        // Convert the JSON object to a list containing a single element
+        final categoriesData = [jsonData];
+        List<categorydata> categorydatas = [];
+        for (var data in categoriesData) {
+          categorydatas.add(categorydata.fromJson(data));
+        }
+        return categorydatas;
+      } else {
+        throw Exception('Invalid API response format');
+      }
+    } else {
+      throw Exception(
+          'Failed to fetch categories data. Status code: ${response.statusCode}');
+    }
+  }
+
+
 
   Future<List<dynamic>> fetchdata(String accessToken) async {
     final url = 'http://10.0.2.2:8000/limit/limit/';
@@ -51,7 +151,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       final categoriesData = jsonData;
-      print(categoriesData);
+      // print(categoriesData);
       List<categorydata> categoriesdata = [];
       List<categorylimit> categorylimits = [];
       List<overalllimit> overalllimits = [];
@@ -63,20 +163,22 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
 
         if (overallLimit != 0 && expensesCategory == null) {
           overalllimits.add(overalllimit.fromJson(categoryData));
-        } else if (overallLimit == 0 && expensesCategory != null) {
-          categorylimits.add(categorylimit.fromJson(categoryData));
-        } else {
-          categoriesdata.add(categorydata.fromJson(categoryData));
         }
+        if (overallLimit == 0 && expensesCategory != null) {
+          categorylimits.add(categorylimit.fromJson(categoryData));
+        }
+        //else {
+        //   categoriesdata.add(categorydata.fromJson(categoryData));
+        // }
       }
 
       // Print the categories data
-      for (var data in categoriesdata) {
-        print('Category Name: ${data.category_name}');
-        print('Category Limit: ${data.category_limit}');
-        print('Category Total: ${data.category_total}');
-        print('------------------------');
-      }
+      // for (var data in categoriesdata) {
+      //   print('Category Name: ${data.category_name}');
+      //   print('Category Limit: ${data.category_limit}');
+      //   print('Category Total: ${data.category_total}');
+      //   print('------------------------');
+      // }
 
       // Print the category limits data
       for (var data in categorylimits) {
@@ -283,7 +385,17 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                     text: 'Overall Budget',
                     icon: Icon(Icons.wallet),
                   ),
+                  Tab(
+                    text: 'Budget Stats',
+                    icon: Icon(Icons.query_stats_outlined),
+                  )
                 ],
+                onTap: (index) async {
+                  // Handle the tap event here
+                  if (index == 2) {
+                    await fertchoveralldata(widget.accessToken);
+                  }
+                },
                 controller: _maintabController,
               ),
             ),
@@ -475,6 +587,232 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+                  Container(
+                      color: Color.fromARGB(255, 233, 227, 227),
+                      child: Column(children: [
+                        // const SizedBox(height: 50),
+                        Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Container(
+                              height: 250,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                color: Color.fromARGB(255, 192, 189, 189),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Container(
+                                    height: 170,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 10),
+                                      child: Stack(
+                                        // Added a Stack widget to layer the circular indicator and the image
+                                        children: [
+                                          RotatedBox(
+                                            quarterTurns: -2,
+                                            child: CircularPercentIndicator(
+                                              circularStrokeCap:
+                                                  CircularStrokeCap.round,
+                                              backgroundColor: green,
+                                              radius: 85.0,
+                                              lineWidth: 6.0,
+                                              percent: overallpercent / 100,
+                                              progressColor: red,
+                                            ),
+                                          ),
+                                          Positioned(
+                                            top: 35,
+                                            left: 17,
+                                            bottom: 26,
+                                            child: Container(
+                                              width: 130,
+                                              height: 130,
+                                              decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceEvenly,
+                                                children: [
+                                                  Text(
+                                                    "Overall Limit",
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 18,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                      overall_limits
+                                                          .toDoubleStringAsFixed(),
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 18,
+                                                      ))
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                      // color: blue,
+                                      width: 200,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 20),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Overall Limit",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(
+                                                    overall_limits
+                                                        .toDoubleStringAsFixed(),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 18,
+                                                    ))
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Expense Total",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(
+                                                    expense_total
+                                                        .toDoubleStringAsFixed(),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 18,
+                                                    ))
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Used Percent",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                    overallpercent
+                                                        .toDoubleStringAsFixed(),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 18,
+                                                    ))
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Budget Left",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                Text(
+                                                    limit_left
+                                                        .toDoubleStringAsFixed(),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                      fontSize: 18,
+                                                    ))
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ))
+                                ],
+                              ),
+                            )),
+                        const SizedBox(height: 70),
+                        Container(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 20, right: 20, bottom:20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: categorydatas.map((category) {
+                                return Container(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(category.category_name,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18,
+                                                  ),),
+                                          Text(category.category_limit
+                                              .toStringAsFixed(2),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 18,
+                                                  ),),
+                                        ],
+                                      ),
+                                      SizedBox(height: 10),
+                                      LinearProgressIndicator(
+                                        backgroundColor: green,
+                                        valueColor:
+                                            new AlwaysStoppedAnimation<Color>(
+                                                Colors.red),
+                                        value: category.category_limit_used_percent,// Replace 20000 with the appropriate maximum limit
+                                      ),
+                                      SizedBox(height:40),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ]))
                 ],
               ),
             ),
