@@ -112,6 +112,7 @@ class _PremiumPageState extends State<PremiumPage> {
                   },
                   child: Text('Package 1'),
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: button,
                     padding: EdgeInsets.symmetric(horizontal: 24.0),
                   ),
                 ),

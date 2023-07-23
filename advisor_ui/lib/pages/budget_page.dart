@@ -85,7 +85,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print(jsonData);
+      // print(jsonData);
       if (jsonData is Map<String, dynamic>) {
         // Convert the JSON object to a list containing a single element
         final categoriesData = [jsonData];
@@ -95,8 +95,8 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
         }
 
         for (var data in overalldatas) {
-          print('Category Name: ${data.month}');
-          print('Category Limit: ${data.overall_total}');
+          // print('Category Name: ${data.month}');
+          // print('Category Limit: ${data.overall_total}');
           overallpercent = data.percent;
           overall_limits = data.overall_limit;
           expense_total = data.overall_total;
@@ -121,7 +121,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      print(jsonData);
+      // print(jsonData);
       if (jsonData is List<dynamic>) {
         // Check if the response is a list
 
@@ -129,12 +129,12 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
           // Iterate through the list of objects
           categorydatas.add(categorydata.fromJson(data));
         }
-        for (var data in categorydatas) {
-          print('Category Name: ${data.category_name}');
-          print('Category Limit: ${data.category_limit}');
-          print('Category Total: ${data.category_expenses_total}');
-          print('------------------------');
-        }
+        // for (var data in categorydatas) {
+        //   print('Category Name: ${data.category_name}');
+        //   print('Category Limit: ${data.category_limit}');
+        //   print('Category Total: ${data.category_expenses_total}');
+        //   print('------------------------');
+        // }
         return categorydatas;
       } else {
         throw Exception('Invalid API response format');
@@ -186,11 +186,11 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
       // }
 
       // Print the category limits data
-      for (var data in categorylimits) {
-        print('Category Name: ${data.category_name}');
-        print('Category Limit: ${data.category_limit}');
-        print('------------------------');
-      }
+      // for (var data in categorylimits) {
+      //   print('Category Name: ${data.category_name}');
+      //   print('Category Limit: ${data.category_limit}');
+      //   print('------------------------');
+      // }
 
       // Print the overall limits data
       for (var data in overalllimits) {
@@ -670,7 +670,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                                       // color: blue,
                                       width: 200,
                                       child: Padding(
-                                        padding: EdgeInsets.only(right: 20),
+                                        padding: EdgeInsets.only(right: 10),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -727,7 +727,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                                                       .spaceBetween,
                                               children: [
                                                 Text(
-                                                  "Used Percent",
+                                                  "Amount Spent(%)",
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.w500,
                                                     fontSize: 18,
@@ -736,7 +736,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                                                 const SizedBox(width: 10),
                                                 Text(
                                                     overallpercent
-                                                        .toDoubleStringAsFixed(),
+                                                        .toDoubleStringAsFixed()+"%",
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.normal,

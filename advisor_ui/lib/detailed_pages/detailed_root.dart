@@ -318,7 +318,7 @@ class _NestedTabBarState extends State<NestedTabBar>
       child: Padding(
         padding: const EdgeInsets.only(left: 20, right: 20),
         child: Container(
-          width: 590,
+          width: 650,
           height: 490,
           decoration: BoxDecoration(
             color: white,
@@ -435,7 +435,7 @@ class _NestedTabBarState extends State<NestedTabBar>
               totalAmount += incomeItem.amount;
               expenses.add(incomeItem);
               weekincome.add(incomeItem);
-              print(weekincome);
+              // print(weekincome);
               final section = PieChartSectionData(
                 value: incomeItem.amount.toDouble(),
                 color: getRandomColor(),
@@ -546,7 +546,7 @@ class _NestedTabBarState extends State<NestedTabBar>
               totalAmount += incomeItem.amount;
               expenses.add(incomeItem);
               yearincome.add(incomeItem);
-              print("$yearincome");
+              // print("$yearincome");
 
               final section = PieChartSectionData(
                 value: incomeItem.amount.toDouble(),

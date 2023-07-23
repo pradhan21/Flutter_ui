@@ -184,17 +184,17 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       final jsonData = json.decode(response.body);
       final categoriesData = jsonData['filtered'];
       // print("URI Expenses Categories:__________$jsonData" );
-      List<ExpCategory> expcategories = [];
+      // List<ExpCategory> expcategories = [];
       for (var categoryData in categoriesData) {
         expcategories.add(ExpCategory.fromJson(categoryData));
        
       }
-    //   for (var data in expcategories) {
-    //   print('Category Name: ${data.id}');
-    //   print('Category Limit: ${data.name}');
-    //   print('Category Total: ${data.iconUrl}');
-    //   print('------------------------');
-    // }
+      for (var data in expcategories) {
+      print('Category Name: ${data.id}');
+      print('Category Limit: ${data.name}');
+      print('Category Total: ${data.iconUrl}');
+      print('------------------------');
+    }
       return expcategories;
     } else {
       throw Exception(
@@ -265,8 +265,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
 
     String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
       int cid=categoryId;
-      // print(cid);
-      // print(expcategories);
+      print("categoryId: $categoryId");
       final category = expcategories.firstWhere(
         (c) => c.id == categoryId,
         orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''), // Provide default values when not found
@@ -463,7 +462,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                         Text(
                                           income.category_name,
                                           style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 18,
                                             color: black,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -473,7 +472,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                         Text(
                                           income.note,
                                           style: TextStyle(
-                                            fontSize: 12,
+                                            fontSize: 18,
                                             color: black.withOpacity(0.5),
                                             fontWeight: FontWeight.w400,
                                           ),
@@ -494,8 +493,8 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                     income.amount.toStringAsFixed(0),
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: 15,
-                                      color: Color.fromARGB(255, 0, 106, 12),
+                                      fontSize: 20,
+                                      color:Colors.blue[800],
                                     ),
                                   ),
                                 ],
@@ -543,10 +542,10 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                       color: grey,
                                     ),
                                     child: Center(
-                                      child: getexpCategoryIconUrl(expense.category_id, expcategoy).isEmpty
+                                      child: getexpCategoryIconUrl(expense.category_id, expcategories).isEmpty
                                           ? Icon(Icons.error) // Display a default error icon for empty URLs
                                           : Image.network(
-                                              getexpCategoryIconUrl(expense.category_id, expcategoy),
+                                              getexpCategoryIconUrl(expense.category_id, expcategories),
                                               color: black,
                                               width: 30,
                                               height: 30,
@@ -596,7 +595,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 20,
-                                      color: black,
+                                      color: Colors.red[700],
                                     ),
                                   ),
                                 ],

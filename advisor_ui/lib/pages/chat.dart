@@ -83,7 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
               SizedBox(
-                height: 500, // Set a fixed height for the Tawk widget
+                height: 600, // Set a fixed height for the Tawk widget
                 child: Tawk(
                   directChatLink:
                       'https://tawk.to/chat/64ace0dacc26a871b027a065/1h51kslp4',
