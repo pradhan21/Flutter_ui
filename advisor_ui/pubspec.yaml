@@ -58,6 +58,8 @@ dependencies:
   flutter_local_notifications: ^15.1.0+1
   progress_indicator: ^0.2.2
   file_picker:
+  csv: ^5.0.2
+  path_provider: ^2.0.15
 
 # flutter_tawk: ^0.1.0
 # webview_flutter: ^3.0.1

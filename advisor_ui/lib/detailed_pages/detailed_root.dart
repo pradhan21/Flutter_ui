@@ -6,7 +6,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:advisor_ui/detailed_data/dailyexpense.dart';
+import 'dart:io';
+import 'package:csv/csv.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import '../export to scv/export.dart';
 class DetailedRoot extends StatefulWidget {
   final String accessToken;
   final List<double> dataPoints = [20, 30, 50];
@@ -127,6 +131,7 @@ class _NestedTabBarState extends State<NestedTabBar>
     fetchMonthIncomeData(widget.accessToken);
     fetchYearlyIncomeData(widget.accessToken);
     fetchWeekIncomeData(widget.accessToken);
+    requestStoragePermission();
   }
 
   @override
@@ -145,12 +150,22 @@ class _NestedTabBarState extends State<NestedTabBar>
     );
   }
 
+
+Future<void> requestStoragePermission() async {
+    var status = await Permission.storage.request();
+    if (status.isGranted) {
+      // Permission granted, you can now write to external storage
+      print('Storage permission granted');
+    } else {
+      print('Storage permission denied');
+    }
+  }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////Expenses Data retrival///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<List<weekexpense>> fetchWeekExpenseData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/expenses-category-month/";
+      final url = "http://10.0.2.2:8000/core/expenses-category-week/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -780,7 +795,9 @@ class _NestedTabBarState extends State<NestedTabBar>
                   const SizedBox(height: 80),
 
                   TextButton.icon(
-                      onPressed: () {
+                      onPressed: () async{
+                        await fetchWeekIncomeData(widget.accessToken);
+                        await exportincomeweekdataToCsv(weekincome);
                         // Add your functionality here
                         // For example, export data to Excel
                       },
@@ -1844,7 +1861,9 @@ class _NestedTabBarState extends State<NestedTabBar>
                   //  totalAmount
                   const SizedBox(height: 80),
                   TextButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
+                        await fetchWeekExpenseData(widget.accessToken);
+                        await exportweekexpensedataToCsv(weekexpenses);
                         // Add your functionality here
                         // For example, export data to Excel
                       },
@@ -1941,7 +1960,9 @@ class _NestedTabBarState extends State<NestedTabBar>
                   //  totalAmount
                   const SizedBox(height: 80),
                   TextButton.icon(
-                      onPressed: () {
+                      onPressed: () async {
+                        
+                        await exportmonthexpensedataToCsv(monthexpense);
                         // Add your functionality here
                         // For example, export data to Excel
                       },
