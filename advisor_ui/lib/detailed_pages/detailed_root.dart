@@ -11,6 +11,7 @@ import 'package:csv/csv.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../export to scv/export.dart';
+
 class DetailedRoot extends StatefulWidget {
   final String accessToken;
   final List<double> dataPoints = [20, 30, 50];
@@ -150,8 +151,7 @@ class _NestedTabBarState extends State<NestedTabBar>
     );
   }
 
-
-Future<void> requestStoragePermission() async {
+  Future<void> requestStoragePermission() async {
     var status = await Permission.storage.request();
     if (status.isGranted) {
       // Permission granted, you can now write to external storage
@@ -160,12 +160,13 @@ Future<void> requestStoragePermission() async {
       print('Storage permission denied');
     }
   }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////Expenses Data retrival///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   Future<List<weekexpense>> fetchWeekExpenseData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/expenses-category-week/";
+      final url = "http://192.168.254.3:8000/core/expenses-category-week/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -220,7 +221,7 @@ Future<void> requestStoragePermission() async {
 
   Future<List<expense>> fetchMonthExpenseData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/expenses-category-month/";
+      final url = "http://192.168.254.3:8000/core/expenses-category-month/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -275,7 +276,7 @@ Future<void> requestStoragePermission() async {
 
   Future<List<yearexpense>> fetchYearlyExpenseData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/expenses-category-year/";
+      final url = "http://192.168.254.3:8000/core/expenses-category-year/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -429,7 +430,7 @@ Future<void> requestStoragePermission() async {
 /////////////////////////////////////////Income data retrival///////////////////////////////////////////////////////////////////////
   Future<List<WeekIncome>> fetchWeekIncomeData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/income-category-week/";
+      final url = "http://192.168.254.3:8000/core/income-category-week/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -485,7 +486,7 @@ Future<void> requestStoragePermission() async {
 
   Future<List<MonthIncome>> fetchMonthIncomeData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/income-category-month/";
+      final url = "http://192.168.254.3:8000/core/income-category-month/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -541,7 +542,7 @@ Future<void> requestStoragePermission() async {
 
   Future<List<YearIncome>> fetchYearlyIncomeData(String accessToken) async {
     try {
-      final url = "http://10.0.2.2:8000/core/income-category-year/";
+      final url = "http://192.168.254.3:8000/core/income-category-year/";
       final response = await http.get(Uri.parse(url), headers: {
         'Authorization': 'Bearer $accessToken',
       });
@@ -795,7 +796,7 @@ Future<void> requestStoragePermission() async {
                   const SizedBox(height: 80),
 
                   TextButton.icon(
-                      onPressed: () async{
+                      onPressed: () async {
                         await fetchWeekIncomeData(widget.accessToken);
                         await exportincomeweekdataToCsv(weekincome);
                         // Add your functionality here
@@ -1066,8 +1067,6 @@ Future<void> requestStoragePermission() async {
       ),
     );
   }
-
- 
 
   Widget buildBudgetReport() {
     double totalweekIncome = 0.0;
@@ -1961,7 +1960,6 @@ Future<void> requestStoragePermission() async {
                   const SizedBox(height: 80),
                   TextButton.icon(
                       onPressed: () async {
-                        
                         await exportmonthexpensedataToCsv(monthexpense);
                         // Add your functionality here
                         // For example, export data to Excel

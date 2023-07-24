@@ -8,7 +8,7 @@ import 'webviewpay.dart';
 import 'package:http/http.dart' as http;
 
 class PremiumPage extends StatefulWidget {
-    final String accessToken;
+  final String accessToken;
   PremiumPage({required this.accessToken});
   @override
   _PremiumPageState createState() => _PremiumPageState();
@@ -133,10 +133,9 @@ class _PremiumPageState extends State<PremiumPage> {
         ]
       };
       var response_put = await http.post(
-        Uri.parse('http://10.0.2.2:8000/order/create-checkout-session/'),
+        Uri.parse('http://192.168.254.3:8000/order/create-checkout-session/'),
         headers: {
-          'Authorization':
-              'Bearer ${widget.accessToken}',
+          'Authorization': 'Bearer ${widget.accessToken}',
           'Content-Type': 'application/json',
         },
         body: jsonEncode(body),

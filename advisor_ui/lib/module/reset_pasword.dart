@@ -17,13 +17,17 @@ class _resetpasswordPageState extends State<resetpasswordPage> {
 
   Future<void> resetpassword(String email) async {
     print(email);
-    final url = Uri.parse('http://10.0.2.2:8000/api/user/resetpasswordemail/'); // Replace with your API URL
-    final headers = { 'Content-type': 'application/json','Accept': 'application/json'};
+    final url = Uri.parse(
+        'http://192.168.254.3:8000/api/user/resetpasswordemail/'); // Replace with your API URL
+    final headers = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    };
     final body = jsonEncode({
       'email': email,
     });
 
-    final response = await http.post(url,headers: headers ,body: body);
+    final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
       // Budget created successfully
@@ -130,7 +134,7 @@ class _resetpasswordPageState extends State<resetpasswordPage> {
                               width: MediaQuery.of(context).size.width,
                               height: 64,
                               child: ElevatedButton(
-                                onPressed: () async{
+                                onPressed: () async {
                                   await resetpassword(emailController.text);
                                 },
                                 style: ElevatedButton.styleFrom(

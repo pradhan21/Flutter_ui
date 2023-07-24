@@ -53,7 +53,7 @@ class SubscriptionView extends StatefulWidget {
 //           _controller.complete(webViewController);
 //         },
 //         navigationDelegate: (NavigationRequest request) {
-//           if (request.url == 'http://10.0.2.2:8000/') {
+//           if (request.url == 'http://192.168.254.3:8000/') {
 //             // replace with your success url
 //             Navigator.of(context).pop(); // close the WebView
 //             return NavigationDecision
@@ -81,7 +81,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
   Future<String> manage() async {
     try {
       final response = await http
-          .get(Uri.parse('http://10.0.2.2:8000/order/customer-portal/'));
+          .get(Uri.parse('http://192.168.254.3:8000/order/customer-portal/'));
       Map<String, dynamic> decodedJson = jsonDecode(response.body);
       Map<String, dynamic> session = decodedJson['session'];
       return session['url'];
@@ -115,7 +115,7 @@ class _SubscriptionViewState extends State<SubscriptionView> {
                 _controller.complete(webViewController);
               },
               navigationDelegate: (NavigationRequest request) {
-                if (request.url == 'http://10.0.2.2:8000/') {
+                if (request.url == 'http://192.168.254.3:8000/') {
                   // replace with your success url
                   Navigator.of(context).pop(); // close the WebView
                   return NavigationDecision

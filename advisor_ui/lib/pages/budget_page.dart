@@ -49,7 +49,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
 // Future<List<overalldata>> fertchoveralldata(String accessToken) async{
-//   final url = 'http://10.0.2.2:8000/limit/OverallLimitView/';
+//   final url = 'http://192.168.254.3:8000/limit/OverallLimitView/';
 
 //     final response = await http.get(Uri.parse(url), headers: {
 //       'Authorization': 'Bearer $accessToken',
@@ -77,7 +77,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
 //     }
 // }
   Future<List<overalldata>> fertchoveralldata(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/limit/OverallLimitView/';
+    final url = 'http://192.168.254.3:8000/limit/OverallLimitView/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -113,7 +113,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
   Future<List<categorydata>> fertchcategorydata(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/limit/categoryLimitView/';
+    final url = 'http://192.168.254.3:8000/limit/categoryLimitView/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -146,7 +146,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
   Future<List<dynamic>> fetchdata(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/limit/limit/';
+    final url = 'http://192.168.254.3:8000/limit/limit/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -206,7 +206,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
   Future<void> updateCategorydata(int cat_id, double amount) async {
-    final url = 'http://10.0.2.2:8000/limit/limit/$cat_id/';
+    final url = 'http://192.168.254.3:8000/limit/limit/$cat_id/';
 
     final response = await http.patch(
       Uri.parse(url),
@@ -228,7 +228,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
   Future<void> deletecategorydata(int cat_id) async {
-    final url = 'http://10.0.2.2:8000/limit/limit/$cat_id/';
+    final url = 'http://192.168.254.3:8000/limit/limit/$cat_id/';
 
     // Remove the deleted item from the local list
 
@@ -256,7 +256,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
   Future<void> updateoveralldata(int cat_id, double amount) async {
-    final url = 'http://10.0.2.2:8000/limit/limit/$cat_id/';
+    final url = 'http://192.168.254.3:8000/limit/limit/$cat_id/';
 
     final response = await http.patch(
       Uri.parse(url),
@@ -278,7 +278,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   }
 
   Future<void> deleteoveralldata(int cat_id) async {
-    final url = 'http://10.0.2.2:8000/limit/limit/$cat_id/';
+    final url = 'http://192.168.254.3:8000/limit/limit/$cat_id/';
 
     // Remove the deleted item from the local list
 
@@ -736,7 +736,8 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                                                 const SizedBox(width: 10),
                                                 Text(
                                                     overallpercent
-                                                        .toDoubleStringAsFixed()+"%",
+                                                            .toDoubleStringAsFixed() +
+                                                        "%",
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.normal,
@@ -833,18 +834,20 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
                                       //   ),
                                       // ),
                                       BarProgress(
-                                        percentage: categorydatas[index].category_limit_used_percent ,
+                                        percentage: categorydatas[index]
+                                            .category_limit_used_percent,
                                         backColor: Colors.grey,
                                         gradient: LinearGradient(
                                             colors: [Colors.blue, Colors.red]),
                                         showPercentage: true,
                                         textStyle: TextStyle(
-                                            color: const Color.fromARGB(255, 0, 0, 0), fontSize: 20),
+                                            color: const Color.fromARGB(
+                                                255, 0, 0, 0),
+                                            fontSize: 20),
                                         stroke: 10,
                                         round: true,
                                       ),
                                       SizedBox(height: 40),
-                                    
                                     ],
                                   );
                                 },

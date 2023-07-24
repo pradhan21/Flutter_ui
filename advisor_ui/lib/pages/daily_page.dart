@@ -86,7 +86,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   }
 
   Future<List<income>> fetchIncome(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/income/income/';
+    final url = 'http://192.168.254.3:8000/income/income/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -121,7 +121,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   }
 
   Future<List<expense>> fetchExpense(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/expenses/expenses/';
+    final url = 'http://192.168.254.3:8000/expenses/expenses/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -146,7 +146,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
   }
 
   Future<List<Category>> fetchCategories(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/incomeCat/incomecategory/';
+    final url = 'http://192.168.254.3:8000/incomeCat/incomecategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -174,7 +174,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
 
   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
     // print("hello ");
-    final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
+    final url = 'http://192.168.254.3:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -187,14 +187,13 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       // List<ExpCategory> expcategories = [];
       for (var categoryData in categoriesData) {
         expcategories.add(ExpCategory.fromJson(categoryData));
-       
       }
       for (var data in expcategories) {
-      print('Category Name: ${data.id}');
-      print('Category Limit: ${data.name}');
-      print('Category Total: ${data.iconUrl}');
-      print('------------------------');
-    }
+        print('Category Name: ${data.id}');
+        print('Category Limit: ${data.name}');
+        print('Category Total: ${data.iconUrl}');
+        print('------------------------');
+      }
       return expcategories;
     } else {
       throw Exception(
@@ -242,20 +241,20 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
     }).toList();
     // print(FilteredExpenses);
 
-    double calculateTotalAmount(List<income> filteredIncomes,List<expense> filteredExpenses) {
+    double calculateTotalAmount(
+        List<income> filteredIncomes, List<expense> filteredExpenses) {
       double itotal = 0;
       for (var income in filteredIncomes) {
         itotal += income.amount;
       }
-      double etotal=0;
-      for(var expense in filteredExpenses){
+      double etotal = 0;
+      for (var expense in filteredExpenses) {
         etotal += expense.amount;
       }
 
-      double gtotal=itotal-etotal;
+      double gtotal = itotal - etotal;
       return gtotal;
     }
-  
 
     String getCategoryIconUrl(int categoryId, List<Category> categories) {
       final category = categories.firstWhere((c) => c.id == categoryId,
@@ -263,12 +262,16 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       return category.iconUrl;
     }
 
-    String getexpCategoryIconUrl(int categoryId, List<ExpCategory> expcategories) {
-      int cid=categoryId;
+    String getexpCategoryIconUrl(
+        int categoryId, List<ExpCategory> expcategories) {
+      int cid = categoryId;
       print("categoryId: $categoryId");
       final category = expcategories.firstWhere(
         (c) => c.id == categoryId,
-        orElse: () => ExpCategory(id: 0, name: '', iconUrl: ''), // Provide default values when not found
+        orElse: () => ExpCategory(
+            id: 0,
+            name: '',
+            iconUrl: ''), // Provide default values when not found
       );
       // print(category.iconUrl);
       return category.iconUrl;
@@ -303,7 +306,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                           color: white,
                         ),
                       ),
-                      //  IconButton(onPressed:(){ 
+                      //  IconButton(onPressed:(){
                       //   Navigator.pushNamed(context,AppRouteName.note);
                       // }, icon:  Icon(AntDesign.book,color: white,)),
                     ],
@@ -316,7 +319,10 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                     children: [
                       IconButton(
                         onPressed: goToPreviousDates,
-                        icon: Icon(Icons.arrow_back, color: white,),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: white,
+                        ),
                       ),
                       Text(
                         DateFormat('EEE, MMM d, y').format(currentDate),
@@ -328,7 +334,10 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                       ),
                       IconButton(
                         onPressed: goToFutureDates,
-                        icon: Icon(Icons.arrow_forward,color: white,),
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: white,
+                        ),
                       ),
                     ],
                   ),
@@ -377,9 +386,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                       : white, // Highlight current date in red color
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: activeDay == index
-                                        ? white
-                                        : white,
+                                    color: activeDay == index ? white : white,
                                   ),
                                 ),
                                 child: Center(
@@ -408,11 +415,14 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
             height: 30,
           ),
           Container(
-            
-            decoration: BoxDecoration(borderRadius:BorderRadius.circular(12),color: grey,),
-            child:Column(
-              children:[
-                const SizedBox(height: 20,),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: grey,
+            ),
+            child: Column(children: [
+              const SizedBox(
+                height: 20,
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 child: SingleChildScrollView(
@@ -423,7 +433,8 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                         onTap: () {
                           // Open edit popup
                           // Call a method to handle the edit functionality
-                          editincomePopup(context, income); // Pass the selected item as an argument
+                          editincomePopup(context,
+                              income); // Pass the selected item as an argument
                         },
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -456,8 +467,10 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                   Container(
                                     width: (size.width - 90) * 0.5,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           income.category_name,
@@ -494,7 +507,7 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 20,
-                                      color:Colors.blue[800],
+                                      color: Colors.blue[800],
                                     ),
                                   ),
                                 ],
@@ -524,7 +537,8 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                         onTap: () {
                           // Open edit popup
                           // Call a method to handle the edit functionality
-                          editexpensePopup(context, expense); // Pass the selected item as an argument
+                          editexpensePopup(context,
+                              expense); // Pass the selected item as an argument
                         },
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -542,23 +556,30 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                                       color: grey,
                                     ),
                                     child: Center(
-                                      child: getexpCategoryIconUrl(expense.category_id, expcategories).isEmpty
-                                          ? Icon(Icons.error) // Display a default error icon for empty URLs
+                                      child: getexpCategoryIconUrl(
+                                                  expense.category_id,
+                                                  expcategories)
+                                              .isEmpty
+                                          ? Icon(Icons
+                                              .error) // Display a default error icon for empty URLs
                                           : Image.network(
-                                              getexpCategoryIconUrl(expense.category_id, expcategories),
+                                              getexpCategoryIconUrl(
+                                                  expense.category_id,
+                                                  expcategories),
                                               color: black,
                                               width: 30,
                                               height: 30,
                                             ),
                                     ),
                                   ),
-
                                   SizedBox(width: 15),
                                   Container(
                                     width: (size.width - 90) * 0.5,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           expense.category_name,
@@ -615,344 +636,348 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-
-
-          SizedBox(
-            height: 15,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
-            child: Row(
-              children: [
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: Text(
-                    "Total",
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: black,
-                        fontWeight: FontWeight.w600),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20),
+                child: Row(
+                  children: [
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 80),
+                      child: Text(
+                        "Total",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: black,
+                            fontWeight: FontWeight.w600),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text(
+                        "\Rs   ${calculateTotalAmount(filteredIncomes, FilteredExpenses).toStringAsFixed(2)}",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: black,
+                            fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
-                Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: Text(
-                    "\Rs   ${calculateTotalAmount(filteredIncomes,FilteredExpenses).toStringAsFixed(2)}",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: black,
-                        fontWeight: FontWeight.bold),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+            ]),
           ),
-          const SizedBox(height: 30,),]),
-      ),],
+        ],
       ),
     );
   }
-Future<void> editincomePopup(BuildContext context, income selectedIncome) async {
-  final TextEditingController _amountController = TextEditingController(
-    text: selectedIncome.amount.toStringAsFixed(2),
-  );
-  double editedAmount = selectedIncome.amount;
 
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
-          return AlertDialog(
-            title: Text(
-              selectedIncome.category_name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Amount',
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      editedAmount = double.tryParse(value) ?? 0.0;
-                    });
-                  },
+  Future<void> editincomePopup(
+      BuildContext context, income selectedIncome) async {
+    final TextEditingController _amountController = TextEditingController(
+      text: selectedIncome.amount.toStringAsFixed(2),
+    );
+    double editedAmount = selectedIncome.amount;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(
+                selectedIncome.category_name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
-                // Add more fields as needed to edit other properties of the income
-              ],
-            ),
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: button),
-                    onPressed: () {
-                      // Call the method to update the income with the edited values
-                      updateIncome(selectedIncome.id, editedAmount);
-                      Navigator.pop(context); // Close the popup
+                  TextField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Amount',
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        editedAmount = double.tryParse(value) ?? 0.0;
+                      });
                     },
-                    child: Text('Update'),
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: button),
-                    onPressed: () {
-                      // Call the method to delete the income
-                      deleteIncome(selectedIncome.id);
-                      Navigator.pop(context); // Close the popup
-                    },
-                    child: Text('Delete'),
-                  ),
+                  // Add more fields as needed to edit other properties of the income
                 ],
               ),
-            ],
-          );
-        },
-      );
-    },
-  );
-}
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: button),
+                      onPressed: () {
+                        // Call the method to update the income with the edited values
+                        updateIncome(selectedIncome.id, editedAmount);
+                        Navigator.pop(context); // Close the popup
+                      },
+                      child: Text('Update'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: button),
+                      onPressed: () {
+                        // Call the method to delete the income
+                        deleteIncome(selectedIncome.id);
+                        Navigator.pop(context); // Close the popup
+                      },
+                      child: Text('Delete'),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
 
 // Helper methods for updating and deleting the income
-Future<void> updateIncome(int incomeId, double amount) async {
- final url = Uri.parse('http://10.0.2.2:8000/income/income/$incomeId/');
+  Future<void> updateIncome(int incomeId, double amount) async {
+    final url = Uri.parse('http://192.168.254.3:8000/income/income/$incomeId/');
     final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${widget.accessToken}',
-    // Add any required headers
-  };
-  // print(widget.accessToken);
-  final body = jsonEncode({
-    'amount': amount,
-  });
-
-  final response = await http.patch(url, headers: headers, body: body);
-
-  if (response.statusCode == 200) {
-    // Budget created successfully
-    // You can perform any additional actions here
-    print('Inocme updated successfully');
-     showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('SuccessFully Updated Income '),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: button),
-              onPressed: () {
-                fetchIncome(widget.accessToken);
-                Navigator.of(context).pop(); // Close the previous dialog
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-    // fetchdata(widget.accessToken);
-  } else {
-    // Failed to create budget
-    // Handle the error accordingly
-    print('Failed to update income. Status code: ${response.statusCode}');
-  }
-  }
-
-
-Future<void> deleteIncome(int incomeId) async {
-  // Implement the logic to delete the income with the given ID
-  final url = 'http://10.0.2.2:8000/income/income/$incomeId/';
-
-  // Remove the deleted item from the local list
- 
-
-  final response = await http.delete(
-    Uri.parse(url),
-    headers: {
-      'Authorization': 'Bearer ${widget.accessToken} ',
       'Content-Type': 'application/json',
-    },
-  );
+      'Authorization': 'Bearer ${widget.accessToken}',
+      // Add any required headers
+    };
+    // print(widget.accessToken);
+    final body = jsonEncode({
+      'amount': amount,
+    });
 
-  if (response.statusCode == 200) {
-    // Category data deleted successfully
-    print('income data deleted');
-  //    setState(() {
-  //   fetchedIncomes.removeWhere((item) => item.note_id == incomeId);
-  // });
-  await fetchIncome(widget.accessToken);
-  await fetchCategories(widget.accessToken);
-  Navigator.pushNamed(context, AppRouteName.root, arguments: { 'accessToken': widget.accessToken,});
-  } else {
-    // Error deleting category data
-    print('Failed to delete income data. Status code: ${response.statusCode}');
+    final response = await http.patch(url, headers: headers, body: body);
 
-    // If deletion fails, add the item back to the local list
-   
-  }
-}
-
-
-Future<void> editexpensePopup(BuildContext context, expense selectedExpense) async {
-  final TextEditingController _amountController = TextEditingController(
-    text: selectedExpense.amount.toStringAsFixed(2),
-  );
-  double editedAmount = selectedExpense.amount;
-
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return StatefulBuilder(
-        builder: (BuildContext context, StateSetter setState) {
+    if (response.statusCode == 200) {
+      // Budget created successfully
+      // You can perform any additional actions here
+      print('Inocme updated successfully');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-              selectedExpense.category_name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: 'Amount',
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      editedAmount = double.tryParse(value) ?? 0.0;
-                    });
-                  },
-                ),
-                // Add more fields as needed to edit other properties of the expense
-              ],
-            ),
+            title: Text('SuccessFully Updated Income '),
             actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: button),
-                    onPressed: () {
-                      // Call the method to update the expense with the edited values
-                      updateExpense(selectedExpense.id, editedAmount);
-                      Navigator.pop(context); // Close the popup
-                    },
-                    child: Text('Update'),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: button),
-                    onPressed: () {
-                      // Call the method to delete the expense
-                      deleteExpense(selectedExpense.id);
-                      Navigator.pop(context); // Close the popup
-                    },
-                    child: Text('Delete'),
-                  ),
-                ],
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: button),
+                onPressed: () {
+                  fetchIncome(widget.accessToken);
+                  Navigator.of(context).pop(); // Close the previous dialog
+                },
+                child: Text('OK'),
               ),
             ],
           );
         },
       );
-    },
-  );
-}
+      // fetchdata(widget.accessToken);
+    } else {
+      // Failed to create budget
+      // Handle the error accordingly
+      print('Failed to update income. Status code: ${response.statusCode}');
+    }
+  }
 
-// Helper methods for updating and deleting the expense
-Future<void> updateExpense(int expenseId, double amount) async {
-   final url = Uri.parse('http://10.0.2.2:8000/expenses/expenses/$expenseId/');
-    final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${widget.accessToken}',
-    // Add any required headers
-  };
-  // print(widget.accessToken);
-  final body = jsonEncode({
-    'amount': amount,
-  });
+  Future<void> deleteIncome(int incomeId) async {
+    // Implement the logic to delete the income with the given ID
+    final url = 'http://192.168.254.3:8000/income/income/$incomeId/';
 
-  final response = await http.patch(url, headers: headers, body: body);
+    // Remove the deleted item from the local list
 
-  if (response.statusCode == 200) {
-    // Budget created successfully
-    // You can perform any additional actions here
-    print('Expense updated successfully');
-     showDialog(
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer ${widget.accessToken} ',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Category data deleted successfully
+      print('income data deleted');
+      //    setState(() {
+      //   fetchedIncomes.removeWhere((item) => item.note_id == incomeId);
+      // });
+      await fetchIncome(widget.accessToken);
+      await fetchCategories(widget.accessToken);
+      Navigator.pushNamed(context, AppRouteName.root, arguments: {
+        'accessToken': widget.accessToken,
+      });
+    } else {
+      // Error deleting category data
+      print(
+          'Failed to delete income data. Status code: ${response.statusCode}');
+
+      // If deletion fails, add the item back to the local list
+    }
+  }
+
+  Future<void> editexpensePopup(
+      BuildContext context, expense selectedExpense) async {
+    final TextEditingController _amountController = TextEditingController(
+      text: selectedExpense.amount.toStringAsFixed(2),
+    );
+    double editedAmount = selectedExpense.amount;
+
+    await showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('SuccessFully Updated Expense '),
-          actions: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: button),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the previous dialog
-                fetchExpense(widget.accessToken);
-              },
-              child: Text('OK'),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              title: Text(
+                selectedExpense.category_name,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _amountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Amount',
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        editedAmount = double.tryParse(value) ?? 0.0;
+                      });
+                    },
+                  ),
+                  // Add more fields as needed to edit other properties of the expense
+                ],
+              ),
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: button),
+                      onPressed: () {
+                        // Call the method to update the expense with the edited values
+                        updateExpense(selectedExpense.id, editedAmount);
+                        Navigator.pop(context); // Close the popup
+                      },
+                      child: Text('Update'),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: button),
+                      onPressed: () {
+                        // Call the method to delete the expense
+                        deleteExpense(selectedExpense.id);
+                        Navigator.pop(context); // Close the popup
+                      },
+                      child: Text('Delete'),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
         );
       },
     );
-    // fetchdata(widget.accessToken);
-  } else {
-    // Failed to create budget
-    // Handle the error accordingly
-    print('Failed to update expense. Status code: ${response.statusCode}');
   }
-  }
-  // Implement the logic to update the expense with the given ID and amount
-Future<void> deleteExpense(int expenseId) async {
-  // Implement the logic to delete the expense with the given ID
-  final url = 'http://10.0.2.2:8000/expenses/expenses/$expenseId/';
 
-  // Remove the deleted item from the local list
-  final response = await http.delete(
-    Uri.parse(url),
-    headers: {
-      'Authorization': 'Bearer ${widget.accessToken} ',
+// Helper methods for updating and deleting the expense
+  Future<void> updateExpense(int expenseId, double amount) async {
+    final url =
+        Uri.parse('http://192.168.254.3:8000/expenses/expenses/$expenseId/');
+    final headers = {
       'Content-Type': 'application/json',
-    },
-  );
+      'Authorization': 'Bearer ${widget.accessToken}',
+      // Add any required headers
+    };
+    // print(widget.accessToken);
+    final body = jsonEncode({
+      'amount': amount,
+    });
 
-  if (response.statusCode == 200) {
-    // Category data deleted successfully
-    print('Expenses data deleted');
-  //    setState(() {
-  //   fetchedIncomes.removeWhere((item) => item.note_id == incomeId);
-  // });
-  await fetchExpense(widget.accessToken);
-  await fetchexpCategories(widget.accessToken);
-  Navigator.pushNamed(context, AppRouteName.root, arguments: { 'accessToken': widget.accessToken,});
-  } else {
-    // Error deleting category data
-    print('Failed to delete expense data. Status code: ${response.statusCode}');
+    final response = await http.patch(url, headers: headers, body: body);
 
-    // If deletion fails, add the item back to the local list
-   
+    if (response.statusCode == 200) {
+      // Budget created successfully
+      // You can perform any additional actions here
+      print('Expense updated successfully');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('SuccessFully Updated Expense '),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: button),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the previous dialog
+                  fetchExpense(widget.accessToken);
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      // fetchdata(widget.accessToken);
+    } else {
+      // Failed to create budget
+      // Handle the error accordingly
+      print('Failed to update expense. Status code: ${response.statusCode}');
+    }
+  }
+
+  // Implement the logic to update the expense with the given ID and amount
+  Future<void> deleteExpense(int expenseId) async {
+    // Implement the logic to delete the expense with the given ID
+    final url = 'http://192.168.254.3:8000/expenses/expenses/$expenseId/';
+
+    // Remove the deleted item from the local list
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer ${widget.accessToken} ',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Category data deleted successfully
+      print('Expenses data deleted');
+      //    setState(() {
+      //   fetchedIncomes.removeWhere((item) => item.note_id == incomeId);
+      // });
+      await fetchExpense(widget.accessToken);
+      await fetchexpCategories(widget.accessToken);
+      Navigator.pushNamed(context, AppRouteName.root, arguments: {
+        'accessToken': widget.accessToken,
+      });
+    } else {
+      // Error deleting category data
+      print(
+          'Failed to delete expense data. Status code: ${response.statusCode}');
+
+      // If deletion fails, add the item back to the local list
+    }
   }
 }
-}
-
-
-
-

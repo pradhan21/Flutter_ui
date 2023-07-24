@@ -149,7 +149,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
       }
     });
   }
-
+http://192.168.254.3:8000
 /////api to get list of category////////////////////////////////////////////////////////////////////
   Future<List<Category>> fetchCategories(String accessToken) async {
     final url = 'http://10.0.2.2:8000/incomeCat/incomecategory/';
@@ -175,7 +175,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
   }
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-////////api integration for fetching the category lists//////////////////////////////////////////////
+////////api integhttp://192.168.254.3:8000the category lists//////////////////////////////////////////////
   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
     final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
 
@@ -202,7 +202,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////api to add new income/////////////////////////////////////////////////////////
-  void createIncome(String budgetName, String budgetPrice, int category) async {
+  void crhttp://192.168.254.3:8000dgetName, String budgetPrice, int category) async {
     final url =
         'http://10.0.2.2:8000/income/income/'; // Update with the correct API endpoint
 
@@ -233,7 +233,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
 ////////////////////////////////////api to add new expenses/////////////////////////////////////////////////////////
   void createexpenses(
-      String expname, String expprice, String note, int category) async {
+      Strhttp://192.168.254.3:8000expprice, String note, int category) async {
     final url =
         'http://10.0.2.2:8000/expenses/expenses/'; // Update with the correct API endpoint
 
@@ -897,7 +897,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
         ],
       ),
     );
-  }
+  }http://192.168.254.3:8000
 
   Future<http.Response> _createCategory(String name, String accessToken) async {
     final url = Uri.parse('http://10.0.2.2:8000/expensesCat/excategory/');
@@ -910,7 +910,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
       'name': name,
     };
     final response =
-        await http.post(url, headers: headers, body: jsonEncode(body));
+        await http.post(urlhttp://192.168.254.3:8000body: jsonEncode(body));
     // print(response);
     return response;
   }

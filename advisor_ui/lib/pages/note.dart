@@ -42,7 +42,7 @@ class _NotePageState extends State<NotePage> {
 
   Future<void> _createnote(
       String title, int amount, String desc, String type, String date) async {
-    final url = Uri.parse('http://10.0.2.2:8000/todo/todo/');
+    final url = Uri.parse('http://192.168.254.3:8000/todo/todo/');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${widget.accessToken}',
@@ -92,7 +92,7 @@ class _NotePageState extends State<NotePage> {
 
   Future<void> _updatenote(
       int id, title, int amount, String desc, String date) async {
-    final url = Uri.parse('http://10.0.2.2:8000/todo/todo/$id/');
+    final url = Uri.parse('http://192.168.254.3:8000/todo/todo/$id/');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ${widget.accessToken}',
@@ -141,7 +141,7 @@ class _NotePageState extends State<NotePage> {
   }
 
   Future<List<notedata>> fetchdata(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/todo/todo/';
+    final url = 'http://192.168.254.3:8000/todo/todo/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -169,7 +169,7 @@ class _NotePageState extends State<NotePage> {
   }
 
   Future<noteamount> fetchamount(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/todo/amount/';
+    final url = 'http://192.168.254.3:8000/todo/amount/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -201,7 +201,7 @@ class _NotePageState extends State<NotePage> {
   }
 
   Future<void> deleteoveralldata(int note_id) async {
-    final url = 'http://10.0.2.2:8000/todo/todo/$note_id/';
+    final url = 'http://192.168.254.3:8000/todo/todo/$note_id/';
 
     // Remove the deleted item from the local list
 
@@ -722,7 +722,7 @@ class _NotePageState extends State<NotePage> {
     _titleController.text = note.title;
     _amountController.text = note.amount.toStringAsFixed(0);
     _discController.text = note.discription;
-   
+
     dateController.text = note.date;
     showDialog(
       context: context,
@@ -755,7 +755,6 @@ class _NotePageState extends State<NotePage> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
-                   
                   ],
                 ),
                 TextField(
@@ -800,8 +799,7 @@ class _NotePageState extends State<NotePage> {
                         print(amount);
                         print(disc);
                         print(date);
-                        _updatenote(
-                            note.note_id, title, amount, disc, date);
+                        _updatenote(note.note_id, title, amount, disc, date);
                         //  Navigator.of(context).pop();
                       },
                       child: Text('Create Note'),

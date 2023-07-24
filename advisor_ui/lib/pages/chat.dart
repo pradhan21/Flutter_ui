@@ -26,7 +26,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   List<UserProfile> profile = [];
   Future<UserProfile> _fetchProfileData(String accessToken) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
+    final url = Uri.parse('http://192.168.254.3:8000/api/user/profile/');
     final headers = {'Authorization': 'Bearer $accessToken'};
 
     var response = await http.get(url, headers: headers);

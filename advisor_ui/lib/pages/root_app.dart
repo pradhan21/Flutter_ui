@@ -100,7 +100,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
   }
 
 //  Future<List<dynamic>> fetchdata(String accessToken) async {
-//     final url = 'http://10.0.2.2:8000/limit/limit/';
+//     final url = 'http://192.168.254.3:8000/limit/limit/';
 
 //     final response = await http.get(Uri.parse(url), headers: {
 //       'Authorization': 'Bearer $accessToken',
@@ -157,7 +157,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
 //   }
 
   Future<UserProfile> _fetchProfileData(String accessToken) async {
-    final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
+    final url = Uri.parse('http://192.168.254.3:8000/api/user/profile/');
     final headers = {'Authorization': 'Bearer $accessToken'};
 
     var response = await http.get(url, headers: headers);
@@ -184,7 +184,7 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
   }
 
   Future<List<ExpCategory>> fetchexpCategories(String accessToken) async {
-    final url = 'http://10.0.2.2:8000/expensesCat/excategory/';
+    final url = 'http://192.168.254.3:8000/expensesCat/excategory/';
 
     final response = await http.get(Uri.parse(url), headers: {
       'Authorization': 'Bearer $accessToken',
@@ -207,50 +207,50 @@ class _RootAppState extends State<RootApp> with WidgetsBindingObserver {
     }
   }
 
-Future<void> _createcustomBudget(double amount, int category) async {
-  // Check if a limit already exists for the category and user
-  if (checkLimitExists(category)) {
-    // Limit already exists, show an error message or handle accordingly
-    print('Limit already exists for the category');
-    return;
-  }
+  Future<void> _createcustomBudget(double amount, int category) async {
+    // Check if a limit already exists for the category and user
+    if (checkLimitExists(category)) {
+      // Limit already exists, show an error message or handle accordingly
+      print('Limit already exists for the category');
+      return;
+    }
 
-  // Continue with creating the new limit
-  final url = Uri.parse('http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
+    // Continue with creating the new limit
+    final url = Uri.parse(
+        'http://192.168.254.3:8000/limit/limit/'); // Replace with your API URL
 
-  final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer ${widget.accessToken}',
-    // Add any required headers
-  };
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${widget.accessToken}',
+      // Add any required headers
+    };
 
-  final body = jsonEncode({
-    'category_limit': amount,
-    'expenses_Category': category,
-  });
+    final body = jsonEncode({
+      'category_limit': amount,
+      'expenses_Category': category,
+    });
 
-  final response = await http.post(url, headers: headers, body: body);
+    final response = await http.post(url, headers: headers, body: body);
 
-  if (response.statusCode == 201) {
-    // Budget created successfully
-    // You can perform any additional actions here
-    print('Budget created successfully');
-  } else {
-    // Failed to create budget
-    // Handle the error accordingly
-    print('Failed to create budget. Status code: ${response.statusCode}');
-  }
-}
-
-
-bool checkLimitExists(int categoryId) {
-  for (var limit in categorylimits) {
-    if (limit.category_id == categoryId) {
-      return true;
+    if (response.statusCode == 201) {
+      // Budget created successfully
+      // You can perform any additional actions here
+      print('Budget created successfully');
+    } else {
+      // Failed to create budget
+      // Handle the error accordingly
+      print('Failed to create budget. Status code: ${response.statusCode}');
     }
   }
-  return false;
-}
+
+  bool checkLimitExists(int categoryId) {
+    for (var limit in categorylimits) {
+      if (limit.category_id == categoryId) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   Future<void> _createBudget(double amount) async {
     // Check if an overall budget already exists
@@ -264,7 +264,7 @@ bool checkLimitExists(int categoryId) {
 
     // Continue with creating the new budget
     final url = Uri.parse(
-        'http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
+        'http://192.168.254.3:8000/limit/limit/'); // Replace with your API URL
 
     final headers = {
       'Authorization': 'Bearer ${widget.accessToken}',
@@ -290,7 +290,7 @@ bool checkLimitExists(int categoryId) {
 
   Future<Limits?> _fetchExistingBudget() async {
     final url = Uri.parse(
-        'http://10.0.2.2:8000/limit/limit/'); // Replace with your API URL
+        'http://192.168.254.3:8000/limit/limit/'); // Replace with your API URL
 
     final headers = {
       'Content-Type': 'application/json',
@@ -322,7 +322,7 @@ bool checkLimitExists(int categoryId) {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor:Color.fromARGB(255, 233, 227, 227),
+      backgroundColor: Color.fromARGB(255, 233, 227, 227),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -342,25 +342,26 @@ bool checkLimitExists(int categoryId) {
                 // borderRadius: BorderRadius.circular(12),
               ),
               child: UserAccountsDrawerHeader(
-                decoration: BoxDecoration(color: Colors.black87),
-                accountName: Text(
-                  "${fname} ${lname}",
-                  style: TextStyle(fontSize: 18),
-                ),
-                accountEmail: Text("${email}"),
-                // currentAccountPictureSize: Size.square(70),
-                currentAccountPicture: Container(
-                 
-                  decoration: BoxDecoration(shape: BoxShape.circle,color:white),
-                  child:ClipOval(
-                  // backgroundColor: Colors.white,
-                 
-                  child:  Image.asset(
-                "assets/output-onlinepngtools.png", 
-                fit: BoxFit.cover,// This will make the image fit within the container
-              ),
-                ),)
-              ),
+                  decoration: BoxDecoration(color: Colors.black87),
+                  accountName: Text(
+                    "${fname} ${lname}",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  accountEmail: Text("${email}"),
+                  // currentAccountPictureSize: Size.square(70),
+                  currentAccountPicture: Container(
+                    decoration:
+                        BoxDecoration(shape: BoxShape.circle, color: white),
+                    child: ClipOval(
+                      // backgroundColor: Colors.white,
+
+                      child: Image.asset(
+                        "assets/output-onlinepngtools.png",
+                        fit: BoxFit
+                            .cover, // This will make the image fit within the container
+                      ),
+                    ),
+                  )),
             ),
 
             // ListTile Widget // Provides the options
@@ -602,9 +603,11 @@ bool checkLimitExists(int categoryId) {
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: button),
                                     onPressed: () {
-                                      setState(){
-                                         _amountController.clear();
-                                      };
+                                      setState() {
+                                        _amountController.clear();
+                                      }
+
+                                      ;
                                       Navigator.of(context).pop();
                                       Navigator.of(context)
                                           .pop(); // Close the previous dialog
@@ -694,8 +697,8 @@ bool checkLimitExists(int categoryId) {
                     //     },
                     //   );
                     // } else {
-                      _createBudget(amount);
-                      Navigator.of(context).pop();
+                    _createBudget(amount);
+                    Navigator.of(context).pop();
                     // }
                   },
                   child: Text('Create Budget'),

@@ -7,13 +7,12 @@ import 'package:advisor_ui/widget/chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import '../api_data/statsdata.dart';
-
 
 class StatsPage extends StatefulWidget {
   final String accessToken;
-   final List<double> dataPoints = [20, 30, 50];
+  final List<double> dataPoints = [20, 30, 50];
   StatsPage({required this.accessToken});
   @override
   _StatsPageState createState() => _StatsPageState();
@@ -31,32 +30,32 @@ class _StatsPageState extends State<StatsPage> {
   double totalIncome = 0.0;
 
   Color _getincomeCategoryColor(String categoryName) {
-  // Define a color mapping based on category name
-  Map<String, Color> categoryColors = {
-    'Allowance': Colors.blue,
-    'Salary': Colors.green,
-    'Others': Colors.red,
-    // Add more categories as needed
-  };
+    // Define a color mapping based on category name
+    Map<String, Color> categoryColors = {
+      'Allowance': Colors.blue,
+      'Salary': Colors.green,
+      'Others': Colors.red,
+      // Add more categories as needed
+    };
 
-  // Return the corresponding color for each category
-  // If the category is not found in the map, return a default color
-  return categoryColors[categoryName] ?? Colors.grey;
-}
+    // Return the corresponding color for each category
+    // If the category is not found in the map, return a default color
+    return categoryColors[categoryName] ?? Colors.grey;
+  }
 
- Color _getexpenseCategoryColor(String categoryName) {
-  // Define a color mapping based on category name
-  Map<String, Color> categoryColors = {
-    'Allowance': Colors.blue,
-    'Salary': Colors.green,
-    'Others': Colors.red,
-    // Add more categories as needed
-  };
+  Color _getexpenseCategoryColor(String categoryName) {
+    // Define a color mapping based on category name
+    Map<String, Color> categoryColors = {
+      'Allowance': Colors.blue,
+      'Salary': Colors.green,
+      'Others': Colors.red,
+      // Add more categories as needed
+    };
 
-  // Return the corresponding color for each category
-  // If the category is not found in the map, return a default color
-  return categoryColors[categoryName] ?? Colors.grey;
-}
+    // Return the corresponding color for each category
+    // If the category is not found in the map, return a default color
+    return categoryColors[categoryName] ?? Colors.grey;
+  }
 
   void goToPreviousDates() {
     setState(() {
@@ -70,7 +69,6 @@ class _StatsPageState extends State<StatsPage> {
     });
   }
 
-
   void updateVisibleDates() {
     visibleDates.clear();
     for (int i = 0; i < 4; i++) {
@@ -78,99 +76,101 @@ class _StatsPageState extends State<StatsPage> {
       visibleDates.add(date);
     }
   }
-void initState() {
-  super.initState();
-  for (int i = 0; i < 30; i++) {
-    DateTime date = currentDate.add(Duration(days: i));
-    visibleDates.add(date);
-  }
-  // Timer.periodic(Duration(seconds: 1), (_) =>  fetchIncomes(widget.accessToken));
-  fetchIncomes(widget.accessToken);
-  // Fetch initial data
-}
 
-Future<void> fetchIncomes(String accessToken) async {
-  final url = 'http://10.0.2.2:8000/income/income/';
-
-  final response = await http.get(Uri.parse(url), headers: {
-    'Authorization': 'Bearer $accessToken',
-  });
-
-  if (response.statusCode == 200) {
-    final jsonData = json.decode(response.body);
-    final categoriesData = jsonData['results'];
-
-    if (categoriesData != null) {
-      // Calculate total income
-      double totalIncome = 0;
-      List<income> fetchedIncomes = [];
-
-      for (var categoryData in categoriesData) {
-        final incomeItem = income.fromJson(categoryData);
-        totalIncome += incomeItem.amount;
-        fetchedIncomes.add(incomeItem); // Add income item to the list
-      }
-
-      // Create a single data point for total income
-      final totalIncomeData = PieChartSectionData(
-        value: totalIncome,
-        color: Colors.blue, // Set color for total income
-        title: 'Total Income',
-        radius: 100,
-      );
-
-      setState(() {
-        sections = [totalIncomeData];
-        incomes = fetchedIncomes; 
-        totalIncome = totalIncome;// Update the incomes list
-      });
+  void initState() {
+    super.initState();
+    for (int i = 0; i < 30; i++) {
+      DateTime date = currentDate.add(Duration(days: i));
+      visibleDates.add(date);
     }
-  } else {
-    throw Exception('Failed to fetch incomes. Status code: ${response.statusCode}');
+    // Timer.periodic(Duration(seconds: 1), (_) =>  fetchIncomes(widget.accessToken));
+    fetchIncomes(widget.accessToken);
+    // Fetch initial data
   }
-}
 
-Future<void> fetchexpense(String accessToken) async {
-  final url = 'http://10.0.2.2:8000/expenses/expenses/';
+  Future<void> fetchIncomes(String accessToken) async {
+    final url = 'http://192.168.254.3:8000/income/income/';
 
-  final response = await http.get(Uri.parse(url), headers: {
-    'Authorization': 'Bearer $accessToken',
-  });
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization': 'Bearer $accessToken',
+    });
 
-  if (response.statusCode == 200) {
-    final jsonData = json.decode(response.body);
-    final categoriesData = jsonData['results'];
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final categoriesData = jsonData['results'];
 
-    if (categoriesData != null) {
-      // Calculate total income
-      double totalIncome = 0;
-      List<income> fetchedIncomes = [];
+      if (categoriesData != null) {
+        // Calculate total income
+        double totalIncome = 0;
+        List<income> fetchedIncomes = [];
 
-      for (var categoryData in categoriesData) {
-        final incomeItem = income.fromJson(categoryData);
-        totalIncome += incomeItem.amount;
-        fetchedIncomes.add(incomeItem); // Add income item to the list
+        for (var categoryData in categoriesData) {
+          final incomeItem = income.fromJson(categoryData);
+          totalIncome += incomeItem.amount;
+          fetchedIncomes.add(incomeItem); // Add income item to the list
+        }
+
+        // Create a single data point for total income
+        final totalIncomeData = PieChartSectionData(
+          value: totalIncome,
+          color: Colors.blue, // Set color for total income
+          title: 'Total Income',
+          radius: 100,
+        );
+
+        setState(() {
+          sections = [totalIncomeData];
+          incomes = fetchedIncomes;
+          totalIncome = totalIncome; // Update the incomes list
+        });
       }
-
-      // Create a single data point for total income
-      final totalIncomeData = PieChartSectionData(
-        value: totalIncome,
-        color: Colors.blue, // Set color for total income
-        title: 'Total Income',
-        radius: 100,
-      );
-
-      setState(() {
-        sections = [totalIncomeData];
-        incomes = fetchedIncomes; 
-        totalIncome = totalIncome;// Update the incomes list
-      });
+    } else {
+      throw Exception(
+          'Failed to fetch incomes. Status code: ${response.statusCode}');
     }
-  } else {
-    throw Exception('Failed to fetch incomes. Status code: ${response.statusCode}');
   }
-}
 
+  Future<void> fetchexpense(String accessToken) async {
+    final url = 'http://192.168.254.3:8000/expenses/expenses/';
+
+    final response = await http.get(Uri.parse(url), headers: {
+      'Authorization': 'Bearer $accessToken',
+    });
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final categoriesData = jsonData['results'];
+
+      if (categoriesData != null) {
+        // Calculate total income
+        double totalIncome = 0;
+        List<income> fetchedIncomes = [];
+
+        for (var categoryData in categoriesData) {
+          final incomeItem = income.fromJson(categoryData);
+          totalIncome += incomeItem.amount;
+          fetchedIncomes.add(incomeItem); // Add income item to the list
+        }
+
+        // Create a single data point for total income
+        final totalIncomeData = PieChartSectionData(
+          value: totalIncome,
+          color: Colors.blue, // Set color for total income
+          title: 'Total Income',
+          radius: 100,
+        );
+
+        setState(() {
+          sections = [totalIncomeData];
+          incomes = fetchedIncomes;
+          totalIncome = totalIncome; // Update the incomes list
+        });
+      }
+    } else {
+      throw Exception(
+          'Failed to fetch incomes. Status code: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,28 +197,25 @@ Future<void> fetchexpense(String accessToken) async {
         "cost": "\$2645.50"
       }
     ];
-     double totalSum = widget.dataPoints.reduce((value, element) => value + element);
+    double totalSum =
+        widget.dataPoints.reduce((value, element) => value + element);
 
+    List<PieChartSectionData> newSections = incomes.map((income) {
+      final percentage = income.amount / totalSum;
+      final color = _getincomeCategoryColor(
+          income.category_name); // Set color based on category name
 
-   List<PieChartSectionData> newSections = incomes.map((income) {
-  final percentage = income.amount / totalSum;
-  final color = _getincomeCategoryColor(income.category_name); // Set color based on category name
+      return PieChartSectionData(
+        value: percentage,
+        color: color,
+        title: '${income.category_name}\n${percentage.toStringAsFixed(2)}%',
+        radius: 100,
+      );
+    }).toList();
 
-  return PieChartSectionData(
-    value: percentage,
-    color: color,
-    title: '${income.category_name}\n${percentage.toStringAsFixed(2)}%',
-    radius: 100,
-  );
-}).toList();
-
-
-
-
-setState(() {
-  sections = newSections;
-});
-
+    setState(() {
+      sections = newSections;
+    });
 
     return SingleChildScrollView(
       child: Column(
@@ -240,7 +237,8 @@ setState(() {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(onPressed:(){}, icon: Icon(Icons.menu_sharp)),
+                      IconButton(
+                          onPressed: () {}, icon: Icon(Icons.menu_sharp)),
                       Text(
                         "Stats",
                         style: TextStyle(
@@ -248,7 +246,10 @@ setState(() {
                             fontWeight: FontWeight.bold,
                             color: white),
                       ),
-                      Icon(AntDesign.search1, color: white,)
+                      Icon(
+                        AntDesign.search1,
+                        color: white,
+                      )
                     ],
                   ),
                   SizedBox(
@@ -257,23 +258,25 @@ setState(() {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      
                       IconButton(
-                  onPressed: goToPreviousDates,
-                  icon: Icon(Icons.arrow_back,color:white),
-                ),
-                Text(
-                   DateFormat(' MMMM, y').format(currentDate),
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: white,
-                  ),
-                ),
-                IconButton(
-                  onPressed: goToFutureDates,
-                  icon: Icon(Icons.arrow_forward,color: white,),
-                ),
+                        onPressed: goToPreviousDates,
+                        icon: Icon(Icons.arrow_back, color: white),
+                      ),
+                      Text(
+                        DateFormat(' MMMM, y').format(currentDate),
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: white,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: goToFutureDates,
+                        icon: Icon(
+                          Icons.arrow_forward,
+                          color: white,
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -414,7 +417,6 @@ setState(() {
               spacing: 20,
               children: List.generate(expenses.length, (index) {
                 return Container(
-                
                   width: (size.width - 60) / 2,
                   height: 170,
                   decoration: BoxDecoration(
@@ -436,7 +438,6 @@ setState(() {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
@@ -475,8 +476,8 @@ setState(() {
                   ),
                 );
               })),
-              const SizedBox(height: 30),
-            Padding(
+          const SizedBox(height: 30),
+          Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Container(
               width: double.infinity,
@@ -524,27 +525,26 @@ setState(() {
                       ),
                     ),
                     Positioned(
-                      top: -15,
-                      child: Container(
-                        width: (size.width - 20),
-                        height: 350,
-                        child: PieChart(
-                      PieChartData(
-                        sections: sections,
-                        centerSpaceRadius: 0,
-                        borderData: FlBorderData(show: false),
-                      ),
-                    ),
-                    ))
+                        top: -15,
+                        child: Container(
+                          width: (size.width - 20),
+                          height: 350,
+                          child: PieChart(
+                            PieChartData(
+                              sections: sections,
+                              centerSpaceRadius: 0,
+                              borderData: FlBorderData(show: false),
+                            ),
+                          ),
+                        ))
                   ],
                 ),
               ),
             ),
           ),
-              
-           SizedBox(
+          SizedBox(
             height: 120,
-          ), 
+          ),
         ],
       ),
     );

@@ -27,7 +27,7 @@
 //       ..setNavigationDelegate(
 //         NavigationDelegate(
 //           onNavigationRequest: (NavigationRequest request) {
-//             if (request.url == 'http://10.0.2.2:8000/') {
+//             if (request.url == 'http://192.168.254.3:8000/') {
 //               // replace with your success url
 //               Navigator.of(context).pop(); // close the WebView
 //               return NavigationDecision
@@ -81,7 +81,7 @@ class _WebViewPaymentState extends State<WebViewPayment> {
           _controller.complete(webViewController);
         },
         navigationDelegate: (NavigationRequest request) {
-          if (request.url == 'http://10.0.2.2:8000/') {
+          if (request.url == 'http://192.168.254.3:8000/') {
             // replace with your success url
             Navigator.of(context).pop(); // close the WebView
             return NavigationDecision

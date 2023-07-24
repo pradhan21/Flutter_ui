@@ -32,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _fetchProfileData() {
-    final url = Uri.parse('http://10.0.2.2:8000/api/user/profile/');
+    final url = Uri.parse('http://192.168.254.3:8000/api/user/profile/');
     final headers = {'Authorization': 'Bearer ${widget.accessToken}'};
 
     _profileFuture = http.get(url, headers: headers).then((response) {
@@ -47,7 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
- @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: grey.withOpacity(0.05),
@@ -122,8 +122,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: RotatedBox(
                                         quarterTurns: -2,
                                         child: CircularPercentIndicator(
-                                          circularStrokeCap: CircularStrokeCap.round,
-                                          backgroundColor: grey.withOpacity(0.3),
+                                          circularStrokeCap:
+                                              CircularStrokeCap.round,
+                                          backgroundColor:
+                                              grey.withOpacity(0.3),
                                           radius: 85.0,
                                           lineWidth: 6.0,
                                           percent: 0.53,
@@ -169,7 +171,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   SizedBox(height: 10),
                                   Container(
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(width: 28),
                                         Icon(Icons.email_outlined),
@@ -187,7 +190,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   Container(
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(width: 108),
                                         Icon(Icons.phone),
@@ -217,7 +221,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Container(
                     color: Color.fromARGB(255, 233, 227, 227),
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 30, left: 20, right: 20),
+                      padding:
+                          const EdgeInsets.only(top: 30, left: 20, right: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -226,17 +231,18 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
-                              color:black,
+                              color: black,
                             ),
                           ),
-                           SizedBox(height: 6),
-                          Text( 
+                          SizedBox(height: 6),
+                          Text(
                             "${userProfile.username}",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
                               color: Color(0xff67727d),
-                            ),),
+                            ),
+                          ),
                           SizedBox(height: 20),
                           Text(
                             "Email:",
@@ -246,14 +252,15 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: black,
                             ),
                           ),
-                           SizedBox(height: 6),
-                          Text( 
+                          SizedBox(height: 6),
+                          Text(
                             "${userProfile.email}",
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 20,
                               color: Color(0xff67727d),
-                            ),),
+                            ),
+                          ),
                           SizedBox(height: 20),
                           Text(
                             "Date of birth:",

@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Make an HTTP request to the backend server
     // final url = 'http://127.0.0.1:8000/api/user/register/';
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/user/register/'),
+      Uri.parse('http://192.168.254.3:8000/api/user/register/'),
       body: <String, String>{
         'email': email,
         'username': username,
@@ -245,12 +245,13 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Error'),
-            content: const Text('Error at creating user. Please go through the details again.'),
+            content: const Text(
+                'Error at creating user. Please go through the details again.'),
             actions: <Widget>[
               ElevatedButton(
                 onPressed: () {
                   setState(() {
-                   _isSigningUp = false;
+                    _isSigningUp = false;
                   });
                   Navigator.of(context).pop();
                 },
@@ -310,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 //     } else {
 //       trigFail?.change(true);
-//     }
+//     }http://192.168.254.3:8000
 //     } catch (e) {
 //       user = null;
 //     }
@@ -406,9 +407,10 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const SizedBox(height: 10),
             Image.asset(
-                "assets/output-onlinepngtools.png", height: 200,
-                fit: BoxFit.fill,// This will make the image fit within the container
-              ),
+              "assets/output-onlinepngtools.png", height: 200,
+              fit: BoxFit
+                  .fill, // This will make the image fit within the container
+            ),
             // Container(
             //   height: 110,
             //   width: 170,
