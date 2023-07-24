@@ -348,11 +348,18 @@ bool checkLimitExists(int categoryId) {
                   style: TextStyle(fontSize: 18),
                 ),
                 accountEmail: Text("${email}"),
-                currentAccountPictureSize: Size.square(60),
-                currentAccountPicture: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon(Icons.person),
-                ),
+                // currentAccountPictureSize: Size.square(70),
+                currentAccountPicture: Container(
+                 
+                  decoration: BoxDecoration(shape: BoxShape.circle,color:white),
+                  child:ClipOval(
+                  // backgroundColor: Colors.white,
+                 
+                  child:  Image.asset(
+                "assets/output-onlinepngtools.png", 
+                fit: BoxFit.cover,// This will make the image fit within the container
+              ),
+                ),)
               ),
             ),
 

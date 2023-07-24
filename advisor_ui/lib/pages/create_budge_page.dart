@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:advisor_ui/api_data/userProfile.dart';
-import 'package:advisor_ui/json/create_budget_json.dart';
 import 'package:advisor_ui/pages/scanned_values_page.dart';
 import 'package:advisor_ui/theme/colors.dart';
 import 'package:camera/camera.dart';
@@ -9,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobile_vision_2/flutter_mobile_vision_2.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:velocity_x/velocity_x.dart';
 import 'addCategory.dart';
 import 'package:http/http.dart' as http;
+import 'dart:async';
 
 class CreatBudgetPage extends StatefulWidget {
   final String accessToken;
@@ -45,7 +43,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
   @override
   void initState() {
     super.initState();
-    loadCamera();
+    // loadCamera();
     // Call the fetchCategories function and store the result in the 'categories' list
     fetchCategories(widget.accessToken).then((fetchedCategories) {
       setState(() {
@@ -64,6 +62,10 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     }).catchError((error) {
       print('Error fetching  Expenses categories: $error');
       // Handle the error or display an error message here
+    });
+    Timer.periodic(Duration(seconds: 2), (_) {
+      fetchCategories(widget.accessToken);
+      fetchexpCategories(widget.accessToken);
     });
   }
 
@@ -161,7 +163,6 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
       final categoriesData = jsonData['filtered'];
       // print(categoriesData);
       List<Category> categories = [];
-
       for (var categoryData in categoriesData) {
         categories.add(Category.fromJson(categoryData));
       }
@@ -219,7 +220,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
 
     if (response.statusCode == 201) {
       _budgetName..clear();
-      _budgetName..clear();
+      _budgetPrice..clear();
       // Success: Handle the response as needed
       print('Income created successfully');
     } else {
@@ -607,12 +608,13 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                                   MaterialStateProperty.all<Color>(button),
                             ),
                             icon: const Icon(AntDesign.arrowright),
-                            onPressed: () {
+                            onPressed: () async {
                               // Call the createIncome function with the input values
                               // print(_budgetName.text);
                               // print(_budgetPrice.text);
                               createIncome(_budgetName.text, _budgetPrice.text,
                                   categoryId);
+                              await fetchexpCategories(widget.accessToken);
                             },
                             color: white,
                           ),
@@ -670,18 +672,18 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                             fontWeight: FontWeight.bold,
                             color: black.withOpacity(0.5)),
                       ),
-                      ElevatedButton(
-                          onPressed: () {
-                            // setState(() {
-                            //   showaddcategory1 = true;
-                            // });
-                            _showPopup2(context);
-                          },
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(button),
-                          ),
-                          child: Text('Add Category'))
+                      // ElevatedButton(
+                      //     onPressed: () {
+                      //       // setState(() {
+                      //       //   showaddcategory1 = true;
+                      //       // });
+                      //       _showPopup2(context);
+                      //     },
+                      //     style: ButtonStyle(
+                      //       backgroundColor:
+                      //           MaterialStateProperty.all<Color>(button),
+                      //     ),
+                      //     child: Text('Add Category'))
                       // IconButton(
                       //   icon: Icon(Icons.add),
                       //   onPressed: _addCategory,
@@ -872,7 +874,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                                 MaterialStateProperty.all<Color>(button),
                           ),
                           icon: const Icon(AntDesign.arrowright),
-                          onPressed: () {
+                          onPressed: () async {
                             // print(_budgetNameexp.text);
                             // print(_budgetPriceexp.text);
                             // print(_noteexp.text);
@@ -881,6 +883,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                                 _budgetPriceexp.text,
                                 _noteexp.text,
                                 categoryId);
+                            await fetchCategories(widget.accessToken);
                           },
                           color: white,
                         ),
@@ -912,8 +915,9 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     return response;
   }
 
- Future<void> _createIncome(String name, String accessToken) async {
-    final url = Uri.parse('http://10.0.2.2:8000/incomeCat/incomecategory/'); // Update the URL here
+  Future<void> _createIncome(String name, String accessToken) async {
+    final url = Uri.parse(
+        'http://10.0.2.2:8000/incomeCat/incomecategory/'); // Update the URL here
     final headers = {
       'Authorization': 'Bearer $accessToken',
       'Content-type': 'application/json',
@@ -925,13 +929,13 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     final response =
         await http.post(url, headers: headers, body: jsonEncode(body));
     // print(response);
-    if (response.statusCode == 201) { // Update the condition to check for 201 (HTTP_CREATED)
+    if (response.statusCode == 201) {
+      // Update the condition to check for 201 (HTTP_CREATED)
       print("category added");
     } else {
       print('Failed to create income. Status code: ${response.statusCode}');
     }
-}
-
+  }
 
   void _showPopup1(BuildContext context) {
     showDialog(
@@ -964,8 +968,8 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                         _createIncome(_nameController.text, widget.accessToken);
                         await fetchCategories(widget.accessToken);
                         setState(() {
-                            _nameController.clear();
-                          });
+                          _nameController.clear();
+                        });
                         Navigator.pop(context);
                         // Pass the new category back to the previous page
                       },
@@ -1023,8 +1027,8 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
                             _namedController.text, widget.accessToken);
                         await fetchexpCategories(widget.accessToken);
                         setState(() {
-                            _namedController.clear();
-                          });
+                          _namedController.clear();
+                        });
                         Navigator.pop(context);
                       },
                       child: Text('Save Category'),

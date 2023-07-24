@@ -20,7 +20,8 @@ class _NotePageState extends State<NotePage> {
   List<notedata> notesdata = [];
   List<noteamount> notesamount = [];
   List<String> list = <String>['Payable', 'Receivable'];
-  String dropdownValue = ' ';
+  String dropdownValue = 'Payable';
+
   TextEditingController _titleController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   TextEditingController _discController = TextEditingController();
@@ -33,7 +34,7 @@ class _NotePageState extends State<NotePage> {
     dropdownValue = list.first;
     fetchamount(widget.accessToken);
     fetchdata(widget.accessToken);
-    // Timer.periodic(Duration(seconds: 1), (_) {
+    // Timer.periodic(Duration(seconds: 2), (_) {
     //   fetchamount(widget.accessToken);
     //   fetchdata(widget.accessToken);
     // });
@@ -90,7 +91,7 @@ class _NotePageState extends State<NotePage> {
   }
 
   Future<void> _updatenote(
-      int id, title, int amount, String desc, String type, String date) async {
+      int id, title, int amount, String desc, String date) async {
     final url = Uri.parse('http://10.0.2.2:8000/todo/todo/$id/');
     final headers = {
       'Content-Type': 'application/json',
@@ -102,7 +103,6 @@ class _NotePageState extends State<NotePage> {
       'title': title,
       'amount': amount,
       'discription': desc,
-      'type': type,
       'date': date,
     });
 
@@ -366,18 +366,19 @@ class _NotePageState extends State<NotePage> {
 
                           return Padding(
                             // Wrap each ListTile with Padding widget
-                            padding: EdgeInsets.symmetric(vertical: 8), // Set the vertical spacing
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8), // Set the vertical spacing
                             child: Material(
                               clipBehavior: Clip.antiAlias,
                               borderRadius: BorderRadius.circular(8),
                               child: Container(
                                 height: 100,
                                 child: ListTile(
-                                  title: Column(
-                                    children: [
+                                  title: Column(children: [
                                     const SizedBox(height: 20),
                                     Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
@@ -430,23 +431,26 @@ class _NotePageState extends State<NotePage> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                 Row( children:[ Text(
-                                                    "Amount:",
-                                                    style: TextStyle(
-                                                        fontSize: 25,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  Text(
-                                                      " ${note.amount.toStringAsFixed(2)}",
+                                                  Row(children: [
+                                                    Text(
+                                                      "Amount:",
                                                       style: TextStyle(
                                                           fontSize: 25,
-                                                          fontWeight: FontWeight
-                                                              .normal)),
-                                                  const SizedBox(
-                                                    height: 20,
-                                                  ),]),
-                                                  SizedBox(height:20),
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                        " ${note.amount.toStringAsFixed(2)}",
+                                                        style: TextStyle(
+                                                            fontSize: 25,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .normal)),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                  ]),
+                                                  SizedBox(height: 20),
                                                   Text(
                                                     "Discription:",
                                                     style: TextStyle(
@@ -622,7 +626,7 @@ class _NotePageState extends State<NotePage> {
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     DropdownButton<String>(
-                      value: list.first,
+                      value: dropdownValue,
                       icon: const Icon(Icons.arrow_downward),
                       elevation: 16,
                       style: const TextStyle(color: Colors.deepPurple),
@@ -632,8 +636,11 @@ class _NotePageState extends State<NotePage> {
                       ),
                       onChanged: (String? value) {
                         // This is called when the user selects an item.
+                        print(
+                            'Selected value: $value'); // Add this print statement to debug
                         setState(() {
-                          dropdownValue = value!;
+                          dropdownValue =
+                              value!; // Update the dropdownValue to the selected value
                         });
                       },
                       items: list.map<DropdownMenuItem<String>>((String value) {
@@ -690,7 +697,7 @@ class _NotePageState extends State<NotePage> {
                         print(type);
                         print(date);
                         _createnote(title, amount, disc, type, date);
-                        //  Navigator.of(context).pop();
+                        Navigator.of(context).pop();
                       },
                       child: Text('Create Note'),
                     ),
@@ -715,7 +722,7 @@ class _NotePageState extends State<NotePage> {
     _titleController.text = note.title;
     _amountController.text = note.amount.toStringAsFixed(0);
     _discController.text = note.discription;
-    dropdownValue = note.type;
+   
     dateController.text = note.date;
     showDialog(
       context: context,
@@ -748,28 +755,7 @@ class _NotePageState extends State<NotePage> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
-                    DropdownButton<String>(
-                      value: list.first,
-                      icon: const Icon(Icons.arrow_downward),
-                      elevation: 16,
-                      style: const TextStyle(color: Colors.deepPurple),
-                      underline: Container(
-                        height: 2,
-                        color: Colors.deepPurpleAccent,
-                      ),
-                      onChanged: (String? value) {
-                        // This is called when the user selects an item.
-                        setState(() {
-                          dropdownValue = value!;
-                        });
-                      },
-                      items: list.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
+                   
                   ],
                 ),
                 TextField(
@@ -809,15 +795,13 @@ class _NotePageState extends State<NotePage> {
                         final String title = _titleController.text;
                         final int amount = int.parse(_amountController.text);
                         final String disc = _discController.text;
-                        final String type = dropdownValue.toLowerCase();
                         final String date = dateController.text;
                         print(title);
                         print(amount);
                         print(disc);
-                        print(type);
                         print(date);
                         _updatenote(
-                            note.note_id, title, amount, disc, type, date);
+                            note.note_id, title, amount, disc, date);
                         //  Navigator.of(context).pop();
                       },
                       child: Text('Create Note'),
