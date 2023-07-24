@@ -1,8 +1,8 @@
 class BudgetCategory {
   final String name;
-  final String icon;
   
-  BudgetCategory({required this.name, required this.icon});
+  
+  BudgetCategory({required this.name});
 }
 
 List<Map<String, dynamic>> categories = [

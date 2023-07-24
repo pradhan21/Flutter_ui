@@ -61,7 +61,6 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                 // Create a new Category object
                 BudgetCategory newCategory = BudgetCategory(
                   name: categoryName,
-                  icon: selectedIcon!,
                 );
 
                 // Pass the new category back to the previous page

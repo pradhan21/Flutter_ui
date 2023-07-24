@@ -35,6 +35,7 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
   XFile? image; // for captured image
   FocusNode nameFocusNode = FocusNode();
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _namedController = TextEditingController();
   String? selectedIcon;
   // Define a list to store the categories
   List<Category> categories = [];
@@ -895,26 +896,15 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     );
   }
 
-  Future<http.Response> _createCategory(
-      BudgetCategory category, String accessToken) async {
+  Future<http.Response> _createCategory(String name, String accessToken) async {
     final url = Uri.parse('http://10.0.2.2:8000/expensesCat/excategory/');
-    final headers = {'Authorization': 'Bearer $accessToken','Content-type': 'application/json','Accept': 'application/json'};
-    final body = {
-      'name': category.name,
-      'image': category.icon,
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
     };
-    final response =
-        await http.post(url, headers: headers, body: jsonEncode(body));
-    // print(response);
-    return response;
-  }
-   Future<http.Response> _createIncome(
-      BudgetCategory category, String accessToken) async {
-    final url = Uri.parse('http://10.0.2.2:8000/incomeCat/incomecategory/');
-    final headers = {'Authorization': 'Bearer $accessToken','Content-type': 'application/json','Accept': 'application/json'};
     final body = {
-      'name': category.name,
-      'image': category.icon,
+      'name': name,
     };
     final response =
         await http.post(url, headers: headers, body: jsonEncode(body));
@@ -922,149 +912,142 @@ class _BudgetAddPageState extends State<CreatBudgetPage> {
     return response;
   }
 
-void _showPopup1(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Popup Title'),
-        content: Text('Popup Content'),
-          actions: [
-            TextField(
-              focusNode: nameFocusNode,
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Category Name'),
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<String>(
-              value: selectedIcon,
-              items: iconOptions.map((icon) {
-                return DropdownMenuItem<String>(
-                  value: icon,
-                  child: ImageIcon(AssetImage(icon)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedIcon = value;
-                });
-              },
-              decoration: InputDecoration(labelText: 'Select Icon'),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(button),
-                  ),
-                  onPressed: () {
-                    // Retrieve the category name and selected icon
-                    String categoryName = _nameController.text;
+ Future<void> _createIncome(String name, String accessToken) async {
+    final url = Uri.parse('http://10.0.2.2:8000/incomeCat/incomecategory/'); // Update the URL here
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    };
+    final body = {
+      'name': name,
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(body));
+    // print(response);
+    if (response.statusCode == 201) { // Update the condition to check for 201 (HTTP_CREATED)
+      print("category added");
+    } else {
+      print('Failed to create income. Status code: ${response.statusCode}');
+    }
+}
 
-                    // Create a new Category object
-                    BudgetCategory newCategory = BudgetCategory(
-                      name: categoryName,
-                      icon: selectedIcon!,
-                    );
-                    _createIncome(newCategory, widget.accessToken);
 
-                    // Pass the new category back to the previous page
-                  },
-                  child: Text('Save Category'),
+  void _showPopup1(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('Income Category'),
+              content: Text('Enter the name of Category'),
+              actions: [
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(labelText: 'Category Name'),
                 ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(button),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(button),
+                      ),
+                      onPressed: () async {
+                        // Retrieve the category name and selected icon
+
+                        // Create a new Category object
+                        // BudgetCategory newCategory = BudgetCategory(
+                        //   name: categoryName,
+                        // );
+                        _createIncome(_nameController.text, widget.accessToken);
+                        await fetchCategories(widget.accessToken);
+                        setState(() {
+                            _nameController.clear();
+                          });
+                        Navigator.pop(context);
+                        // Pass the new category back to the previous page
+                      },
+                      child: Text('Save Category'),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _nameController.clear();
-                      });
-                     Navigator.pop(context);
-                    },
-                    child: Text("Cancel"))
-              ],
-            )
-          ]
-          );
-          }
-          );
-}
-void _showPopup2(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Popup Title'),
-        content: Text('Popup Content'),
-          actions: [
-            TextField(
-              focusNode: nameFocusNode,
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Category Name'),
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<String>(
-              value: selectedIcon,
-              items: iconOptions.map((icon) {
-                return DropdownMenuItem<String>(
-                  value: icon,
-                  child: ImageIcon(AssetImage(icon)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                setState(() {
-                  selectedIcon = value;
-                });
-              },
-              decoration: InputDecoration(labelText: 'Select Icon'),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(button),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    // Retrieve the category name and selected icon
-                    String categoryName = _nameController.text;
+                    ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(button),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _nameController.clear();
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel"))
+                  ],
+                )
+              ]);
+        });
+  }
 
-                    // Create a new Category object
-                    BudgetCategory newCategory = BudgetCategory(
-                      name: categoryName,
-                      icon: selectedIcon!,
-                    );
-
-                    // Send the category data to the API
-                    _createCategory(newCategory, widget.accessToken);
-
-                  },
-                  child: Text('Save Category'),
+  void _showPopup2(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: Text('Expense Category'),
+              content: Text('Enter the name of Category'),
+              actions: [
+                TextField(
+                  focusNode: nameFocusNode,
+                  controller: _namedController,
+                  decoration: InputDecoration(labelText: 'Category Name'),
                 ),
-                ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(button),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(button),
+                      ),
+                      onPressed: () async {
+                        // Retrieve the category name and selected icon
+                        // Create a new Category object
+                        // BudgetCategory newCategory = BudgetCategory(
+                        //   name: categoryName,
+                        // );
+
+                        // Send the category data to the API
+                        _createCategory(
+                            _namedController.text, widget.accessToken);
+                        await fetchexpCategories(widget.accessToken);
+                        setState(() {
+                            _namedController.clear();
+                          });
+                        Navigator.pop(context);
+                      },
+                      child: Text('Save Category'),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _nameController.clear();
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: Text("Cancel")),
-              ],
-            )
-          ]
-          );
-          }
-          );
+                    ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(button),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _namedController.clear();
+                          });
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancel")),
+                  ],
+                )
+              ]);
+        });
+  }
 }
-}
+
 class category {
   final String name;
   final String icon;

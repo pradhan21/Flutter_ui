@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Make an HTTP request to the backend server
     // final url = 'http://127.0.0.1:8000/api/user/register/';
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/user/register/'),
+      Uri.parse('http://192.168.203.233:8000/api/user/register/'),
       body: <String, String>{
         'email': email,
         'username': username,
@@ -310,7 +310,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) Navigator.pop(context);
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/user/login/'),
+        Uri.parse('http://192.168.203.233:8000/api/user/login/'),
         body: <String, String>{
           'email': username,
           'password': password,
@@ -383,26 +383,31 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(24),
         child: Column(
           children: [
-            const SizedBox(height: 32),
-            Container(
-              height: 64,
-              width: 64,
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
+            const SizedBox(height: 10),
+            Image.asset(
+                "assets/output-onlinepngtools.png", height: 200,
+                fit: BoxFit.fill,// This will make the image fit within the container
               ),
-              child: const Image(
-                image: AssetImage("assets/rive_logo.png"),
-              ),
-            ),
-            const SizedBox(height: 32),
+            // Container(
+            //   height: 110,
+            //   width: 170,
+            //   padding: const EdgeInsets.only(left:8),
+            //   decoration: BoxDecoration(
+            //     color: Colors.white,
+            //     shape: BoxShape.circle,
+            //   ),
+            //   child: Image.asset(
+            //     "assets/output-onlinepngtools.png",
+            //     fit: BoxFit.fill,// This will make the image fit within the container
+            //   ),
+            // ),
+            const SizedBox(height: 10),
             Text(
               "Wallet Wizard",
               style: Theme.of(context).textTheme.headlineMedium,
               textAlign: TextAlign.center,
             ),
-            SizedBox(height:30),
+            SizedBox(height: 30),
             SizedBox(
               height: 200,
               width: 350,
@@ -747,7 +752,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: button,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
-                          
                         ),
                       ),
                       child: Text(_isSigningUp ? 'Signup' : 'Login'),
@@ -761,7 +765,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 64,
                       child: TextButton(
                         onPressed: () {
-                          Navigator.restorablePushNamed(context, AppRouteName.reset);
+                          Navigator.restorablePushNamed(
+                              context, AppRouteName.reset);
                         },
                         child: Text("Recover Password"),
                       ),

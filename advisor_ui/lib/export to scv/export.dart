@@ -92,9 +92,14 @@ Future<void> exportmonthexpensedataToCsv(List<expense> monthexpense) async {
     rows.add([i + 1, data.category, data.amount]);
   }
 
-  // Get the application's documents directory to save the CSV file
-  Directory appDocumentsDirectory = await getApplicationDocumentsDirectory();
-  String csvFilePath = '${appDocumentsDirectory.path}/month_expense_report.csv';
+  // Get the external storage directory to save the CSV file
+  Directory? externalDir = await getExternalStorageDirectory();
+  if (externalDir == null) {
+    print('External storage directory not available.');
+    return;
+  }
+  
+  String csvFilePath = '${externalDir.path}/month_expense_report.csv';
 
   // Convert data to CSV format and save it to a file
   File csvFile = File(csvFilePath);
