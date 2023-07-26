@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:advisor_ui/json/budget_json.dart';
 import 'package:advisor_ui/json/day_month.dart';
@@ -36,6 +37,9 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     amountFocusNode.addListener;
+    Timer.periodic(Duration(seconds: 2), (_) { fetchdata(widget.accessToken);
+    fertchoveralldata(widget.accessToken);
+    fertchcategorydata(widget.accessToken); });
     fetchdata(widget.accessToken);
     fertchoveralldata(widget.accessToken);
     fertchcategorydata(widget.accessToken);
@@ -122,9 +126,10 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       // print(jsonData);
+      // List<categorydata> categorydatas = [];
       if (jsonData is List<dynamic>) {
         // Check if the response is a list
-
+        // List<categorydata> categorydatas = [];
         for (var data in jsonData) {
           // Iterate through the list of objects
           categorydatas.add(categorydata.fromJson(data));
@@ -135,6 +140,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
         //   print('Category Total: ${data.category_expenses_total}');
         //   print('------------------------');
         // }
+        categorydatas.clear();
         return categorydatas;
       } else {
         throw Exception('Invalid API response format');
@@ -156,7 +162,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
       final jsonData = json.decode(response.body);
       final categoriesData = jsonData;
       // print(categoriesData);
-      List<categorydata> categoriesdata = [];
+      // List<categorydata> categoriesdata = [];
       List<categorylimit> categorylimits = [];
       List<overalllimit> overalllimits = [];
 
@@ -198,7 +204,7 @@ class _BudgetPageState extends State<BudgetPage> with TickerProviderStateMixin {
         print('------------------------');
       }
 
-      return [categoriesdata, categorylimits, overalllimits];
+      return [ categorylimits, overalllimits];
     } else {
       throw Exception(
           'Failed to fetch categories data. Status code: ${response.statusCode}');

@@ -35,10 +35,10 @@ class _DailyPageState extends State<DailyPage> with TickerProviderStateMixin {
       DateTime date = currentDate.add(Duration(days: i));
       visibleDates.add(date);
     }
-    //   Timer.periodic(Duration(seconds: 20), (_) {  fetchExpenses();
-    // fetchIncomes();
-    //     fetchCategories(widget.accessToken);
-    //    fetchexpCategories(widget.accessToken);});
+      Timer.periodic(Duration(seconds: 2), (_) {  fetchExpenses();
+    fetchIncomes();
+        fetchCategories(widget.accessToken);
+       fetchexpCategories(widget.accessToken);});
     fetchExpenses();
     fetchIncomes();
     fetchCategories(widget.accessToken);

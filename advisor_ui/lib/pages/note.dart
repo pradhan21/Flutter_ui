@@ -34,10 +34,10 @@ class _NotePageState extends State<NotePage> {
     dropdownValue = list.first;
     fetchamount(widget.accessToken);
     fetchdata(widget.accessToken);
-    // Timer.periodic(Duration(seconds: 2), (_) {
-    //   fetchamount(widget.accessToken);
-    //   fetchdata(widget.accessToken);
-    // });
+    Timer.periodic(Duration(seconds: 2), (_) {
+      fetchamount(widget.accessToken);
+      fetchdata(widget.accessToken);
+    });
   }
 
   Future<void> _createnote(
